@@ -210,7 +210,7 @@ export function Footer() {
                   Navigate
                 </Text>
                 {NAV_LINKS.map((l) => (
-                  <FooterLink key={l.href} href={l.href}>
+                  <FooterLink key={`${l.href}-${l.label}`} href={l.href}>
                     {l.label}
                   </FooterLink>
                 ))}
@@ -225,7 +225,7 @@ export function Footer() {
                   Resources
                 </Text>
                 {RESOURCE_LINKS.map((l) => (
-                  <FooterLink key={l.href} href={l.href}>
+                  <FooterLink key={`${l.href}-${l.label}`} href={l.href}>
                     {l.label}
                   </FooterLink>
                 ))}
@@ -240,7 +240,7 @@ export function Footer() {
                   Company
                 </Text>
                 {COMPANY_LINKS.map((l) => (
-                  <FooterLink key={l.href} href={l.href}>
+                  <FooterLink key={`${l.href}-${l.label}`} href={l.href}>
                     {l.label}
                   </FooterLink>
                 ))}

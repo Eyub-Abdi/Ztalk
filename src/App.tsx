@@ -179,8 +179,18 @@ function Layout({ children }: { children: ReactNode }) {
 
 // Protected Route wrapper for dashboard
 function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, accessToken } = useAuth();
   const { openLogin } = useAuthModal();
+
+  // Debug log
+  useEffect(() => {
+    console.log("ProtectedRoute - isAuthenticated:", isAuthenticated);
+    console.log("ProtectedRoute - user:", user);
+    console.log(
+      "ProtectedRoute - accessToken:",
+      accessToken ? "exists" : "null"
+    );
+  }, [isAuthenticated, user, accessToken]);
 
   useEffect(() => {
     if (!isAuthenticated) {

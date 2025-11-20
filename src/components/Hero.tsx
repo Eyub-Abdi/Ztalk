@@ -17,6 +17,7 @@ import {
   VStack,
   chakra,
   VisuallyHidden,
+  Image,
 } from "@chakra-ui/react";
 import { FiSearch, FiPlay, FiCheckCircle } from "react-icons/fi";
 import { ReactNode, useMemo } from "react";
@@ -148,14 +149,18 @@ function AnimatedText({
 
 // Enhanced Floating Elements with Particles
 function FloatingElements() {
-  const particles = Array.from({ length: 15 }, (_, i) => ({
+  // Tanzania flag colors: green, yellow, black, blue
+  const particles = Array.from({ length: 20 }, (_, i) => ({
     id: i,
-    size: Math.random() * 8 + 4,
+    size: Math.random() * 12 + 6,
     initialX: Math.random() * 100,
     initialY: Math.random() * 100,
-    delay: Math.random() * 3,
-    duration: 4 + Math.random() * 3,
-    type: Math.random() > 0.7 ? "square" : "circle",
+    delay: Math.random() * 4,
+    duration: 5 + Math.random() * 4,
+    // Use Tanzania flag colors
+    color: ["#1EB53A", "#FCD116", "#000000", "#00A3DD"][
+      Math.floor(Math.random() * 4)
+    ],
   }));
 
   return (
@@ -168,20 +173,18 @@ function FloatingElements() {
           top={`${particle.initialY}%`}
           w={`${particle.size}px`}
           h={`${particle.size}px`}
-          borderRadius={particle.type === "circle" ? "full" : "2px"}
+          borderRadius="full"
           initial={{
             opacity: 0,
             scale: 0,
             rotate: 0,
-            filter: "blur(3px)",
           }}
           animate={{
-            opacity: [0, 0.3, 0.8, 0.3, 0],
-            scale: [0, 0.5, 1, 1.2, 0],
+            opacity: [0, 0.4, 0.7, 0.4, 0],
+            scale: [0, 0.8, 1, 1.1, 0],
             rotate: [0, 180, 360],
-            y: [0, -100, -200],
-            x: [0, Math.sin(particle.id) * 50, Math.cos(particle.id) * 30],
-            filter: ["blur(3px)", "blur(0px)", "blur(1px)", "blur(3px)"],
+            y: [0, -150, -300],
+            x: [0, Math.sin(particle.id) * 60, Math.cos(particle.id) * 40],
           }}
           transition={{
             duration: particle.duration,
@@ -189,20 +192,22 @@ function FloatingElements() {
             delay: particle.delay,
             ease: [0.22, 1, 0.36, 1],
           }}
-          background={`linear-gradient(45deg, var(--chakra-colors-brand-300), var(--chakra-colors-brand-500))`}
-          boxShadow="0 0 20px var(--chakra-colors-brand-200)"
+          background={particle.color}
+          boxShadow={`0 0 20px ${particle.color}40`}
         />
       ))}
 
-      {/* Gradient Orbs */}
+      {/* Subtle gradient orbs with Tanzania colors */}
       {[...Array(3)].map((_, i) => (
         <MotionBox
           key={`orb-${i}`}
           position="absolute"
-          w="120px"
-          h="120px"
+          w="150px"
+          h="150px"
           borderRadius="full"
-          background={`radial-gradient(circle, var(--chakra-colors-brand-200), transparent 70%)`}
+          background={`radial-gradient(circle, ${
+            ["#1EB53A20", "#00A3DD20", "#FCD11620"][i]
+          }, transparent 70%)`}
           initial={{
             x: Math.random() * 300,
             y: Math.random() * 200,
@@ -210,15 +215,15 @@ function FloatingElements() {
             opacity: 0,
           }}
           animate={{
-            x: [0, 100, -50, 0],
-            y: [0, -80, 60, 0],
-            scale: [0, 1, 0.8, 0],
-            opacity: [0, 0.2, 0.4, 0],
+            x: [0, 120, -60, 0],
+            y: [0, -100, 80, 0],
+            scale: [0, 1.2, 0.9, 0],
+            opacity: [0, 0.3, 0.5, 0],
           }}
           transition={{
-            duration: 8 + i * 2,
+            duration: 10 + i * 2,
             repeat: Infinity,
-            delay: i * 2,
+            delay: i * 2.5,
             ease: "easeInOut",
           }}
         />
@@ -360,8 +365,12 @@ export function Hero() {
         overflow="hidden"
       />
       <Container maxW="6xl" position="relative">
-        <SimpleGrid columns={{ base: 1, lg: 12 }} spacing={10}>
-          <Flex align="center" gridColumn={{ base: "span 12", lg: "span 7" }}>
+        <SimpleGrid
+          columns={{ base: 1, md: 2 }}
+          spacing={{ base: 10, lg: 16 }}
+          alignItems="center"
+        >
+          <Flex align="center">
             <Stack spacing={6}>
               <MotionBox
                 initial={{ opacity: 0, x: -20 }}
@@ -382,7 +391,9 @@ export function Hero() {
               </MotionBox>
 
               <Box position="relative" overflow="hidden">
-                <FloatingElements />
+                <Box display={{ base: "none", md: "block" }}>
+                  <FloatingElements />
+                </Box>
                 <MotionHeading
                   lineHeight={1.15}
                   fontWeight={700}
@@ -613,47 +624,16 @@ export function Hero() {
               </MotionBox>
             </Stack>
           </Flex>
-          <Flex
-            gridColumn={{ base: "span 12", lg: "span 5" }}
-            align="center"
-            display={{ base: "none", md: "flex" }}
-          >
+          <Flex align="center" display={{ base: "none", md: "flex" }}>
             <VStack w="full" spacing={6}>
-              <Box
-                w="full"
-                aspectRatio={4 / 3}
-                rounded="xl"
-                bg={useColorModeValue("white", "gray.800")}
-                borderWidth="1px"
-                borderColor={useColorModeValue("gray.200", "gray.700")}
-                shadow="md"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                position="relative"
-                overflow="hidden"
-              >
-                <Text
-                  fontWeight="medium"
-                  color="gray.500"
-                  px={6}
-                  textAlign="center"
-                >
-                  (Future) dynamic preview: phrase drills & tutor intro clip
-                </Text>
-                <Box
-                  position="absolute"
-                  top={3}
-                  right={3}
-                  fontSize="xs"
-                  px={2}
-                  py={1}
-                  rounded="md"
-                  bg="brand.500"
-                  color="white"
-                >
-                  Preview
-                </Box>
+              <Box w="full" aspectRatio={4 / 3} rounded="xl">
+                <Image
+                  src="/images/tz-flag.png"
+                  alt="Tanzania Flag"
+                  w="full"
+                  h="full"
+                  objectFit="contain"
+                />
               </Box>
               <SimpleGrid columns={3} w="full" spacing={4}>
                 <StatCard
