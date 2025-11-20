@@ -10,8 +10,8 @@ export default function Apply() {
             Become a Tutor
           </Heading>
           <Text color="gray.600">
-            Thanks for joining SalvatoreLingo! Complete the application below to
-            share your teaching experience and get ready for review.
+            Thanks for joining Ztalk! Complete the application below to share
+            your teaching experience and get ready for review.
           </Text>
         </Box>
 

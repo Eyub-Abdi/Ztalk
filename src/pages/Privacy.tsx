@@ -22,9 +22,8 @@ export default function PrivacyPage() {
         </Text>
         <Text color={subtle}>
           This Privacy Policy describes how we collect, use, and safeguard
-          personal information when you use the SalvatoreLingo platform. We are
-          committed to respecting user privacy and applying data minimization
-          principles.
+          personal information when you use the Ztalk platform. We are committed
+          to respecting user privacy and applying data minimization principles.
         </Text>
 
         <Heading as="h2" size="md">

@@ -107,7 +107,7 @@ export default function RegisterPage() {
         Create your account
       </Heading>
       <Text textAlign="center" color="gray.600" mb={8} fontSize="sm">
-        Join SalvatoreLingo and start mastering languages today.
+        Join Ztalk and start mastering languages today.
       </Text>
       <Stack spacing={8}>
         <form onSubmit={submit} noValidate>

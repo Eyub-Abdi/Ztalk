@@ -20,11 +20,11 @@ interface FAQEntry {
 
 const FAQS: FAQEntry[] = [
   {
-    q: "What is SalvatoreLingo?",
+    q: "What is Ztalk?",
     a: (
       <Text>
-        SalvatoreLingo connects learners with experienced Swahili tutors for
-        live, personalized lessons and cultural immersion.
+        Ztalk connects learners with experienced Swahili tutors for live,
+        personalized lessons and cultural immersion.
       </Text>
     ),
   },

@@ -92,7 +92,7 @@ function Layout({ children }: { children: ReactNode }) {
       >
         <Flex align="center" gap={6}>
           <Heading as={RouterLink} to="/" size="md" onClick={onClose}>
-            SalvatoreLingo
+            Ztalk
           </Heading>
           <Spacer />
           {/* Desktop navigation */}

@@ -96,7 +96,7 @@ export function Footer() {
                 bgGradient="linear(to-r, brand.500, brand.400)"
                 bgClip="text"
               >
-                SalvatoreLingo
+                Ztalk
               </Text>
               <Text fontSize="sm" color={subtle} maxW="sm">
                 Build real Swahili communication confidence through
@@ -251,7 +251,7 @@ export function Footer() {
           <Stack spacing={4} fontSize="xs" id="legal">
             <Divider />
             <Text color={subtle}>
-              © {new Date().getFullYear()} SalvatoreLingo. All rights reserved.
+              © {new Date().getFullYear()} Ztalk. All rights reserved.
             </Text>
             <HStack spacing={4} color={subtle} flexWrap="wrap">
               <ChakraLink href="/terms" _hover={{ color: accent }}>

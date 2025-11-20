@@ -929,8 +929,7 @@ export default function TeacherApplication() {
                   Choose Your Teaching Path
                 </Text>
                 <Text fontSize="lg" color="gray.600">
-                  On SalvatoreLingo there are two types of teachers. Which one
-                  are you?
+                  On Ztalk there are two types of teachers. Which one are you?
                 </Text>
               </Box>
             </VStack>
@@ -1340,7 +1339,7 @@ export default function TeacherApplication() {
                 <FormControl>
                   <FormLabel>Video Platform</FormLabel>
                   <VStack spacing={3} align="stretch">
-                    {/* SalvatoreLingo Classroom */}
+                    {/* Ztalk Classroom */}
                     <Box
                       p={4}
                       borderWidth={2}
@@ -1765,10 +1764,9 @@ export default function TeacherApplication() {
                   >
                     Please check that your listed languages and levels are
                     accurate. You will be able to set any language that is
-                    listed as native or C2 as a teaching language.
-                    SalvatoreLingo uses the Common European Framework of
-                    Reference for Languages (CEFR) for displaying language
-                    levels.{" "}
+                    listed as native or C2 as a teaching language. Ztalk uses
+                    the Common European Framework of Reference for Languages
+                    (CEFR) for displaying language levels.{" "}
                     <Link
                       color="blue.600"
                       href="#"
@@ -2259,7 +2257,7 @@ export default function TeacherApplication() {
                       <Text fontSize="sm">
                         I&apos;m aware that if my profile photo does not respect
                         the listed characteristics, my application to become a
-                        teacher on SalvatoreLingo could be rejected.
+                        teacher on Ztalk could be rejected.
                       </Text>
                     </Checkbox>
                     <FormErrorMessage>{errors.photoAgreement}</FormErrorMessage>

@@ -27,8 +27,7 @@ export default function TeacherApplicationSuccess() {
         <VStack spacing={4}>
           <Heading size="xl">Application Submitted Successfully!</Heading>
           <Text fontSize="lg" color="gray.600">
-            Thank you for applying to become a Swahili teacher on
-            SalvatoreLingo.
+            Thank you for applying to become a Swahili teacher on Ztalk.
           </Text>
         </VStack>
 
@@ -88,7 +87,7 @@ export default function TeacherApplicationSuccess() {
             <Text fontWeight="semibold">Questions?</Text>
             <Text fontSize="sm">
               If you have any questions about your application or the process,
-              feel free to contact us at teachers@salvatorelingo.com
+              feel free to contact us at teachers@ztalk.com
             </Text>
           </Box>
         </Alert>

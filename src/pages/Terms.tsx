@@ -22,8 +22,8 @@ export default function TermsPage() {
         </Text>
         <Text color={subtle} fontSize="md">
           These Terms of Service (&quot;Terms&quot;) govern your access to and
-          use of the SalvatoreLingo platform (the &quot;Service&quot;). By
-          accessing or using the Service you agree to be bound by these Terms.
+          use of the Ztalk platform (the &quot;Service&quot;). By accessing or
+          using the Service you agree to be bound by these Terms.
         </Text>
 
         <Heading as="h2" size="md">
@@ -80,9 +80,9 @@ export default function TermsPage() {
         </Heading>
         <Text color={subtle}>
           All platform code, design, logos, and original learning content are
-          owned by SalvatoreLingo or its licensors. Users retain ownership of
-          original uploads but grant us a limited license to host and display
-          that content to deliver the Service.
+          owned by Ztalk or its licensors. Users retain ownership of original
+          uploads but grant us a limited license to host and display that
+          content to deliver the Service.
         </Text>
 
         <Heading as="h2" size="md">
@@ -108,9 +108,9 @@ export default function TermsPage() {
           9. Limitation of Liability
         </Heading>
         <Text color={subtle}>
-          To the maximum extent permitted by law, SalvatoreLingo shall not be
-          liable for any indirect, incidental, special, consequential, or
-          punitive damages, or any loss of profits or revenues.
+          To the maximum extent permitted by law, Ztalk shall not be liable for
+          any indirect, incidental, special, consequential, or punitive damages,
+          or any loss of profits or revenues.
         </Text>
 
         <Heading as="h2" size="md">

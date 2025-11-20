@@ -306,7 +306,7 @@ export default function BecomeTeacher() {
           <VStack spacing={12}>
             <VStack spacing={4} textAlign="center" maxW="3xl">
               <Heading size={{ base: "xl", md: "2xl" }}>
-                Why Teachers Love SalvatoreLingo
+                Why Teachers Love Ztalk
               </Heading>
               <Text fontSize={{ base: "md", md: "lg" }} color="gray.600">
                 Join a community that values your expertise and supports your

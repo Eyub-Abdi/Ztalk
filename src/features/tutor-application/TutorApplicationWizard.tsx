@@ -459,7 +459,7 @@ export function TutorApplicationWizard() {
             size="sm"
           >
             I understand my video must follow these rules and may appear on
-            SalvatoreLingo channels.
+            Ztalk channels.
           </Checkbox>
         </VStack>
       </Box>
