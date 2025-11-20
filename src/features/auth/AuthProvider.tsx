@@ -15,6 +15,7 @@ interface AuthContextValue {
   setAuth: (u: User, access: string, refresh: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -23,6 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // hydrate from storage
   useEffect(() => {
@@ -37,6 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     } catch (e) {
       // ignore
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -65,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuth,
     logout,
     isAuthenticated: !!user && !!accessToken,
+    isLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

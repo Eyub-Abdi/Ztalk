@@ -179,27 +179,33 @@ function Layout({ children }: { children: ReactNode }) {
 
 // Protected Route wrapper for dashboard
 function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated, user, accessToken } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const { openLogin } = useAuthModal();
 
-  // Debug log
   useEffect(() => {
-    console.log("ProtectedRoute - isAuthenticated:", isAuthenticated);
-    console.log("ProtectedRoute - user:", user);
-    console.log(
-      "ProtectedRoute - accessToken:",
-      accessToken ? "exists" : "null"
-    );
-  }, [isAuthenticated, user, accessToken]);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
+    // Only trigger login modal after loading is complete and user is not authenticated
+    if (!isLoading && !isAuthenticated) {
       const timer = window.setTimeout(() => openLogin(), 100);
       return () => window.clearTimeout(timer);
     }
     return undefined;
-  }, [isAuthenticated, openLogin]);
+  }, [isLoading, isAuthenticated, openLogin]);
 
+  // Wait for auth state to initialize
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minH="100vh"
+      >
+        Loading...
+      </Box>
+    );
+  }
+
+  // Redirect to home if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
