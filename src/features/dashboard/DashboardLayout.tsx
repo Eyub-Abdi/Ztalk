@@ -94,6 +94,8 @@ function DashboardHeader({
 }) {
   const headerBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
+  const titleColor = useColorModeValue("gray.800", "white");
+  const subtitleColor = useColorModeValue("gray.600", "gray.400");
 
   return (
     <Box
@@ -104,54 +106,75 @@ function DashboardHeader({
       bg={headerBg}
       borderBottom="1px"
       borderColor={borderColor}
-      px={6}
+      px={{ base: 4, md: 6 }}
       py={4}
       shadow="sm"
+      backdropFilter="blur(10px)"
     >
       <Flex align="center" justify="space-between">
         {/* Left side - Dashboard title */}
         <Box>
-          <Heading size="lg" color="brand.600">
+          <Heading
+            size="lg"
+            color={titleColor}
+            fontWeight="600"
+            letterSpacing="-0.02em"
+          >
             Dashboard
           </Heading>
-          <Text fontSize="sm" color="gray.500" mt={1}>
-            Welcome back, {displayUser?.first_name}!
+          <Text fontSize="sm" color={subtitleColor} mt={0.5}>
+            Welcome back, {displayUser?.first_name}
           </Text>
         </Box>
 
         {/* Right side - Actions */}
-        <HStack spacing={4}>
+        <HStack spacing={{ base: 2, md: 3 }}>
           {/* Notifications */}
           <Box position="relative">
             <IconButton
               icon={<FiBell />}
               variant="ghost"
-              size="lg"
+              size="md"
               aria-label="Notifications"
+              rounded="md"
+              _hover={{
+                bg: useColorModeValue("gray.100", "gray.700"),
+              }}
             />
             <Badge
               position="absolute"
-              top="0"
-              right="0"
+              top="4px"
+              right="4px"
               colorScheme="red"
               borderRadius="full"
-              fontSize="xs"
+              fontSize="2xs"
+              minW="18px"
+              h="18px"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
               px={1}
+              fontWeight="bold"
+              boxShadow="0 0 0 2px white"
+              _dark={{
+                boxShadow: "0 0 0 2px var(--chakra-colors-gray-800)",
+              }}
             >
               3
             </Badge>
           </Box>
 
-          {/* Quick Actions */}
+          {/* Quick Actions - Hide on mobile */}
           <Button
             leftIcon={<FiClock />}
             colorScheme="brand"
             size="sm"
-            variant="outline"
             as={NavLink}
             to="/dashboard/availability"
+            display={{ base: "none", lg: "inline-flex" }}
+            fontWeight="500"
           >
-            Manage Availability
+            Availability
           </Button>
 
           {/* User Menu */}
@@ -160,28 +183,34 @@ function DashboardHeader({
               as={Button}
               variant="ghost"
               rightIcon={<FiChevronDown />}
+              size="sm"
+              px={2}
+              _hover={{
+                bg: useColorModeValue("gray.100", "gray.700"),
+              }}
             >
-              <HStack>
+              <HStack spacing={2}>
                 <Avatar
                   size="sm"
                   name={`${displayUser?.first_name} ${displayUser?.last_name}`}
-                  bg="brand.500"
+                  bg="linear-gradient(135deg, #FF4438 0%, #FFA500 100%)"
+                  color="white"
                 />
                 <VStack
                   spacing={0}
                   align="start"
                   display={{ base: "none", md: "flex" }}
                 >
-                  <Text fontSize="sm" fontWeight="medium">
+                  <Text fontSize="sm" fontWeight="500">
                     {displayUser?.first_name} {displayUser?.last_name}
                   </Text>
-                  <Text fontSize="xs" color="gray.500">
+                  <Text fontSize="xs" color={subtitleColor}>
                     {user ? "Student" : "Demo User"}
                   </Text>
                 </VStack>
               </HStack>
             </MenuButton>
-            <MenuList>
+            <MenuList shadow="lg">
               <MenuItem icon={<FiUser />}>My Profile</MenuItem>
               <MenuItem icon={<FiSettings />}>Settings</MenuItem>
               <MenuItem icon={<FiHelpCircle />}>Help & Support</MenuItem>
