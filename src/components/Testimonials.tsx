@@ -12,6 +12,7 @@ import {
   VisuallyHidden,
   chakra,
   Flex,
+  Badge,
 } from "@chakra-ui/react";
 import {
   FiStar,
@@ -75,22 +76,65 @@ const DATA: Testimonial[] = [
 ];
 
 function Stars({ count }: { count: number }) {
+  const starGradient = "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)";
+  const inactiveColor = useColorModeValue("gray.300", "gray.600");
+
   return (
-    <HStack
-      spacing={1}
-      color={useColorModeValue("brand.500", "brand.300")}
-      aria-label={`${count} star rating`}
-    >
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Icon
-          key={i}
-          as={FiStar}
-          fill={i < count ? "currentColor" : "none"}
-          strokeWidth={1.5}
-          boxSize={4}
-          opacity={i < count ? 1 : 0.4}
-        />
-      ))}
+    <HStack spacing={0.5} aria-label={`${count} star rating`}>
+      {Array.from({ length: 5 }).map((_, i) => {
+        const isFilled = i < count;
+        return (
+          <Box
+            key={i}
+            position="relative"
+            transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+            _hover={{ transform: "scale(1.15)" }}
+            style={{
+              animationDelay: `${i * 0.05}s`,
+            }}
+          >
+            <Icon
+              as={FiStar}
+              fill={isFilled ? starGradient : "none"}
+              stroke={isFilled ? "#FFA500" : inactiveColor}
+              strokeWidth={1.5}
+              boxSize={5}
+              filter={
+                isFilled
+                  ? "drop-shadow(0px 2px 4px rgba(255, 165, 0, 0.3))"
+                  : "none"
+              }
+              sx={
+                isFilled
+                  ? {
+                      fill: "url(#starGradient)",
+                      "@keyframes twinkle": {
+                        "0%, 100%": { opacity: 1 },
+                        "50%": { opacity: 0.8 },
+                      },
+                    }
+                  : {}
+              }
+            />
+            {i === 0 && (
+              <Box as="svg" position="absolute" w={0} h={0}>
+                <defs>
+                  <linearGradient
+                    id="starGradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stopColor="#FFD700" />
+                    <stop offset="100%" stopColor="#FFA500" />
+                  </linearGradient>
+                </defs>
+              </Box>
+            )}
+          </Box>
+        );
+      })}
     </HStack>
   );
 }
@@ -100,27 +144,31 @@ function TestimonialCard({ t }: { t: Testimonial }) {
   const border = useColorModeValue("gray.200", "gray.700");
   const decorativeColor = useColorModeValue("brand.50", "whiteAlpha.100");
   const quoteIconColor = useColorModeValue("brand.100", "whiteAlpha.200");
+  const ratingBadgeBg = useColorModeValue("orange.50", "orange.900");
+  const ratingBadgeColor = useColorModeValue("orange.800", "orange.200");
+
   return (
     <Stack
       role="group"
       spacing={4}
-      p={5}
-      rounded="xl"
+      p={6}
+      rounded="2xl"
       bg={cardBg}
       borderWidth="1px"
       borderColor={border}
       shadow="sm"
       position="relative"
-      transition="all 0.25s"
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
       h="100%"
+      overflow="hidden"
       _before={{
         content: '""',
         position: "absolute",
         inset: 0,
-        rounded: "xl",
+        rounded: "2xl",
         bg: useColorModeValue(
-          "linear-gradient(135deg, rgba(255,68,56,0.06), rgba(255,68,56,0.02))",
-          "linear-gradient(135deg, rgba(255,68,56,0.15), rgba(255,68,56,0.05))"
+          "linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.04))",
+          "linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.08))"
         ),
         opacity: 0,
         transition: "inherit",
@@ -128,36 +176,58 @@ function TestimonialCard({ t }: { t: Testimonial }) {
       _after={{
         content: '""',
         position: "absolute",
-        top: 3,
-        right: 3,
-        w: 10,
-        h: 10,
+        top: -10,
+        right: -10,
+        w: 32,
+        h: 32,
         rounded: "full",
         bg: decorativeColor,
-        filter: "blur(4px)",
-        opacity: 0.5,
+        filter: "blur(20px)",
+        opacity: 0.4,
         zIndex: 0,
         transition: "inherit",
       }}
       _hover={{
-        shadow: "md",
-        transform: "translateY(-4px)",
+        shadow: "xl",
+        transform: "translateY(-6px)",
+        borderColor: useColorModeValue("orange.300", "orange.600"),
         _before: { opacity: 1 },
+        _after: { opacity: 0.7, w: 40, h: 40 },
       }}
     >
       <Icon
         as={FiMessageSquare}
-        boxSize={8}
+        boxSize={10}
         color={quoteIconColor}
         position="absolute"
-        top={3}
-        left={3}
-        opacity={0.4}
+        top={4}
+        left={4}
+        opacity={0.3}
         pointerEvents="none"
+        zIndex={0}
       />
-      <Stars count={t.rating} />
-      <Text fontSize="sm" lineHeight={1.5}>
-        “{t.quote}”
+      <HStack justify="space-between" align="center" zIndex={1}>
+        <Stars count={t.rating} />
+        <Badge
+          bg={ratingBadgeBg}
+          color={ratingBadgeColor}
+          px={3}
+          py={1}
+          rounded="full"
+          fontSize="xs"
+          fontWeight="bold"
+          letterSpacing="wide"
+        >
+          {t.rating.toFixed(1)}
+        </Badge>
+      </HStack>
+      <Text
+        fontSize="sm"
+        lineHeight={1.7}
+        color={useColorModeValue("gray.700", "gray.300")}
+        zIndex={1}
+      >
+        &ldquo;{t.quote}&rdquo;
       </Text>
       <HStack spacing={3} pt={2}>
         <Avatar size="sm" name={t.name} src={t.avatar} />

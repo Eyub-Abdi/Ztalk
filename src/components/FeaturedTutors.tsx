@@ -80,17 +80,54 @@ const TUTORS: Tutor[] = [
   },
 ];
 
-function Rating({ value }: { value: number }) {
-  const color = useColorModeValue("brand.600", "brand.300");
+function Rating({ value, reviews }: { value: number; reviews?: number }) {
+  const starGradient = "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)";
+  const ratingBg = useColorModeValue("orange.50", "orange.900");
+  const ratingColor = useColorModeValue("orange.800", "orange.200");
+  const textColor = useColorModeValue("gray.600", "gray.400");
+
   return (
     <HStack
-      spacing={1}
+      spacing={1.5}
+      bg={ratingBg}
+      px={2.5}
+      py={1}
+      rounded="full"
       fontSize="xs"
-      color={color}
+      fontWeight="semibold"
       aria-label={`Rating ${value}`}
+      transition="all 0.2s"
+      _hover={{ transform: "scale(1.05)" }}
     >
-      <Icon as={FiStar} />
-      <Text>{value.toFixed(1)}</Text>
+      <Box position="relative">
+        <Icon
+          as={FiStar}
+          fill={starGradient}
+          stroke="#FFA500"
+          strokeWidth={1.5}
+          boxSize={3.5}
+          filter="drop-shadow(0px 1px 2px rgba(255, 165, 0, 0.3))"
+          sx={{
+            fill: "url(#tutorStarGradient)",
+          }}
+        />
+        <Box as="svg" position="absolute" w={0} h={0}>
+          <defs>
+            <linearGradient
+              id="tutorStarGradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#FFD700" />
+              <stop offset="100%" stopColor="#FFA500" />
+            </linearGradient>
+          </defs>
+        </Box>
+      </Box>
+      <Text color={ratingColor}>{value.toFixed(1)}</Text>
+      {reviews && <Text color={textColor}>({reviews})</Text>}
     </HStack>
   );
 }
@@ -99,20 +136,40 @@ function TutorCard({ tutor }: { tutor: Tutor }) {
   const cardBg = useColorModeValue("white", "gray.800");
   const border = useColorModeValue("gray.200", "gray.700");
   const proIconColor = useColorModeValue("brand.500", "brand.300");
+  const overlayBg = useColorModeValue(
+    "linear-gradient(135deg, rgba(255,215,0,0.05), rgba(255,165,0,0.02))",
+    "linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.05))"
+  );
   // Badge check icon for a stronger verified badge visual
   const ProIcon = HiBadgeCheck;
+
   return (
     <Stack
+      role="group"
       spacing={4}
-      p={4}
-      rounded="xl"
+      p={5}
+      rounded="2xl"
       bg={cardBg}
       borderWidth="1px"
       borderColor={border}
-      shadow="sm"
+      shadow="md"
       position="relative"
-      transition="all 0.25s"
-      _hover={{ shadow: "md", transform: "translateY(-4px)" }}
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+      overflow="hidden"
+      _before={{
+        content: '""',
+        position: "absolute",
+        inset: 0,
+        bg: overlayBg,
+        opacity: 0,
+        transition: "opacity 0.3s",
+      }}
+      _hover={{
+        shadow: "xl",
+        transform: "translateY(-6px)",
+        borderColor: useColorModeValue("orange.300", "orange.600"),
+        _before: { opacity: 1 },
+      }}
     >
       <Box
         position="relative"
@@ -165,7 +222,7 @@ function TutorCard({ tutor }: { tutor: Tutor }) {
                 )}
               </Heading>
             </HStack>
-            <Rating value={tutor.rating} />
+            <Rating value={tutor.rating} reviews={tutor.reviews} />
           </HStack>
           <HStack
             spacing={2}
@@ -176,7 +233,6 @@ function TutorCard({ tutor }: { tutor: Tutor }) {
               <Icon as={FiGlobe} />
               <Text noOfLines={1}>{tutor.languages.join(", ")}</Text>
             </HStack>
-            <Text>• {tutor.reviews} reviews</Text>
           </HStack>
         </Stack>
       </HStack>
