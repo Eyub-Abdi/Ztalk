@@ -1,0 +1,830 @@
+import { useCallback, useMemo, useState } from "react";
+import clsx from "clsx";
+import {
+  FiCalendar,
+  FiCheckCircle,
+  FiEdit3,
+  FiPlay,
+  FiRefreshCw,
+  FiUser,
+  FiX,
+} from "react-icons/fi";
+import type { LessonSummary } from "../lessons/api/lessonTypes";
+import {
+  useEndLesson,
+  useLessons,
+  useStartLesson,
+} from "../lessons/api/useLessons";
+import { useCreateReschedule } from "../lessons/api/useBookingReschedule";
+
+// Toast hook replacement - simple notification system
+function useToast() {
+  return {
+    show: (options: {
+      title: string;
+      description?: string;
+      status?: string;
+    }) => {
+      // In a real app, you'd use a toast library or context
+      console.log(
+        `[${options.status}] ${options.title}: ${options.description || ""}`
+      );
+    },
+  };
+}
+
+// Status badge colors
+const statusColors: Record<string, { bg: string; text: string }> = {
+  pending: {
+    bg: "bg-orange-100 dark:bg-orange-900",
+    text: "text-orange-800 dark:text-orange-200",
+  },
+  awaiting_confirmation: {
+    bg: "bg-yellow-100 dark:bg-yellow-900",
+    text: "text-yellow-800 dark:text-yellow-200",
+  },
+  reschedule_requested: {
+    bg: "bg-purple-100 dark:bg-purple-900",
+    text: "text-purple-800 dark:text-purple-200",
+  },
+  confirmed: {
+    bg: "bg-green-100 dark:bg-green-900",
+    text: "text-green-800 dark:text-green-200",
+  },
+  scheduled: {
+    bg: "bg-green-100 dark:bg-green-900",
+    text: "text-green-800 dark:text-green-200",
+  },
+  in_progress: {
+    bg: "bg-blue-100 dark:bg-blue-900",
+    text: "text-blue-800 dark:text-blue-200",
+  },
+  completed: {
+    bg: "bg-gray-100 dark:bg-gray-700",
+    text: "text-gray-800 dark:text-gray-200",
+  },
+  cancelled: {
+    bg: "bg-red-100 dark:bg-red-900",
+    text: "text-red-800 dark:text-red-200",
+  },
+  no_show: {
+    bg: "bg-red-100 dark:bg-red-900",
+    text: "text-red-800 dark:text-red-200",
+  },
+  declined: {
+    bg: "bg-red-100 dark:bg-red-900",
+    text: "text-red-800 dark:text-red-200",
+  },
+};
+
+const statusLabels: Record<string, string> = {
+  pending: "Pending",
+  awaiting_confirmation: "Awaiting confirmation",
+  reschedule_requested: "Reschedule requested",
+  confirmed: "Confirmed",
+  scheduled: "Scheduled",
+  in_progress: "In progress",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  no_show: "No show",
+  declined: "Declined",
+};
+
+export default function Bookings() {
+  const toast = useToast();
+  const { data, isLoading, isError, error, refetch } = useLessons({
+    mine: true,
+  });
+  const bookings = useMemo(() => data ?? [], [data]);
+
+  const startLesson = useStartLesson();
+  const endLesson = useEndLesson();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<LessonSummary | null>(
+    null
+  );
+  const [newStart, setNewStart] = useState("");
+  const [newEnd, setNewEnd] = useState("");
+  const [reason, setReason] = useState("");
+  const { mutateAsync: rescheduleAsync, isPending } = useCreateReschedule();
+
+  const attentionStatuses = useMemo(
+    () => new Set(["pending", "awaiting_confirmation", "reschedule_requested"]),
+    []
+  );
+  const pastStatuses = useMemo(
+    () => new Set(["completed", "cancelled", "no_show", "declined"]),
+    []
+  );
+
+  type FilterOption = "attention" | "upcoming" | "past" | "all";
+  const [filter, setFilter] = useState<FilterOption>("attention");
+
+  const stats = useMemo(() => {
+    const now = Date.now();
+    const startOfWeek = new Date();
+    startOfWeek.setHours(0, 0, 0, 0);
+    const day = startOfWeek.getDay();
+    startOfWeek.setDate(startOfWeek.getDate() - day);
+
+    let upcoming = 0;
+    let attention = 0;
+    let completedThisWeek = 0;
+    let past = 0;
+    let nextLesson: LessonSummary | null = null;
+
+    bookings.forEach((booking) => {
+      const status = (booking.status ?? "").toLowerCase();
+      const startMs = Date.parse(booking.scheduled_start);
+      if (Number.isNaN(startMs)) return;
+
+      if (!pastStatuses.has(status) && startMs >= now) {
+        upcoming += 1;
+        if (!nextLesson || startMs < Date.parse(nextLesson.scheduled_start)) {
+          nextLesson = booking;
+        }
+      }
+
+      if (attentionStatuses.has(status)) {
+        attention += 1;
+      }
+
+      if (status === "completed" && startMs >= startOfWeek.getTime()) {
+        completedThisWeek += 1;
+      }
+
+      if (pastStatuses.has(status) || startMs < now) {
+        past += 1;
+      }
+    });
+
+    return { upcoming, attention, completedThisWeek, nextLesson, past };
+  }, [attentionStatuses, bookings, pastStatuses]);
+
+  const filters = useMemo(
+    () => [
+      {
+        label: "Needs attention",
+        value: "attention" as const,
+        count: stats.attention,
+      },
+      { label: "Upcoming", value: "upcoming" as const, count: stats.upcoming },
+      { label: "Past", value: "past" as const, count: stats.past },
+      { label: "All", value: "all" as const, count: bookings.length },
+    ],
+    [bookings.length, stats.attention, stats.past, stats.upcoming]
+  );
+
+  const formatDateTime = useMemo(
+    () =>
+      new Intl.DateTimeFormat(undefined, {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }),
+    []
+  );
+
+  const relativeLabel = useCallback((iso: string) => {
+    const targetMs = Date.parse(iso);
+    if (Number.isNaN(targetMs)) return "";
+    const diffMs = targetMs - Date.now();
+    const diffMinutes = Math.round(diffMs / 60000);
+    if (Math.abs(diffMinutes) < 60) {
+      if (diffMinutes === 0) return "happening now";
+      return diffMinutes > 0
+        ? `in ${diffMinutes} min`
+        : `${Math.abs(diffMinutes)} min ago`;
+    }
+    const diffHours = Math.round(diffMinutes / 60);
+    if (Math.abs(diffHours) < 24) {
+      return diffHours > 0
+        ? `in ${diffHours} hr`
+        : `${Math.abs(diffHours)} hr ago`;
+    }
+    const diffDays = Math.round(diffHours / 24);
+    return diffDays > 0
+      ? `in ${diffDays} days`
+      : `${Math.abs(diffDays)} days ago`;
+  }, []);
+
+  const filteredBookings = useMemo(() => {
+    const now = Date.now();
+    const sorted = [...bookings].sort((a, b) => {
+      const diff =
+        Date.parse(a.scheduled_start) - Date.parse(b.scheduled_start);
+      return filter === "past" ? -diff : diff;
+    });
+
+    return sorted.filter((booking) => {
+      const status = (booking.status ?? "").toLowerCase();
+      const startMs = Date.parse(booking.scheduled_start);
+      if (filter === "attention") return attentionStatuses.has(status);
+      if (filter === "upcoming") {
+        return (
+          !Number.isNaN(startMs) && startMs >= now && !pastStatuses.has(status)
+        );
+      }
+      if (filter === "past") {
+        return (
+          pastStatuses.has(status) || (!Number.isNaN(startMs) && startMs < now)
+        );
+      }
+      return true;
+    });
+  }, [attentionStatuses, bookings, filter, pastStatuses]);
+
+  const openReschedule = useCallback((booking: LessonSummary) => {
+    setSelectedBooking(booking);
+    const startValue = formatDatetimeLocal(booking.scheduled_start);
+    const endValue = formatDatetimeLocal(booking.scheduled_end);
+    setNewStart(startValue);
+    setNewEnd(endValue);
+    setReason("");
+    setIsModalOpen(true);
+  }, []);
+
+  const resetRescheduleState = useCallback(() => {
+    setSelectedBooking(null);
+    setNewStart("");
+    setNewEnd("");
+    setReason("");
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    resetRescheduleState();
+  }, [resetRescheduleState]);
+
+  const submitReschedule = useCallback(async () => {
+    if (!selectedBooking) return;
+
+    if (!newStart || !newEnd) {
+      toast.show({
+        title: "Missing times",
+        description: "Add both a start and end time before submitting.",
+        status: "warning",
+      });
+      return;
+    }
+
+    const startIso = toIsoString(newStart);
+    const endIso = toIsoString(newEnd);
+    if (!startIso || !endIso) {
+      toast.show({
+        title: "Invalid times",
+        description: "Double-check the dates you selected and try again.",
+        status: "error",
+      });
+      return;
+    }
+
+    if (Date.parse(endIso) <= Date.parse(startIso)) {
+      toast.show({
+        title: "End time must be after start time",
+        status: "error",
+      });
+      return;
+    }
+
+    try {
+      await rescheduleAsync({
+        lesson_id: selectedBooking.id,
+        new_start: startIso,
+        new_end: endIso,
+        reason,
+      });
+      toast.show({
+        title: "Reschedule requested",
+        description: "We'll notify the student about the proposed change.",
+        status: "success",
+      });
+      handleCloseModal();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong.";
+      toast.show({
+        title: "Unable to submit",
+        description: message,
+        status: "error",
+      });
+    }
+  }, [
+    handleCloseModal,
+    newEnd,
+    newStart,
+    reason,
+    rescheduleAsync,
+    selectedBooking,
+    toast,
+  ]);
+
+  const handleStartLesson = useCallback(
+    (booking: LessonSummary) => {
+      startLesson.mutate(booking.id, {
+        onSuccess: () => {
+          toast.show({
+            title: "Lesson started",
+            description: "Good luck with your session!",
+            status: "success",
+          });
+        },
+        onError: (err: unknown) => {
+          const message =
+            err instanceof Error ? err.message : "Unable to start the lesson.";
+          toast.show({
+            title: "Start failed",
+            description: message,
+            status: "error",
+          });
+        },
+      });
+    },
+    [startLesson, toast]
+  );
+
+  const handleEndLesson = useCallback(
+    (booking: LessonSummary) => {
+      endLesson.mutate(booking.id, {
+        onSuccess: () => {
+          toast.show({
+            title: "Lesson completed",
+            description: "Nice work—log any notes while it's fresh.",
+            status: "success",
+          });
+        },
+        onError: (err: unknown) => {
+          const message =
+            err instanceof Error
+              ? err.message
+              : "Unable to complete the lesson.";
+          toast.show({
+            title: "Complete failed",
+            description: message,
+            status: "error",
+          });
+        },
+      });
+    },
+    [endLesson, toast]
+  );
+
+  const nextLessonText = stats.nextLesson
+    ? `${formatDateTime.format(
+        new Date((stats.nextLesson as LessonSummary).scheduled_start)
+      )}`
+    : "No upcoming lessons";
+
+  const nextLessonRelative = stats.nextLesson
+    ? relativeLabel((stats.nextLesson as LessonSummary).scheduled_start)
+    : "Add availability so students can book you.";
+
+  const errorMessage = error instanceof Error ? error.message : null;
+
+  return (
+    <div>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="card p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                My Bookings
+              </h1>
+              <p className="text-gray-500 dark:text-gray-400">
+                Review upcoming lessons, respond to reschedule requests, and
+                keep students in the loop.
+              </p>
+            </div>
+            <button
+              onClick={() => refetch()}
+              disabled={isLoading}
+              className="btn btn-outline flex items-center gap-2"
+            >
+              <FiRefreshCw
+                className={clsx("w-4 h-4", isLoading && "animate-spin")}
+              />
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        {/* Stats cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Upcoming */}
+          <div className="card p-6 transition-all hover:shadow-lg hover:-translate-y-0.5">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">
+                  Upcoming lessons
+                </span>
+                <div className="bg-brand-50 dark:bg-brand-900 p-2 rounded-md text-brand-500">
+                  <FiCalendar className="w-[18px] h-[18px]" />
+                </div>
+              </div>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white">
+                {stats.upcoming}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                {nextLessonText}
+              </p>
+              <p className="text-xs text-brand-500 font-semibold">
+                {nextLessonRelative}
+              </p>
+            </div>
+          </div>
+
+          {/* Needs attention */}
+          <div className="card p-6 transition-all hover:shadow-lg hover:-translate-y-0.5">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">
+                  Needs attention
+                </span>
+                <div className="bg-orange-50 dark:bg-orange-900 p-2 rounded-md text-orange-500">
+                  <FiEdit3 className="w-[18px] h-[18px]" />
+                </div>
+              </div>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white">
+                {stats.attention}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Pending approvals and reschedule requests
+              </p>
+            </div>
+          </div>
+
+          {/* Completed this week */}
+          <div className="card p-6 transition-all hover:shadow-lg hover:-translate-y-0.5">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">
+                  Completed this week
+                </span>
+                <div className="bg-green-50 dark:bg-green-900 p-2 rounded-md text-green-500">
+                  <FiCheckCircle className="w-[18px] h-[18px]" />
+                </div>
+              </div>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white">
+                {stats.completedThisWeek}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Keep progress organised with lesson notes
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Filter tabs */}
+        <div className="flex flex-wrap gap-3">
+          {filters.map((item) => (
+            <button
+              key={item.value}
+              onClick={() => setFilter(item.value)}
+              className={clsx(
+                "px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2",
+                filter === item.value
+                  ? "bg-brand-500 text-white"
+                  : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-brand-300"
+              )}
+            >
+              {item.label}
+              <span
+                className={clsx(
+                  "px-2 py-0.5 text-xs rounded-md",
+                  filter === item.value
+                    ? "bg-white/20 text-white"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                )}
+              >
+                {item.count}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Error alert */}
+        {isError && (
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-xl">
+            <div className="flex items-start gap-3">
+              <div className="text-red-500 mt-0.5">⚠️</div>
+              <div>
+                <p className="text-sm font-semibold text-red-800 dark:text-red-200">
+                  Unable to load bookings
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {errorMessage ?? "Please try again."}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Table */}
+        <div className="card overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Student
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Lesson window
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {isLoading &&
+                [0, 1, 2].map((index) => (
+                  <tr key={`skeleton-${index}`}>
+                    <td colSpan={4} className="px-6 py-4">
+                      <div className="animate-pulse space-y-2">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+
+              {!isLoading && filteredBookings.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center">
+                    <div className="space-y-2">
+                      <FiCalendar className="w-8 h-8 mx-auto text-gray-400" />
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        No bookings to show
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Adjust your filter or add availability so students can
+                        book you.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+
+              {!isLoading &&
+                filteredBookings.map((booking) => {
+                  const statusKey = (booking.status ?? "").toLowerCase();
+                  const colors = statusColors[statusKey] || {
+                    bg: "bg-gray-100",
+                    text: "text-gray-800",
+                  };
+                  const label = statusLabels[statusKey] || booking.status;
+                  const durationMinutes = computeDurationMinutes(
+                    booking.scheduled_start,
+                    booking.scheduled_end
+                  );
+                  const canStart = !pastStatuses.has(statusKey);
+                  const canComplete = ![
+                    "completed",
+                    "cancelled",
+                    "pending",
+                  ].includes(statusKey);
+                  const isStarting =
+                    startLesson.isPending &&
+                    startLesson.variables === booking.id;
+                  const isCompleting =
+                    endLesson.isPending && endLesson.variables === booking.id;
+
+                  return (
+                    <tr
+                      key={booking.id}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <div className="bg-brand-50 dark:bg-brand-900 p-2 rounded-md">
+                              <FiUser className="w-4 h-4 text-brand-500" />
+                            </div>
+                            <span className="font-semibold text-sm text-gray-900 dark:text-white">
+                              {booking.student_name || "Unassigned student"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 ml-10">
+                            {booking.lesson_type}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <p className="font-medium text-sm text-gray-900 dark:text-white">
+                            {formatDateTime.format(
+                              new Date(booking.scheduled_start)
+                            )}
+                          </p>
+                          <p className="text-xs text-brand-500 font-semibold">
+                            {relativeLabel(booking.scheduled_start)}
+                          </p>
+                          {durationMinutes && (
+                            <span className="inline-flex px-2 py-0.5 text-xs font-medium rounded-md bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+                              {durationMinutes} min
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={clsx(
+                            "inline-flex px-3 py-1 text-xs font-semibold rounded-md",
+                            colors.bg,
+                            colors.text
+                          )}
+                        >
+                          {label}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleStartLesson(booking)}
+                            disabled={!canStart || isStarting}
+                            className="btn btn-outline text-green-600 border-green-300 hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm py-1.5 px-3 flex items-center gap-1"
+                          >
+                            {isStarting ? (
+                              <span className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <FiPlay className="w-4 h-4" />
+                            )}
+                            Start
+                          </button>
+                          <button
+                            onClick={() => handleEndLesson(booking)}
+                            disabled={!canComplete || isCompleting}
+                            className="btn btn-outline text-blue-600 border-blue-300 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm py-1.5 px-3 flex items-center gap-1"
+                          >
+                            {isCompleting ? (
+                              <span className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <FiCheckCircle className="w-4 h-4" />
+                            )}
+                            Complete
+                          </button>
+                          <button
+                            onClick={() => openReschedule(booking)}
+                            className="btn btn-outline text-brand-600 border-brand-300 hover:bg-brand-50 text-sm py-1.5 px-3 flex items-center gap-1"
+                          >
+                            <FiEdit3 className="w-4 h-4" />
+                            Reschedule
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            role="button"
+            tabIndex={0}
+            aria-label="Close reschedule modal"
+            onClick={handleCloseModal}
+            onKeyDown={(e) => {
+              if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+                handleCloseModal();
+              }
+            }}
+          />
+          <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                Request reschedule
+              </h2>
+              <button
+                onClick={handleCloseModal}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {selectedBooking && (
+                <div className="bg-brand-50 dark:bg-brand-900/30 p-4 rounded-lg">
+                  <p className="font-semibold text-gray-900 dark:text-white mb-1">
+                    {selectedBooking.student_name || "Unassigned student"}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Current time:{" "}
+                    <span className="font-medium">
+                      {formatDateTime.format(
+                        new Date(selectedBooking.scheduled_start)
+                      )}
+                    </span>
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="reschedule-start"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
+                  >
+                    New start time
+                  </label>
+                  <input
+                    id="reschedule-start"
+                    type="datetime-local"
+                    value={newStart}
+                    onChange={(e) => setNewStart(e.target.value)}
+                    className="input w-full"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="reschedule-end"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
+                  >
+                    New end time
+                  </label>
+                  <input
+                    id="reschedule-end"
+                    type="datetime-local"
+                    value={newEnd}
+                    onChange={(e) => setNewEnd(e.target.value)}
+                    className="input w-full"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="reschedule-reason"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
+                  >
+                    Reason (optional)
+                  </label>
+                  <textarea
+                    id="reschedule-reason"
+                    placeholder="Let the student know why you need to move the session..."
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    rows={4}
+                    className="input w-full resize-y"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
+              <button onClick={handleCloseModal} className="btn btn-ghost">
+                Cancel
+              </button>
+              <button
+                onClick={submitReschedule}
+                disabled={isPending}
+                className="btn btn-primary flex items-center gap-2"
+              >
+                {isPending && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                )}
+                Submit request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function formatDatetimeLocal(iso: string) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const pad = (value: number) => value.toString().padStart(2, "0");
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function toIsoString(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function computeDurationMinutes(startIso: string, endIso: string) {
+  const startMs = Date.parse(startIso);
+  const endMs = Date.parse(endIso);
+  if (Number.isNaN(startMs) || Number.isNaN(endMs)) return null;
+  const diff = Math.round((endMs - startMs) / 60000);
+  return diff > 0 ? diff : null;
+}
