@@ -331,7 +331,7 @@ export function DashboardLayout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 px-6 lg:px-10 py-2 lg:py-3 min-h-[calc(100vh-89px)]">
+        <main className="flex-1 px-6 lg:px-10 py-4 lg:py-6 min-h-[calc(100vh-89px)]">
           <Outlet />
         </main>
       </div>
