@@ -8,11 +8,6 @@ import {
   FiClock,
   FiUsers,
   FiPlus,
-  FiHelpCircle,
-  FiBookOpen,
-  FiChevronUp,
-  FiChevronDown,
-  FiDollarSign,
 } from "react-icons/fi";
 import {
   AreaChart,
@@ -523,37 +518,13 @@ export default function Overview() {
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                 >
                   <defs>
-                    <linearGradient
-                      id="colorVideoPlays"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
+                    <linearGradient id="colorVideoPlays" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
-                      <stop
-                        offset="95%"
-                        stopColor="#f59e0b"
-                        stopOpacity={0.05}
-                      />
+                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.05} />
                     </linearGradient>
-                    <linearGradient
-                      id="colorBookings"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor="#ef4444"
-                        stopOpacity={0.25}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor="#ef4444"
-                        stopOpacity={0.05}
-                      />
+                    <linearGradient id="colorBookings" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
                   <XAxis
@@ -679,24 +650,18 @@ export default function Overview() {
             <div className="lg:col-span-5">
               <div className="flex items-center gap-2 mb-4">
                 <FiTrendingUp className="w-5 h-5 text-gray-700" />
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Lesson overview
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900">Lesson overview</h3>
               </div>
-
+              
               {/* Legend */}
               <div className="flex gap-6 mb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-teal-400"></div>
-                  <span className="text-sm text-gray-600">
-                    Total lesson requests
-                  </span>
+                  <span className="text-sm text-gray-600">Total lesson requests</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-teal-600"></div>
-                  <span className="text-sm text-gray-600">
-                    Completed lessons
-                  </span>
+                  <span className="text-sm text-gray-600">Completed lessons</span>
                 </div>
               </div>
 
@@ -705,60 +670,32 @@ export default function Overview() {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
                     data={[
-                      { month: "Oct", requests: 40, completed: 30 },
-                      { month: "Nov", requests: 35, completed: 25 },
-                      { month: "Dec", requests: 12, completed: 10 },
+                      { month: 'Oct', requests: 40, completed: 30 },
+                      { month: 'Nov', requests: 35, completed: 25 },
+                      { month: 'Dec', requests: 12, completed: 10 },
                     ]}
                     margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                   >
                     <defs>
-                      <linearGradient
-                        id="colorRequests"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#2dd4bf"
-                          stopOpacity={0.3}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#2dd4bf"
-                          stopOpacity={0}
-                        />
+                      <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#2dd4bf" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#2dd4bf" stopOpacity={0} />
                       </linearGradient>
-                      <linearGradient
-                        id="colorCompleted"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#0d9488"
-                          stopOpacity={0.3}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#0d9488"
-                          stopOpacity={0}
-                        />
+                      <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <XAxis
-                      dataKey="month"
-                      axisLine={false}
+                    <XAxis 
+                      dataKey="month" 
+                      axisLine={false} 
                       tickLine={false}
-                      tick={{ fill: "#6b7280", fontSize: 12 }}
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
                     />
-                    <YAxis
-                      axisLine={false}
+                    <YAxis 
+                      axisLine={false} 
                       tickLine={false}
-                      tick={{ fill: "#6b7280", fontSize: 12 }}
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
                       ticks={[5, 10, 15, 20, 25, 30, 35, 40]}
                     />
                     <Area
@@ -767,7 +704,7 @@ export default function Overview() {
                       stroke="#2dd4bf"
                       strokeWidth={2}
                       fill="url(#colorRequests)"
-                      dot={{ fill: "#2dd4bf", strokeWidth: 2, r: 4 }}
+                      dot={{ fill: '#2dd4bf', strokeWidth: 2, r: 4 }}
                     />
                     <Area
                       type="monotone"
@@ -775,7 +712,7 @@ export default function Overview() {
                       stroke="#0d9488"
                       strokeWidth={2}
                       fill="url(#colorCompleted)"
-                      dot={{ fill: "#0d9488", strokeWidth: 2, r: 4 }}
+                      dot={{ fill: '#0d9488', strokeWidth: 2, r: 4 }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -787,9 +724,7 @@ export default function Overview() {
               {/* Expiration */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm font-medium text-gray-700">
-                    Expiration
-                  </span>
+                  <span className="text-sm font-medium text-gray-700">Expiration</span>
                   <FiHelpCircle className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="space-y-2">
@@ -811,9 +746,7 @@ export default function Overview() {
               {/* Declined */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm font-medium text-gray-700">
-                    Declined
-                  </span>
+                  <span className="text-sm font-medium text-gray-700">Declined</span>
                   <FiHelpCircle className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="space-y-2">
@@ -835,9 +768,7 @@ export default function Overview() {
               {/* Canceled */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm font-medium text-gray-700">
-                    Canceled
-                  </span>
+                  <span className="text-sm font-medium text-gray-700">Canceled</span>
                   <FiHelpCircle className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="space-y-2">
@@ -859,9 +790,7 @@ export default function Overview() {
               {/* Absence */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm font-medium text-gray-700">
-                    Absence
-                  </span>
+                  <span className="text-sm font-medium text-gray-700">Absence</span>
                   <FiHelpCircle className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="space-y-2">
@@ -885,37 +814,27 @@ export default function Overview() {
             <div className="lg:col-span-3">
               <div className="flex items-center gap-2 mb-4">
                 <FiBookOpen className="w-5 h-5 text-gray-700" />
-                <h3 className="text-lg font-semibold text-gray-900">
-                  My popular lessons
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900">My popular lessons</h3>
               </div>
 
               {/* December Dropdown */}
               <div className="border border-gray-200 rounded-xl mb-3">
                 <button className="w-full flex items-center justify-between p-3 text-left">
-                  <span className="text-sm font-medium text-gray-900">
-                    December
-                  </span>
+                  <span className="text-sm font-medium text-gray-900">December</span>
                   <FiChevronUp className="w-4 h-4 text-gray-400" />
                 </button>
                 <div className="px-3 pb-3 space-y-2">
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-orange-500">🔥</span>
-                    <span className="text-gray-700 truncate">
-                      Swahili for beginners, travel &...
-                    </span>
+                    <span className="text-gray-700 truncate">Swahili for beginners, travel &...</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-orange-500">🔥</span>
-                    <span className="text-gray-700 truncate">
-                      English for Beginners
-                    </span>
+                    <span className="text-gray-700 truncate">English for Beginners</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-red-500">🔥</span>
-                    <span className="text-gray-700 truncate">
-                      English Conversational & Zanzibar,...
-                    </span>
+                    <span className="text-gray-700 truncate">English Conversational & Zanzibar,...</span>
                   </div>
                 </div>
               </div>
@@ -923,9 +842,7 @@ export default function Overview() {
               {/* November Dropdown */}
               <div className="border border-gray-200 rounded-xl mb-3">
                 <button className="w-full flex items-center justify-between p-3 text-left">
-                  <span className="text-sm font-medium text-gray-900">
-                    November
-                  </span>
+                  <span className="text-sm font-medium text-gray-900">November</span>
                   <FiChevronDown className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
@@ -933,9 +850,7 @@ export default function Overview() {
               {/* October Dropdown */}
               <div className="border border-gray-200 rounded-xl">
                 <button className="w-full flex items-center justify-between p-3 text-left">
-                  <span className="text-sm font-medium text-gray-900">
-                    October
-                  </span>
+                  <span className="text-sm font-medium text-gray-900">October</span>
                   <FiChevronDown className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
@@ -962,9 +877,7 @@ export default function Overview() {
                 <p className="text-5xl font-bold text-gray-900">489</p>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-xs text-gray-500">Dec</span>
-                  <span className="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded">
-                    +1
-                  </span>
+                  <span className="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded">+1</span>
                   <span className="text-sm text-gray-600">6</span>
                 </div>
               </div>
@@ -979,37 +892,23 @@ export default function Overview() {
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={[
-                        { month: "Oct", value: 34 },
-                        { month: "Nov", value: 36 },
-                        { month: "Dec", value: 38 },
+                        { month: 'Oct', value: 34 },
+                        { month: 'Nov', value: 36 },
+                        { month: 'Dec', value: 38 },
                       ]}
                       margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
                     >
                       <defs>
-                        <linearGradient
-                          id="retentionGradient"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="#fcd34d"
-                            stopOpacity={0.8}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="#fcd34d"
-                            stopOpacity={0.2}
-                          />
+                        <linearGradient id="retentionGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#fcd34d" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#fcd34d" stopOpacity={0.2} />
                         </linearGradient>
                       </defs>
-                      <YAxis
-                        domain={[34, 40]}
-                        axisLine={false}
+                      <YAxis 
+                        domain={[34, 40]} 
+                        axisLine={false} 
                         tickLine={false}
-                        tick={{ fill: "#9ca3af", fontSize: 10 }}
+                        tick={{ fill: '#9ca3af', fontSize: 10 }}
                         width={25}
                       />
                       <Area
@@ -1018,7 +917,7 @@ export default function Overview() {
                         stroke="#fcd34d"
                         strokeWidth={2}
                         fill="url(#retentionGradient)"
-                        dot={{ fill: "#fcd34d", strokeWidth: 2, r: 3 }}
+                        dot={{ fill: '#fcd34d', strokeWidth: 2, r: 3 }}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -1043,9 +942,7 @@ export default function Overview() {
                 <p className="text-sm text-gray-500 mb-1">Total (USD)</p>
                 <div className="flex items-baseline">
                   <p className="text-5xl font-bold text-gray-900">10.57</p>
-                  <span className="text-2xl font-bold text-gray-500 ml-1">
-                    K
-                  </span>
+                  <span className="text-2xl font-bold text-gray-500 ml-1">K</span>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-xs text-gray-500">Dec</span>
@@ -1064,37 +961,23 @@ export default function Overview() {
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={[
-                        { month: "Oct", value: 6.8 },
-                        { month: "Nov", value: 7.0 },
-                        { month: "Dec", value: 7.4 },
+                        { month: 'Oct', value: 6.8 },
+                        { month: 'Nov', value: 7.0 },
+                        { month: 'Dec', value: 7.4 },
                       ]}
                       margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
                     >
                       <defs>
-                        <linearGradient
-                          id="rateGradient"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="#fcd34d"
-                            stopOpacity={0.8}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="#fcd34d"
-                            stopOpacity={0.2}
-                          />
+                        <linearGradient id="rateGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#fcd34d" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#fcd34d" stopOpacity={0.2} />
                         </linearGradient>
                       </defs>
-                      <YAxis
-                        domain={[6.8, 7.4]}
-                        axisLine={false}
+                      <YAxis 
+                        domain={[6.8, 7.4]} 
+                        axisLine={false} 
                         tickLine={false}
-                        tick={{ fill: "#9ca3af", fontSize: 10 }}
+                        tick={{ fill: '#9ca3af', fontSize: 10 }}
                         width={25}
                       />
                       <Area
@@ -1103,7 +986,7 @@ export default function Overview() {
                         stroke="#fcd34d"
                         strokeWidth={2}
                         fill="url(#rateGradient)"
-                        dot={{ fill: "#fcd34d", strokeWidth: 2, r: 3 }}
+                        dot={{ fill: '#fcd34d', strokeWidth: 2, r: 3 }}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
