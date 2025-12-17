@@ -331,7 +331,7 @@ export function DashboardLayout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-6 lg:p-10 min-h-[calc(100vh-89px)]">
+        <main className="flex-1 p-6 lg:p-10 overflow-y-auto">
           <Outlet />
         </main>
       </div>

@@ -274,7 +274,7 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Dashboard Header */}
       <DashboardHeader
         displayUser={displayUser}
@@ -282,18 +282,15 @@ export function DashboardLayout() {
         onMenuToggle={() => setSidebarOpen(true)}
       />
 
-      <div className="flex">
-        {/* Desktop Sidebar - Fixed */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Desktop Sidebar */}
         {!isMobile && (
-          <aside className="w-[300px] bg-gray-50 flex-shrink-0 fixed top-[89px] left-0 h-[calc(100vh-89px)] z-30">
+          <aside className="w-[300px] bg-gray-50 flex-shrink-0 h-[calc(100vh-89px)] sticky top-[89px]">
             <div className="p-6">
               <SidebarContent />
             </div>
           </aside>
         )}
-
-        {/* Sidebar spacer for fixed sidebar */}
-        {!isMobile && <div className="w-[300px] flex-shrink-0" />}
 
         {/* Mobile Drawer */}
         {isMobile && sidebarOpen && (
@@ -331,7 +328,7 @@ export function DashboardLayout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-6 lg:p-10 min-h-[calc(100vh-89px)]">
+        <main className="flex-1 p-6 lg:p-10 overflow-y-auto">
           <Outlet />
         </main>
       </div>
