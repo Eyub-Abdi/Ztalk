@@ -102,16 +102,16 @@ function Layout({ children }: { children: ReactNode }) {
                   Sign Up
                 </button>
                 <RouterLink
-                  to="/join-plus"
-                  className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-1.5"
-                >
-                  <span className="text-yellow-200">✦</span> Join Plus
-                </RouterLink>
-                <RouterLink
                   to="/become-teacher"
                   className="px-5 py-2 text-sm font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-all"
                 >
                   Apply Now
+                </RouterLink>
+                <RouterLink
+                  to="/join-plus"
+                  className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-1.5"
+                >
+                  <span className="text-yellow-200">✦</span> Join Plus
                 </RouterLink>
               </>
             )}
@@ -164,18 +164,18 @@ function Layout({ children }: { children: ReactNode }) {
                   Sign Up
                 </button>
                 <RouterLink
-                  to="/join-plus"
-                  onClick={onClose}
-                  className="py-3 text-center text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center gap-1.5"
-                >
-                  <span className="text-yellow-200">✦</span> Join Plus
-                </RouterLink>
-                <RouterLink
                   to="/become-teacher"
                   onClick={onClose}
                   className="py-2.5 text-center text-sm font-semibold text-white bg-brand-500 rounded-xl"
                 >
                   Apply Now
+                </RouterLink>
+                <RouterLink
+                  to="/join-plus"
+                  onClick={onClose}
+                  className="py-3 text-center text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center gap-1.5"
+                >
+                  <span className="text-yellow-200">✦</span> Join Plus
                 </RouterLink>
               </>
             )}

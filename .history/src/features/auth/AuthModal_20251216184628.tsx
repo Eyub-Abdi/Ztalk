@@ -363,11 +363,11 @@ export function AuthModal() {
         />
 
         {/* Modal content */}
-        <div
+        <div 
           className={clsx(
             "relative bg-white rounded-none sm:rounded-2xl shadow-2xl w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-lg overflow-hidden transition-all duration-200 ease-out",
-            animateIn
-              ? "opacity-100 scale-100 translate-y-0"
+            animateIn 
+              ? "opacity-100 scale-100 translate-y-0" 
               : "opacity-0 scale-95 translate-y-4"
           )}
         >

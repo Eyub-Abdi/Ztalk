@@ -339,7 +339,7 @@ export function AuthModal() {
     window.location.href = `${base}/accounts/google/login/`;
   };
 
-  if (!shouldRender) return <ToastContainer />;
+  if (!isVisible) return <ToastContainer />;
 
   return (
     <>
@@ -349,7 +349,7 @@ export function AuthModal() {
         <div
           className={clsx(
             "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200",
-            animateIn ? "opacity-100" : "opacity-0"
+            isAnimating ? "opacity-100" : "opacity-0"
           )}
           role="button"
           tabIndex={0}
@@ -363,11 +363,11 @@ export function AuthModal() {
         />
 
         {/* Modal content */}
-        <div
+        <div 
           className={clsx(
             "relative bg-white rounded-none sm:rounded-2xl shadow-2xl w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-lg overflow-hidden transition-all duration-200 ease-out",
-            animateIn
-              ? "opacity-100 scale-100 translate-y-0"
+            isAnimating 
+              ? "opacity-100 scale-100 translate-y-0" 
               : "opacity-0 scale-95 translate-y-4"
           )}
         >

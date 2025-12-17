@@ -478,12 +478,12 @@ export default function Availability() {
             background-color: #059669 !important;
           }
           .fc-timegrid-now-indicator-line {
-            border-color: #ef4444;
-            border-width: 3px;
+            border-color: ${brandColor};
+            border-width: 2px;
           }
           .fc-timegrid-now-indicator-arrow {
-            border-color: #ef4444;
-            border-width: 6px;
+            border-color: ${brandColor};
+            border-width: 5px;
           }
           .fc-day-today {
             background-color: rgba(13, 110, 253, 0.03) !important;

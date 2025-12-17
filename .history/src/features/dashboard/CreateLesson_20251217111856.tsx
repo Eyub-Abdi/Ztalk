@@ -252,7 +252,9 @@ export default function CreateLesson() {
     <div className="max-w-5xl mx-auto px-6 py-8">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Header */}
-        <h1 className="text-2xl font-bold text-gray-900">Create New Lesson</h1>
+        <h1 className="text-2xl font-bold text-gray-900">
+          Create New Lesson
+        </h1>
 
         {/* Main Form Card */}
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">

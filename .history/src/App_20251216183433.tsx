@@ -102,16 +102,16 @@ function Layout({ children }: { children: ReactNode }) {
                   Sign Up
                 </button>
                 <RouterLink
-                  to="/join-plus"
-                  className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-1.5"
-                >
-                  <span className="text-yellow-200">✦</span> Join Plus
-                </RouterLink>
-                <RouterLink
                   to="/become-teacher"
                   className="px-5 py-2 text-sm font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-all"
                 >
                   Apply Now
+                </RouterLink>
+                <RouterLink
+                  to="/join-plus"
+                  className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-1.5"
+                >
+                  <span className="text-yellow-200">✦</span> Join Plus
                 </RouterLink>
               </>
             )}
@@ -150,7 +150,7 @@ function Layout({ children }: { children: ReactNode }) {
                     onClose();
                     openLogin();
                   }}
-                  className="py-2.5 text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-sm border border-gray-200/60 rounded-xl hover:bg-white/80"
+                  className="py-2.5 text-sm font-medium text-gray-700 hover:text-brand-600"
                 >
                   Login
                 </button>
@@ -159,7 +159,7 @@ function Layout({ children }: { children: ReactNode }) {
                     onClose();
                     openSignup();
                   }}
-                  className="py-2.5 text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-sm border border-gray-200/60 rounded-xl hover:bg-white/80"
+                  className="py-2.5 text-sm font-medium text-gray-700 hover:text-brand-600"
                 >
                   Sign Up
                 </button>
@@ -169,13 +169,6 @@ function Layout({ children }: { children: ReactNode }) {
                   className="py-3 text-center text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center gap-1.5"
                 >
                   <span className="text-yellow-200">✦</span> Join Plus
-                </RouterLink>
-                <RouterLink
-                  to="/become-teacher"
-                  onClick={onClose}
-                  className="py-2.5 text-center text-sm font-semibold text-white bg-brand-500 rounded-xl"
-                >
-                  Apply Now
                 </RouterLink>
               </>
             )}

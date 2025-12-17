@@ -1,8 +1,13 @@
-import type { FormEvent } from "react";
-import { useCallback, useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import {
+  FiArrowLeft,
+  FiBookOpen,
+  FiDollarSign,
+  FiImage,
+  FiUpload,
   FiX,
   FiCheck,
   FiGlobe,
@@ -10,8 +15,6 @@ import {
   FiToggleLeft,
   FiToggleRight,
   FiChevronDown,
-  FiDollarSign,
-  FiArrowLeft,
 } from "react-icons/fi";
 import { useCreateLesson } from "../lessons/api/useLessons";
 
@@ -115,6 +118,8 @@ export default function CreateLesson() {
     min90: "",
   });
   const [isAvailable, setIsAvailable] = useState(true);
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -135,14 +140,39 @@ export default function CreateLesson() {
     setCategory("");
     setLessonTag("");
     setSinglePrice("");
-    setPackagePrices({
-      lessons5: "",
-      lessons10: "",
-      lessons15: "",
-      lessons20: "",
-    });
+    setPackagePrices({ lessons5: "", lessons10: "", lessons15: "", lessons20: "" });
     setDurationPrices({ min30: "", min45: "", min60: "", min90: "" });
     setIsAvailable(true);
+    setThumbnail(null);
+  }, []);
+
+  const handleThumbnailChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          toast.show({
+            title: "File too large",
+            description: "Please choose an image under 5MB",
+            status: "warning",
+          });
+          return;
+        }
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setThumbnail(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [toast]
+  );
+
+  const removeThumbnail = useCallback(() => {
+    setThumbnail(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   }, []);
 
   const handleSubmit = useCallback(
@@ -252,10 +282,77 @@ export default function CreateLesson() {
     <div className="max-w-5xl mx-auto px-6 py-8">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Header */}
-        <h1 className="text-2xl font-bold text-gray-900">Create New Lesson</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+            >
+              <FiArrowLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Create New Lesson
+            </h1>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-xl hover:bg-gray-100 transition-all"
+          >
+            <FiX className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
 
         {/* Main Form Card */}
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          {/* Thumbnail Section */}
+          <div className="p-6 border-b border-gray-100">
+            {thumbnail ? (
+              <div className="relative group max-w-md">
+                <img
+                  src={thumbnail}
+                  alt="Lesson thumbnail"
+                  className="w-full h-40 object-cover rounded-xl border border-gray-200"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-4 py-2 bg-white rounded-lg text-sm font-medium text-gray-900 hover:bg-gray-100 transition-colors"
+                  >
+                    Change
+                  </button>
+                  <button
+                    type="button"
+                    onClick={removeThumbnail}
+                    className="p-2 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="max-w-md border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-brand-400 hover:bg-brand-50/30 transition-all group"
+              >
+                <div className="w-10 h-10 mx-auto mb-2 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-brand-100 transition-colors">
+                  <FiUpload className="w-5 h-5 text-gray-400 group-hover:text-brand-500" />
+                </div>
+                <p className="text-sm font-medium text-gray-700">Upload thumbnail</p>
+                <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleThumbnailChange}
+              className="hidden"
+            />
+          </div>
+
           {/* Title & Description */}
           <div className="p-6 space-y-5 border-b border-gray-100">
             <div>
@@ -263,9 +360,7 @@ export default function CreateLesson() {
                 <label className="text-sm font-medium text-gray-700">
                   Title <span className="text-red-500">*</span>
                 </label>
-                <span className="text-xs text-gray-400">
-                  {title.length}/200
-                </span>
+                <span className="text-xs text-gray-400">{title.length}/200</span>
               </div>
               <input
                 type="text"
@@ -282,9 +377,7 @@ export default function CreateLesson() {
                 <label className="text-sm font-medium text-gray-700">
                   Description
                 </label>
-                <span className="text-xs text-gray-400">
-                  {description.length}/2000
-                </span>
+                <span className="text-xs text-gray-400">{description.length}/2000</span>
               </div>
               <textarea
                 maxLength={2000}
@@ -361,20 +454,16 @@ export default function CreateLesson() {
               <span className="text-sm font-semibold text-gray-900">Price</span>
             </div>
             <p className="text-xs text-gray-500 mb-6">
-              Min. $5 USD/lesson, Max. $120 USD/lesson | 60 minute lessons are
-              mandatory.
+              Min. $5 USD/lesson, Max. $120 USD/lesson | 60 minute lessons are mandatory.
             </p>
 
             {/* Single Lesson Price */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Single lesson price (USD){" "}
-                <span className="text-red-500">*</span>
+                Single lesson price (USD) <span className="text-red-500">*</span>
               </label>
               <div className="relative max-w-xs">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                  $
-                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                 <input
                   type="number"
                   min="5"
@@ -385,30 +474,20 @@ export default function CreateLesson() {
                   onChange={(e) => setSinglePrice(e.target.value)}
                   className="w-full pl-8 pr-16 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                  / 60 min
-                </span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">/ 60 min</span>
               </div>
             </div>
 
             {/* Package Prices Table */}
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-3">
-                Package Pricing
-              </h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Package Pricing</h4>
               <div className="overflow-hidden rounded-xl border border-gray-200">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left font-medium text-gray-600">
-                        Package length
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-gray-600">
-                        Total price (USD)
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-gray-600">
-                        Average price (USD)
-                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-gray-600">Package length</th>
+                      <th className="px-4 py-3 text-left font-medium text-gray-600">Total price (USD)</th>
+                      <th className="px-4 py-3 text-left font-medium text-gray-600">Average price (USD)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -422,17 +501,13 @@ export default function CreateLesson() {
                         <td className="px-4 py-3 text-gray-700">{pkg.label}</td>
                         <td className="px-4 py-3">
                           <div className="relative max-w-[140px]">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                              $
-                            </span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                             <input
                               type="number"
                               min="0"
                               step="0.01"
                               placeholder="0"
-                              value={
-                                packagePrices[pkg.key as keyof PackagePrices]
-                              }
+                              value={packagePrices[pkg.key as keyof PackagePrices]}
                               onChange={(e) =>
                                 setPackagePrices((prev) => ({
                                   ...prev,
@@ -444,10 +519,7 @@ export default function CreateLesson() {
                           </div>
                         </td>
                         <td className="px-4 py-3 text-gray-500">
-                          {getAveragePrice(
-                            packagePrices[pkg.key as keyof PackagePrices],
-                            pkg.count
-                          )}
+                          {getAveragePrice(packagePrices[pkg.key as keyof PackagePrices], pkg.count)}
                         </td>
                       </tr>
                     ))}
@@ -458,9 +530,7 @@ export default function CreateLesson() {
 
             {/* Duration Prices */}
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3">
-                Price by Duration
-              </h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Price by Duration</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                   { key: "min30", label: "30 min" },
@@ -470,23 +540,16 @@ export default function CreateLesson() {
                 ].map((dur) => (
                   <div key={dur.key}>
                     <label className="block text-xs text-gray-500 mb-1.5">
-                      {dur.label}{" "}
-                      {dur.required && <span className="text-red-500">*</span>}
+                      {dur.label} {dur.required && <span className="text-red-500">*</span>}
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                        $
-                      </span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                       <input
                         type="number"
                         min="0"
                         step="0.01"
                         placeholder="0"
-                        value={
-                          dur.key === "min60"
-                            ? singlePrice
-                            : durationPrices[dur.key as keyof DurationPrices]
-                        }
+                        value={dur.key === "min60" ? singlePrice : durationPrices[dur.key as keyof DurationPrices]}
                         onChange={(e) => {
                           if (dur.key === "min60") {
                             setSinglePrice(e.target.value);

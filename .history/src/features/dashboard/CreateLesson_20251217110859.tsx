@@ -135,12 +135,7 @@ export default function CreateLesson() {
     setCategory("");
     setLessonTag("");
     setSinglePrice("");
-    setPackagePrices({
-      lessons5: "",
-      lessons10: "",
-      lessons15: "",
-      lessons20: "",
-    });
+    setPackagePrices({ lessons5: "", lessons10: "", lessons15: "", lessons20: "" });
     setDurationPrices({ min30: "", min45: "", min60: "", min90: "" });
     setIsAvailable(true);
   }, []);
@@ -252,7 +247,27 @@ export default function CreateLesson() {
     <div className="max-w-5xl mx-auto px-6 py-8">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Header */}
-        <h1 className="text-2xl font-bold text-gray-900">Create New Lesson</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+            >
+              <FiArrowLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Create New Lesson
+            </h1>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-xl hover:bg-gray-100 transition-all"
+          >
+            <FiX className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
 
         {/* Main Form Card */}
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -263,9 +278,7 @@ export default function CreateLesson() {
                 <label className="text-sm font-medium text-gray-700">
                   Title <span className="text-red-500">*</span>
                 </label>
-                <span className="text-xs text-gray-400">
-                  {title.length}/200
-                </span>
+                <span className="text-xs text-gray-400">{title.length}/200</span>
               </div>
               <input
                 type="text"
@@ -282,9 +295,7 @@ export default function CreateLesson() {
                 <label className="text-sm font-medium text-gray-700">
                   Description
                 </label>
-                <span className="text-xs text-gray-400">
-                  {description.length}/2000
-                </span>
+                <span className="text-xs text-gray-400">{description.length}/2000</span>
               </div>
               <textarea
                 maxLength={2000}
@@ -361,20 +372,16 @@ export default function CreateLesson() {
               <span className="text-sm font-semibold text-gray-900">Price</span>
             </div>
             <p className="text-xs text-gray-500 mb-6">
-              Min. $5 USD/lesson, Max. $120 USD/lesson | 60 minute lessons are
-              mandatory.
+              Min. $5 USD/lesson, Max. $120 USD/lesson | 60 minute lessons are mandatory.
             </p>
 
             {/* Single Lesson Price */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Single lesson price (USD){" "}
-                <span className="text-red-500">*</span>
+                Single lesson price (USD) <span className="text-red-500">*</span>
               </label>
               <div className="relative max-w-xs">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                  $
-                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                 <input
                   type="number"
                   min="5"
@@ -385,30 +392,20 @@ export default function CreateLesson() {
                   onChange={(e) => setSinglePrice(e.target.value)}
                   className="w-full pl-8 pr-16 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                  / 60 min
-                </span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">/ 60 min</span>
               </div>
             </div>
 
             {/* Package Prices Table */}
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-3">
-                Package Pricing
-              </h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Package Pricing</h4>
               <div className="overflow-hidden rounded-xl border border-gray-200">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left font-medium text-gray-600">
-                        Package length
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-gray-600">
-                        Total price (USD)
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-gray-600">
-                        Average price (USD)
-                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-gray-600">Package length</th>
+                      <th className="px-4 py-3 text-left font-medium text-gray-600">Total price (USD)</th>
+                      <th className="px-4 py-3 text-left font-medium text-gray-600">Average price (USD)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -422,17 +419,13 @@ export default function CreateLesson() {
                         <td className="px-4 py-3 text-gray-700">{pkg.label}</td>
                         <td className="px-4 py-3">
                           <div className="relative max-w-[140px]">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                              $
-                            </span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                             <input
                               type="number"
                               min="0"
                               step="0.01"
                               placeholder="0"
-                              value={
-                                packagePrices[pkg.key as keyof PackagePrices]
-                              }
+                              value={packagePrices[pkg.key as keyof PackagePrices]}
                               onChange={(e) =>
                                 setPackagePrices((prev) => ({
                                   ...prev,
@@ -444,10 +437,7 @@ export default function CreateLesson() {
                           </div>
                         </td>
                         <td className="px-4 py-3 text-gray-500">
-                          {getAveragePrice(
-                            packagePrices[pkg.key as keyof PackagePrices],
-                            pkg.count
-                          )}
+                          {getAveragePrice(packagePrices[pkg.key as keyof PackagePrices], pkg.count)}
                         </td>
                       </tr>
                     ))}
@@ -458,9 +448,7 @@ export default function CreateLesson() {
 
             {/* Duration Prices */}
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3">
-                Price by Duration
-              </h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Price by Duration</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                   { key: "min30", label: "30 min" },
@@ -470,23 +458,16 @@ export default function CreateLesson() {
                 ].map((dur) => (
                   <div key={dur.key}>
                     <label className="block text-xs text-gray-500 mb-1.5">
-                      {dur.label}{" "}
-                      {dur.required && <span className="text-red-500">*</span>}
+                      {dur.label} {dur.required && <span className="text-red-500">*</span>}
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                        $
-                      </span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                       <input
                         type="number"
                         min="0"
                         step="0.01"
                         placeholder="0"
-                        value={
-                          dur.key === "min60"
-                            ? singlePrice
-                            : durationPrices[dur.key as keyof DurationPrices]
-                        }
+                        value={dur.key === "min60" ? singlePrice : durationPrices[dur.key as keyof DurationPrices]}
                         onChange={(e) => {
                           if (dur.key === "min60") {
                             setSinglePrice(e.target.value);

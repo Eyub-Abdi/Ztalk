@@ -252,7 +252,27 @@ export default function CreateLesson() {
     <div className="max-w-5xl mx-auto px-6 py-8">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Header */}
-        <h1 className="text-2xl font-bold text-gray-900">Create New Lesson</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+            >
+              <FiArrowLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Create New Lesson
+            </h1>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-xl hover:bg-gray-100 transition-all"
+          >
+            <FiX className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
 
         {/* Main Form Card */}
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">

@@ -133,30 +133,39 @@ export function AuthModal() {
   const loginMutation = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [formLogin, setFormLogin] = useState({ email: "", password: "" });
-  const [shouldRender, setShouldRender] = useState(false);
-  const [animateIn, setAnimateIn] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
-  // Handle mount/unmount with animation
+  // Handle open animation
   useEffect(() => {
-    if (isOpen) {
-      setShouldRender(true);
-      // Delay to allow DOM to render before animating
-      const timer = setTimeout(() => {
-        setAnimateIn(true);
-      }, 10);
-      return () => clearTimeout(timer);
-    } else {
-      setAnimateIn(false);
-      // Wait for exit animation to complete
-      const timer = setTimeout(() => {
-        setShouldRender(false);
-      }, 200);
-      return () => clearTimeout(timer);
+    if (isOpen && !isClosing) {
+      setIsVisible(true);
+      // Small delay to trigger animation
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(true);
+        });
+      });
     }
-  }, [isOpen]);
+  }, [isOpen, isClosing]);
+
+  // Reset states when fully closed
+  useEffect(() => {
+    if (!isOpen && !isClosing) {
+      setIsVisible(false);
+      setIsAnimating(false);
+    }
+  }, [isOpen, isClosing]);
 
   const handleClose = useCallback(() => {
-    close();
+    setIsClosing(true);
+    setIsAnimating(false);
+    setTimeout(() => {
+      close();
+      setIsClosing(false);
+      setIsVisible(false);
+    }, 200);
   }, [close]);
 
   const SIGNUP_PROGRESS_KEY = "auth_signup_progress_v1";
@@ -339,7 +348,7 @@ export function AuthModal() {
     window.location.href = `${base}/accounts/google/login/`;
   };
 
-  if (!shouldRender) return <ToastContainer />;
+  if (!isVisible) return <ToastContainer />;
 
   return (
     <>
@@ -349,7 +358,7 @@ export function AuthModal() {
         <div
           className={clsx(
             "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200",
-            animateIn ? "opacity-100" : "opacity-0"
+            isAnimating ? "opacity-100" : "opacity-0"
           )}
           role="button"
           tabIndex={0}
@@ -363,11 +372,11 @@ export function AuthModal() {
         />
 
         {/* Modal content */}
-        <div
+        <div 
           className={clsx(
             "relative bg-white rounded-none sm:rounded-2xl shadow-2xl w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-lg overflow-hidden transition-all duration-200 ease-out",
-            animateIn
-              ? "opacity-100 scale-100 translate-y-0"
+            isAnimating 
+              ? "opacity-100 scale-100 translate-y-0" 
               : "opacity-0 scale-95 translate-y-4"
           )}
         >
