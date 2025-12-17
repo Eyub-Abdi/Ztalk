@@ -7,6 +7,7 @@ import {
   FiClock,
   FiCalendar,
   FiCheck,
+  FiPlus,
 } from "react-icons/fi";
 import clsx from "clsx";
 
@@ -52,16 +53,12 @@ function getTimezoneString(): string {
   const hours = Math.floor(Math.abs(offset) / 60);
   const minutes = Math.abs(offset) % 60;
   const sign = offset >= 0 ? "+" : "-";
-  return `UTC${sign}${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}`;
+  return `UTC${sign}${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 }
 
 // Format time
 function formatTime(hours: number, minutes: number = 0): string {
-  return `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}`;
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 }
 
 // Parse time string to minutes
@@ -123,13 +120,14 @@ export default function Availability() {
   });
   const [currentTime, setCurrentTime] = useState(new Date());
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+  const [isAddingSlot, setIsAddingSlot] = useState(false);
+  const [newSlotDay, setNewSlotDay] = useState<number | null>(null);
+  const [newSlotStart, setNewSlotStart] = useState("13:00");
+  const [newSlotEnd, setNewSlotEnd] = useState("23:59");
   const calendarRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
-  const weekDates = useMemo(
-    () => getWeekDates(currentWeekStart),
-    [currentWeekStart]
-  );
+  const weekDates = useMemo(() => getWeekDates(currentWeekStart), [currentWeekStart]);
   const timezone = useMemo(() => getTimezoneString(), []);
 
   // Update current time every minute
@@ -175,36 +173,39 @@ export default function Availability() {
     setCurrentWeekStart(start);
   }, []);
 
-  // Toggle availability for a specific hour
-  const toggleHourAvailability = useCallback(
-    (dayIndex: number, hour: number) => {
+  // Add availability slot
+  const addAvailabilitySlot = useCallback(
+    (dayIndex: number) => {
       const dateKey = weekDates[dayIndex].toISOString().split("T")[0];
-      const hourStr = formatTime(hour);
-      const nextHourStr = formatTime(hour + 1);
+      const newSlot: AvailabilitySlot = {
+        id: `${Date.now()}`,
+        dayKey: dateKey,
+        start: newSlotStart,
+        end: newSlotEnd,
+      };
 
-      // Check if this hour is already available
-      const existingSlot = availability.find(
-        (slot) =>
-          slot.dayKey === dateKey &&
-          slot.start === hourStr &&
-          slot.end === nextHourStr
-      );
-
-      if (existingSlot) {
-        // Remove the slot
-        setAvailability((prev) => prev.filter((s) => s.id !== existingSlot.id));
-      } else {
-        // Add the slot
-        const newSlot: AvailabilitySlot = {
-          id: `${Date.now()}`,
-          dayKey: dateKey,
-          start: hourStr,
-          end: nextHourStr,
-        };
-        setAvailability((prev) => [...prev, newSlot]);
-      }
+      setAvailability((prev) => [...prev, newSlot]);
+      setIsAddingSlot(false);
+      setNewSlotDay(null);
+      toast.show({
+        title: "Availability added",
+        description: `${newSlotStart} - ${newSlotEnd}`,
+        status: "success",
+      });
     },
-    [weekDates, availability]
+    [weekDates, newSlotStart, newSlotEnd, toast]
+  );
+
+  // Remove availability slot
+  const removeAvailabilitySlot = useCallback(
+    (slotId: string) => {
+      setAvailability((prev) => prev.filter((s) => s.id !== slotId));
+      toast.show({
+        title: "Availability removed",
+        status: "info",
+      });
+    },
+    [toast]
   );
 
   // Clear all
@@ -271,14 +272,6 @@ export default function Availability() {
     );
   }, []);
 
-  // Check if a specific hour on a date is in the past
-  const isPastHour = useCallback((date: Date, hour: number): boolean => {
-    const now = new Date();
-    const cellTime = new Date(date);
-    cellTime.setHours(hour, 0, 0, 0);
-    return cellTime < now;
-  }, []);
-
   // Calculate current time position
   const currentTimePosition = useMemo(() => {
     const hours = currentTime.getHours();
@@ -320,9 +313,7 @@ export default function Availability() {
             </span>
             <FiCalendar className="w-4 h-4 text-brand-500" />
           </div>
-          <span className="text-2xl font-bold text-gray-900">
-            {daysWithSlots}
-          </span>
+          <span className="text-2xl font-bold text-gray-900">{daysWithSlots}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-gray-200">
@@ -332,9 +323,7 @@ export default function Availability() {
             </span>
             <FiClock className="w-4 h-4 text-brand-500" />
           </div>
-          <span className="text-2xl font-bold text-gray-900">
-            {totalHours.toFixed(1)}h
-          </span>
+          <span className="text-2xl font-bold text-gray-900">{totalHours.toFixed(1)}h</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-gray-200">
@@ -372,10 +361,7 @@ export default function Availability() {
       </div>
 
       {/* Calendar */}
-      <div
-        className="bg-white rounded-2xl border border-gray-200 overflow-hidden"
-        ref={calendarRef}
-      >
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden" ref={calendarRef}>
         {/* Calendar Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
@@ -399,10 +385,7 @@ export default function Availability() {
             </button>
           </div>
           <h2 className="text-lg font-semibold text-gray-900">
-            {weekDates[0].toLocaleDateString("en-US", {
-              month: "long",
-              year: "numeric",
-            })}
+            {weekDates[0].toLocaleDateString("en-US", { month: "long", year: "numeric" })}
           </h2>
           <div className="w-32" /> {/* Spacer for centering */}
         </div>
@@ -411,9 +394,7 @@ export default function Availability() {
         <div className="relative">
           {/* Day Headers */}
           <div className="grid grid-cols-[70px_repeat(7,1fr)] border-b border-gray-100">
-            <div className="p-3 text-xs font-medium text-gray-500">
-              {timezone}
-            </div>
+            <div className="p-3 text-xs font-medium text-gray-500">{timezone}</div>
             {weekDates.map((date, idx) => (
               <div
                 key={idx}
@@ -481,37 +462,39 @@ export default function Availability() {
                     return lessonHour === hour;
                   });
 
-                  // Check if this hour is in the past
-                  const isPast = isPastHour(date, hour);
-
                   return (
                     <div
                       key={dayIdx}
                       className={clsx(
-                        "relative border-l border-gray-100 group transition-colors",
-                        isPast && "bg-gray-50 cursor-not-allowed",
-                        !isPast && "cursor-pointer",
-                        !isPast &&
-                          isToday(date) &&
-                          !activeSlot &&
-                          "bg-brand-50/30",
-                        !isPast &&
-                          activeSlot &&
-                          "bg-green-100 hover:bg-green-200",
-                        !isPast && !activeSlot && "hover:bg-green-50",
-                        isPast && activeSlot && "bg-green-50/50"
+                        "relative border-l border-gray-100 group cursor-pointer",
+                        isToday(date) && "bg-brand-50/30",
+                        activeSlot && "bg-green-50"
                       )}
                       onClick={() => {
-                        if (!isPast) {
-                          toggleHourAvailability(dayIdx, hour);
+                        if (!activeSlot) {
+                          setNewSlotDay(dayIdx);
+                          setNewSlotStart(formatTime(hour));
+                          setNewSlotEnd("23:59");
+                          setIsAddingSlot(true);
                         }
                       }}
                     >
-                      {/* Availability time display */}
-                      {activeSlot && (
+                      {/* Availability slot indicator */}
+                      {isSlotStart && (
                         <div className="absolute top-1 left-1 right-1 z-10">
-                          <div className="px-2 py-1 text-xs text-gray-600">
-                            {activeSlot.start} - {activeSlot.end}
+                          <div
+                            className="px-2 py-1 text-xs text-gray-600 cursor-pointer hover:text-red-600 group/slot"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeAvailabilitySlot(isSlotStart.id);
+                            }}
+                          >
+                            <span className="group-hover/slot:hidden">
+                              {isSlotStart.start} - {isSlotStart.end}
+                            </span>
+                            <span className="hidden group-hover/slot:inline text-red-500">
+                              × Remove
+                            </span>
                           </div>
                         </div>
                       )}
@@ -532,15 +515,8 @@ export default function Availability() {
                               "bg-purple-50 border-purple-400"
                           )}
                           style={{
-                            top: `${
-                              (lessonInHour.start.getMinutes() / 60) * 100
-                            }%`,
-                            height: `${
-                              ((lessonInHour.end.getTime() -
-                                lessonInHour.start.getTime()) /
-                                (1000 * 60 * 60)) *
-                              100
-                            }%`,
+                            top: `${((lessonInHour.start.getMinutes() / 60) * 100)}%`,
+                            height: `${(((lessonInHour.end.getTime() - lessonInHour.start.getTime()) / (1000 * 60 * 60)) * 100)}%`,
                             minHeight: "60px",
                           }}
                         >
@@ -548,8 +524,7 @@ export default function Availability() {
                             <div
                               className={clsx(
                                 "w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold",
-                                lessonInHour.color === "yellow" &&
-                                  "bg-amber-500",
+                                lessonInHour.color === "yellow" && "bg-amber-500",
                                 lessonInHour.color === "blue" && "bg-blue-500"
                               )}
                             >
@@ -570,6 +545,13 @@ export default function Availability() {
                               lessonInHour.end.getMinutes()
                             )}
                           </div>
+                        </div>
+                      )}
+
+                      {/* Hover state for adding */}
+                      {!activeSlot && !lessonInHour && (
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-brand-50/50">
+                          <FiPlus className="w-5 h-5 text-brand-500" />
                         </div>
                       )}
                     </div>
@@ -593,6 +575,68 @@ export default function Availability() {
           </div>
         </div>
       </div>
+
+      {/* Add Slot Modal */}
+      {isAddingSlot && newSlotDay !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setIsAddingSlot(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Add Availability
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">
+              {weekDates[newSlotDay].toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Time
+                </label>
+                <input
+                  type="time"
+                  value={newSlotStart}
+                  onChange={(e) => setNewSlotStart(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Time
+                </label>
+                <input
+                  type="time"
+                  value={newSlotEnd}
+                  onChange={(e) => setNewSlotEnd(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 mt-6">
+              <button
+                onClick={() => setIsAddingSlot(false)}
+                className="flex-1 px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => addAvailabilitySlot(newSlotDay)}
+                className="flex-1 px-4 py-2 rounded-xl text-sm font-medium bg-brand-500 text-white hover:bg-brand-600"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

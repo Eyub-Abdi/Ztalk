@@ -271,14 +271,6 @@ export default function Availability() {
     );
   }, []);
 
-  // Check if a specific hour on a date is in the past
-  const isPastHour = useCallback((date: Date, hour: number): boolean => {
-    const now = new Date();
-    const cellTime = new Date(date);
-    cellTime.setHours(hour, 0, 0, 0);
-    return cellTime < now;
-  }, []);
-
   // Calculate current time position
   const currentTimePosition = useMemo(() => {
     const hours = currentTime.getHours();
@@ -481,30 +473,17 @@ export default function Availability() {
                     return lessonHour === hour;
                   });
 
-                  // Check if this hour is in the past
-                  const isPast = isPastHour(date, hour);
-
                   return (
                     <div
                       key={dayIdx}
                       className={clsx(
-                        "relative border-l border-gray-100 group transition-colors",
-                        isPast && "bg-gray-50 cursor-not-allowed",
-                        !isPast && "cursor-pointer",
-                        !isPast &&
-                          isToday(date) &&
-                          !activeSlot &&
-                          "bg-brand-50/30",
-                        !isPast &&
-                          activeSlot &&
-                          "bg-green-100 hover:bg-green-200",
-                        !isPast && !activeSlot && "hover:bg-green-50",
-                        isPast && activeSlot && "bg-green-50/50"
+                        "relative border-l border-gray-100 group cursor-pointer transition-colors",
+                        isToday(date) && !activeSlot && "bg-brand-50/30",
+                        activeSlot && "bg-green-100 hover:bg-green-200",
+                        !activeSlot && "hover:bg-green-50"
                       )}
                       onClick={() => {
-                        if (!isPast) {
-                          toggleHourAvailability(dayIdx, hour);
-                        }
+                        toggleHourAvailability(dayIdx, hour);
                       }}
                     >
                       {/* Availability time display */}
@@ -572,6 +551,7 @@ export default function Availability() {
                           </div>
                         </div>
                       )}
+
                     </div>
                   );
                 })}
@@ -593,6 +573,7 @@ export default function Availability() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }

@@ -491,13 +491,8 @@ export default function Availability() {
                         "relative border-l border-gray-100 group transition-colors",
                         isPast && "bg-gray-50 cursor-not-allowed",
                         !isPast && "cursor-pointer",
-                        !isPast &&
-                          isToday(date) &&
-                          !activeSlot &&
-                          "bg-brand-50/30",
-                        !isPast &&
-                          activeSlot &&
-                          "bg-green-100 hover:bg-green-200",
+                        !isPast && isToday(date) && !activeSlot && "bg-brand-50/30",
+                        !isPast && activeSlot && "bg-green-100 hover:bg-green-200",
                         !isPast && !activeSlot && "hover:bg-green-50",
                         isPast && activeSlot && "bg-green-50/50"
                       )}

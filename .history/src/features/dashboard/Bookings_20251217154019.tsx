@@ -117,12 +117,7 @@ export default function Bookings() {
     []
   );
 
-  type FilterOption =
-    | "attention"
-    | "upcoming"
-    | "completed"
-    | "cancelled"
-    | "all";
+  type FilterOption = "attention" | "upcoming" | "completed" | "cancelled" | "all";
   const [filter, setFilter] = useState<FilterOption>("attention");
 
   const stats = useMemo(() => {
@@ -162,23 +157,12 @@ export default function Bookings() {
         }
       }
 
-      if (
-        status === "cancelled" ||
-        status === "no_show" ||
-        status === "declined"
-      ) {
+      if (status === "cancelled" || status === "no_show" || status === "declined") {
         cancelled += 1;
       }
     });
 
-    return {
-      upcoming,
-      attention,
-      completedThisWeek,
-      nextLesson,
-      completed,
-      cancelled,
-    };
+    return { upcoming, attention, completedThisWeek, nextLesson, completed, cancelled };
   }, [attentionStatuses, bookings, pastStatuses]);
 
   const filters = useMemo(
@@ -189,25 +173,11 @@ export default function Bookings() {
         count: stats.attention,
       },
       { label: "Upcoming", value: "upcoming" as const, count: stats.upcoming },
-      {
-        label: "Completed",
-        value: "completed" as const,
-        count: stats.completed,
-      },
-      {
-        label: "Cancelled",
-        value: "cancelled" as const,
-        count: stats.cancelled,
-      },
+      { label: "Completed", value: "completed" as const, count: stats.completed },
+      { label: "Cancelled", value: "cancelled" as const, count: stats.cancelled },
       { label: "All", value: "all" as const, count: bookings.length },
     ],
-    [
-      bookings.length,
-      stats.attention,
-      stats.completed,
-      stats.cancelled,
-      stats.upcoming,
-    ]
+    [bookings.length, stats.attention, stats.completed, stats.cancelled, stats.upcoming]
   );
 
   const formatDateTime = useMemo(
@@ -266,11 +236,7 @@ export default function Bookings() {
         return status === "completed";
       }
       if (filter === "cancelled") {
-        return (
-          status === "cancelled" ||
-          status === "no_show" ||
-          status === "declined"
-        );
+        return status === "cancelled" || status === "no_show" || status === "declined";
       }
       return true;
     });
