@@ -69,12 +69,10 @@ function DashboardHeader({
   displayUser,
   user,
   onMenuToggle,
-  onLogout,
 }: {
   displayUser: { first_name: string; last_name: string; email: string };
   user: User | null;
   onMenuToggle?: () => void;
-  onLogout?: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -154,70 +152,24 @@ function DashboardHeader({
                     }
                   }}
                 />
-                <div className="absolute right-0 mt-3 w-72 bg-white rounded-2xl shadow-2xl border border-gray-200/60 overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {/* User Info Header */}
-                  <div className="px-4 py-4 bg-gradient-to-br from-gray-50 to-white border-b border-gray-100">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white text-lg font-bold shadow-lg ring-2 ring-white">
-                        {displayUser?.first_name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">
-                          {displayUser?.first_name} {displayUser?.last_name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {displayUser?.email || "demo@example.com"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Menu Items */}
-                  <div className="p-2">
-                    <button
-                      onClick={() => setMenuOpen(false)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all duration-150 rounded-xl group"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-brand-100 flex items-center justify-center transition-colors">
-                        <FiUser className="w-4 h-4 text-gray-500 group-hover:text-brand-600" />
-                      </div>
-                      <span>My Profile</span>
-                    </button>
-                    <button
-                      onClick={() => setMenuOpen(false)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all duration-150 rounded-xl group"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-brand-100 flex items-center justify-center transition-colors">
-                        <FiSettings className="w-4 h-4 text-gray-500 group-hover:text-brand-600" />
-                      </div>
-                      <span>Settings</span>
-                    </button>
-                    <button
-                      onClick={() => setMenuOpen(false)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all duration-150 rounded-xl group"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-brand-100 flex items-center justify-center transition-colors">
-                        <FiHelpCircle className="w-4 h-4 text-gray-500 group-hover:text-brand-600" />
-                      </div>
-                      <span>Help & Support</span>
-                    </button>
-                  </div>
-
-                  {/* Sign Out */}
-                  <div className="p-2 border-t border-gray-100 bg-gray-50/50">
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        onLogout?.();
-                      }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-all duration-150 rounded-xl group"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-red-50 group-hover:bg-red-100 flex items-center justify-center transition-colors">
-                        <FiLogOut className="w-4 h-4" />
-                      </div>
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
+                <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-gray-200/60 py-2 z-20">
+                  <button className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors rounded-xl mx-2">
+                    <FiUser className="w-4 h-4 text-gray-500" />
+                    My Profile
+                  </button>
+                  <button className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors rounded-xl mx-2">
+                    <FiSettings className="w-4 h-4 text-gray-500" />
+                    Settings
+                  </button>
+                  <button className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors rounded-xl mx-2">
+                    <FiHelpCircle className="w-4 h-4 text-gray-500" />
+                    Help & Support
+                  </button>
+                  <hr className="my-2 border-gray-200" />
+                  <button className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-xl mx-2">
+                    <FiLogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
                 </div>
               </>
             )}
@@ -295,7 +247,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -318,7 +270,6 @@ export function DashboardLayout() {
         displayUser={displayUser}
         user={user}
         onMenuToggle={() => setSidebarOpen(true)}
-        onLogout={logout}
       />
 
       <div className="flex">

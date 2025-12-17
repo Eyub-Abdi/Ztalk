@@ -69,12 +69,10 @@ function DashboardHeader({
   displayUser,
   user,
   onMenuToggle,
-  onLogout,
 }: {
   displayUser: { first_name: string; last_name: string; email: string };
   user: User | null;
   onMenuToggle?: () => void;
-  onLogout?: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -165,16 +163,14 @@ function DashboardHeader({
                         <p className="text-sm font-semibold text-gray-900">
                           {displayUser?.first_name} {displayUser?.last_name}
                         </p>
-                        <p className="text-xs text-gray-500">
-                          {displayUser?.email || "demo@example.com"}
-                        </p>
+                        <p className="text-xs text-gray-500">{displayUser?.email || "demo@example.com"}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Menu Items */}
                   <div className="p-2">
-                    <button
+                    <button 
                       onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all duration-150 rounded-xl group"
                     >
@@ -183,7 +179,7 @@ function DashboardHeader({
                       </div>
                       <span>My Profile</span>
                     </button>
-                    <button
+                    <button 
                       onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all duration-150 rounded-xl group"
                     >
@@ -192,7 +188,7 @@ function DashboardHeader({
                       </div>
                       <span>Settings</span>
                     </button>
-                    <button
+                    <button 
                       onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all duration-150 rounded-xl group"
                     >
@@ -205,11 +201,8 @@ function DashboardHeader({
 
                   {/* Sign Out */}
                   <div className="p-2 border-t border-gray-100 bg-gray-50/50">
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        onLogout?.();
-                      }}
+                    <button 
+                      onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-all duration-150 rounded-xl group"
                     >
                       <div className="w-8 h-8 rounded-lg bg-red-50 group-hover:bg-red-100 flex items-center justify-center transition-colors">
@@ -295,7 +288,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -318,7 +311,6 @@ export function DashboardLayout() {
         displayUser={displayUser}
         user={user}
         onMenuToggle={() => setSidebarOpen(true)}
-        onLogout={logout}
       />
 
       <div className="flex">
