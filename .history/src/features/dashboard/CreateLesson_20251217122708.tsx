@@ -557,12 +557,9 @@ export default function CreateLesson() {
 
             {/* Package Prices Table */}
             <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-medium text-gray-700">
-                  Package Pricing
-                </h4>
-                <span className="text-xs text-gray-400">Optional</span>
-              </div>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                Package Pricing
+              </h4>
               <div className="overflow-hidden rounded-xl border border-gray-200">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
@@ -669,9 +666,7 @@ export default function CreateLesson() {
                     .map((dur) => (
                       <div key={dur.key} className="flex items-center gap-3">
                         <div className="flex items-center gap-3">
-                          <span className="text-sm text-gray-600 w-14">
-                            {dur.label}
-                          </span>
+                          <span className="text-sm text-gray-600 w-14">{dur.label}</span>
                           <div className="relative max-w-[140px]">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                               $
@@ -705,7 +700,7 @@ export default function CreateLesson() {
                               [dur.key]: "",
                             }));
                           }}
-                          className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                          className="mt-5 p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
                         >
                           <FiX className="w-4 h-4" />
                         </button>

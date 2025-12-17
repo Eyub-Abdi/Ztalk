@@ -428,12 +428,9 @@ export default function Overview() {
         </div>
 
         <div className="mt-5 flex justify-center">
-          <Link
-            to="/dashboard/upcoming"
-            className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
-          >
+          <button className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all">
             Show more
-          </Link>
+          </button>
         </div>
       </div>
     </div>

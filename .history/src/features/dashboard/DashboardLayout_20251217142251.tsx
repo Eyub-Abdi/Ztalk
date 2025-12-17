@@ -268,6 +268,39 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           />
         </nav>
       </div>
+
+      {/* Quick Actions Card */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-1">
+          Quick Actions
+        </p>
+        <div className="flex flex-col gap-2">
+          <NavLink
+            to="/dashboard/lessons/new"
+            onClick={onClose}
+            className="flex items-center gap-3 px-4 py-3 bg-brand-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-600 transition-all shadow-sm hover:shadow-md"
+          >
+            <FiPlusCircle className="w-4 h-4" />
+            Create New Lesson
+          </NavLink>
+          <NavLink
+            to="/dashboard/availability"
+            onClick={onClose}
+            className="flex items-center gap-3 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-all"
+          >
+            <FiClock className="w-4 h-4" />
+            Set Availability
+          </NavLink>
+          <NavLink
+            to="/dashboard/bookings"
+            onClick={onClose}
+            className="flex items-center gap-3 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-all"
+          >
+            <FiCalendar className="w-4 h-4" />
+            View Bookings
+          </NavLink>
+        </div>
+      </div>
     </div>
   );
 }

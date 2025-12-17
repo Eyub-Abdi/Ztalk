@@ -345,6 +345,34 @@ export default function Overview() {
         </div>
       )}
 
+      {/* Upcoming Lessons List */}
+      <div className="bg-gray-50 rounded-2xl p-6">
+        <div className="flex items-center gap-2 mb-5">
+          <span className="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+          <h2 className="text-lg font-semibold text-gray-700">Upcoming</h2>
+          <span className="text-lg text-gray-400">•</span>
+          <span className="text-lg font-semibold text-gray-700">
+            {mockUpcomingLessons.length}
+          </span>
+        </div>
+
+        <div className="space-y-3">
+          {mockUpcomingLessons.map((lesson, index) => (
+            <UpcomingLessonCard
+              key={lesson.id}
+              lesson={lesson}
+              isFirst={index === 0}
+            />
+          ))}
+        </div>
+
+        <div className="mt-5 flex justify-center">
+          <button className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all">
+            Show more
+          </button>
+        </div>
+      </div>
+
       {/* Earnings */}
       <div>
         <h2 className="text-lg font-bold text-gray-900 mb-4">
@@ -403,37 +431,6 @@ export default function Overview() {
           <span className="text-sm text-gray-500 font-medium">
             vs last week
           </span>
-        </div>
-      </div>
-
-      {/* Upcoming Lessons List */}
-      <div className="bg-gray-50 rounded-2xl p-6">
-        <div className="flex items-center gap-2 mb-5">
-          <span className="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
-          <h2 className="text-lg font-semibold text-gray-700">Upcoming</h2>
-          <span className="text-lg text-gray-400">•</span>
-          <span className="text-lg font-semibold text-gray-700">
-            {mockUpcomingLessons.length}
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          {mockUpcomingLessons.map((lesson, index) => (
-            <UpcomingLessonCard
-              key={lesson.id}
-              lesson={lesson}
-              isFirst={index === 0}
-            />
-          ))}
-        </div>
-
-        <div className="mt-5 flex justify-center">
-          <Link
-            to="/dashboard/upcoming"
-            className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
-          >
-            Show more
-          </Link>
         </div>
       </div>
     </div>

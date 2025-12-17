@@ -10,7 +10,6 @@ import {
   FiToggleRight,
   FiChevronDown,
   FiDollarSign,
-  FiX,
 } from "react-icons/fi";
 import { useCreateLesson } from "../lessons/api/useLessons";
 
@@ -30,13 +29,13 @@ function useToast() {
 }
 
 const languageOptions = [
-  { value: "", label: "Choose language", flagCode: "" },
-  { value: "swahili", label: "Swahili", flagCode: "tz" },
-  { value: "english", label: "English", flagCode: "gb" },
-  { value: "french", label: "French", flagCode: "fr" },
-  { value: "spanish", label: "Spanish", flagCode: "es" },
-  { value: "arabic", label: "Arabic", flagCode: "sa" },
-  { value: "italian", label: "Italian", flagCode: "it" },
+  { value: "", label: "Choose language", flag: "" },
+  { value: "swahili", label: "Swahili", flag: "🇰🇪" },
+  { value: "english", label: "English", flag: "🇬🇧" },
+  { value: "french", label: "French", flag: "🇫🇷" },
+  { value: "spanish", label: "Spanish", flag: "🇪🇸" },
+  { value: "arabic", label: "Arabic", flag: "🇸🇦" },
+  { value: "italian", label: "Italian", flag: "🇮🇹" },
 ];
 
 const levelOptions = [
@@ -103,7 +102,6 @@ export default function CreateLesson() {
     min60: "",
     min90: "",
   });
-  const [enabledDurations, setEnabledDurations] = useState<string[]>([]);
   const [isAvailable, setIsAvailable] = useState(true);
 
   const toast = useToast();
@@ -132,7 +130,6 @@ export default function CreateLesson() {
       lessons20: "",
     });
     setDurationPrices({ min30: "", min45: "", min60: "", min90: "" });
-    setEnabledDurations([]);
     setIsAvailable(true);
   }, []);
 
@@ -204,7 +201,7 @@ export default function CreateLesson() {
     ]
   );
 
-  // Custom Dropdown Component with Flag Images
+  // Custom Dropdown Component
   const CustomDropdown = ({
     label,
     value,
@@ -216,7 +213,7 @@ export default function CreateLesson() {
     label: string;
     value: string;
     onChange: (val: string) => void;
-    options: { value: string; label: string; flagCode?: string }[];
+    options: { value: string; label: string; flag?: string }[];
     required?: boolean;
     showFlags?: boolean;
   }) => {
@@ -255,12 +252,8 @@ export default function CreateLesson() {
           )}
         >
           <span className="flex items-center gap-2.5">
-            {showFlags && selectedOption?.flagCode && (
-              <img
-                src={`https://flagcdn.com/24x18/${selectedOption.flagCode}.png`}
-                alt=""
-                className="w-6 h-[18px] rounded-sm object-cover"
-              />
+            {showFlags && selectedOption?.flag && (
+              <span className="text-lg">{selectedOption.flag}</span>
             )}
             <span
               className={
@@ -297,12 +290,8 @@ export default function CreateLesson() {
                       : "text-gray-700 hover:bg-gray-50"
                   )}
                 >
-                  {showFlags && opt.flagCode && (
-                    <img
-                      src={`https://flagcdn.com/24x18/${opt.flagCode}.png`}
-                      alt=""
-                      className="w-6 h-[18px] rounded-sm object-cover"
-                    />
+                  {showFlags && opt.flag && (
+                    <span className="text-lg">{opt.flag}</span>
                   )}
                   <span className="flex-1">{opt.label}</span>
                   {opt.value === value && (
@@ -526,43 +515,41 @@ export default function CreateLesson() {
               <span className="text-sm font-semibold text-gray-900">Price</span>
             </div>
             <p className="text-xs text-gray-500 mb-6">
-              Min. $5 USD/lesson, Max. $120 USD/lesson | 30 minute lessons are
-              the base duration.
+              Min. $5 USD/lesson, Max. $120 USD/lesson | 60 minute lessons are
+              mandatory.
             </p>
 
-            {/* Base Price (30 min) */}
+            {/* Single Lesson Price */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Base lesson price (USD) <span className="text-red-500">*</span>
+                Single lesson price (USD){" "}
+                <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center gap-3">
-                <div className="relative max-w-[140px]">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    $
-                  </span>
-                  <input
-                    type="number"
-                    min="5"
-                    max="120"
-                    step="0.01"
-                    placeholder="0"
-                    value={singlePrice}
-                    onChange={(e) => setSinglePrice(e.target.value)}
-                    className="w-full pl-7 pr-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
-                  />
-                </div>
-                <span className="text-sm text-gray-500">/ 30 min</span>
+              <div className="relative max-w-xs">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  $
+                </span>
+                <input
+                  type="number"
+                  min="5"
+                  max="120"
+                  step="0.01"
+                  placeholder="0"
+                  value={singlePrice}
+                  onChange={(e) => setSinglePrice(e.target.value)}
+                  className="w-full pl-8 pr-16 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                  / 60 min
+                </span>
               </div>
             </div>
 
             {/* Package Prices Table */}
             <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-medium text-gray-700">
-                  Package Pricing
-                </h4>
-                <span className="text-xs text-gray-400">Optional</span>
-              </div>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                Package Pricing
+              </h4>
               <div className="overflow-hidden rounded-xl border border-gray-200">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
@@ -623,102 +610,53 @@ export default function CreateLesson() {
               </div>
             </div>
 
-            {/* Additional Durations */}
+            {/* Duration Prices */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-medium text-gray-700">
-                  Additional Durations
-                </h4>
-                <span className="text-xs text-gray-400">Optional</span>
-              </div>
-
-              {/* Available durations to add */}
-              {enabledDurations.length < 3 && (
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {[
-                    { key: "min45", label: "45 min" },
-                    { key: "min60", label: "60 min" },
-                    { key: "min90", label: "90 min" },
-                  ]
-                    .filter((dur) => !enabledDurations.includes(dur.key))
-                    .map((dur) => (
-                      <button
-                        key={dur.key}
-                        type="button"
-                        onClick={() =>
-                          setEnabledDurations((prev) => [...prev, dur.key])
+              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                Price by Duration
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { key: "min30", label: "30 min" },
+                  { key: "min45", label: "45 min" },
+                  { key: "min60", label: "60 min", required: true },
+                  { key: "min90", label: "90 min" },
+                ].map((dur) => (
+                  <div key={dur.key}>
+                    <label className="block text-xs text-gray-500 mb-1.5">
+                      {dur.label}{" "}
+                      {dur.required && <span className="text-red-500">*</span>}
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        $
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                        value={
+                          dur.key === "min60"
+                            ? singlePrice
+                            : durationPrices[dur.key as keyof DurationPrices]
                         }
-                        className="px-3 py-1.5 rounded-lg border border-dashed border-gray-300 text-sm text-gray-500 hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50/50 transition-all flex items-center gap-1.5"
-                      >
-                        <span className="text-lg leading-none">+</span>
-                        {dur.label}
-                      </button>
-                    ))}
-                </div>
-              )}
-
-              {/* Enabled duration inputs */}
-              {enabledDurations.length > 0 && (
-                <div className="space-y-3">
-                  {[
-                    { key: "min45", label: "45 min" },
-                    { key: "min60", label: "60 min" },
-                    { key: "min90", label: "90 min" },
-                  ]
-                    .filter((dur) => enabledDurations.includes(dur.key))
-                    .map((dur) => (
-                      <div key={dur.key} className="flex items-center gap-3">
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm text-gray-600 w-14">
-                            {dur.label}
-                          </span>
-                          <div className="relative max-w-[140px]">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                              $
-                            </span>
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              placeholder="0"
-                              value={
-                                durationPrices[dur.key as keyof DurationPrices]
-                              }
-                              onChange={(e) =>
-                                setDurationPrices((prev) => ({
-                                  ...prev,
-                                  [dur.key]: e.target.value,
-                                }))
-                              }
-                              className="w-full pl-7 pr-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
-                            />
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEnabledDurations((prev) =>
-                              prev.filter((d) => d !== dur.key)
-                            );
+                        onChange={(e) => {
+                          if (dur.key === "min60") {
+                            setSinglePrice(e.target.value);
+                          } else {
                             setDurationPrices((prev) => ({
                               ...prev,
-                              [dur.key]: "",
+                              [dur.key]: e.target.value,
                             }));
-                          }}
-                          className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
-                        >
-                          <FiX className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              )}
-
-              {enabledDurations.length === 0 && (
-                <p className="text-xs text-gray-400">
-                  Add more duration options to give students flexibility
-                </p>
-              )}
+                          }
+                        }}
+                        className="w-full pl-7 pr-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -771,8 +709,10 @@ export default function CreateLesson() {
             disabled={createLesson.isPending}
             className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-brand-500 text-white hover:bg-brand-600 transition-all flex items-center gap-2 disabled:opacity-50"
           >
-            {createLesson.isPending && (
+            {createLesson.isPending ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <FiCheck className="w-4 h-4" />
             )}
             Create Lesson
           </button>

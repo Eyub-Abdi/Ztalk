@@ -137,97 +137,6 @@ function QuickAction({
   );
 }
 
-// Upcoming Lesson Card component
-function UpcomingLessonCard({
-  lesson,
-  isFirst,
-}: {
-  lesson: (typeof mockUpcomingLessons)[0];
-  isFirst: boolean;
-}) {
-  const countdown = useCountdown(lesson.scheduledAt);
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  return (
-    <div className="bg-white rounded-xl border-l-4 border-l-brand-500 p-4 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-center gap-4">
-        {/* Avatar */}
-        <div
-          className={clsx(
-            "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg",
-            lesson.avatarColor
-          )}
-        >
-          {lesson.studentName.charAt(0).toUpperCase()}
-        </div>
-
-        {/* Student & Lesson Info */}
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-900">{lesson.studentName}</p>
-          <p className="text-xs text-gray-400">Lesson ID: {lesson.id}</p>
-        </div>
-
-        {/* Lesson Details */}
-        <div className="hidden md:block text-right flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-700 truncate">
-            {lesson.lessonTitle}
-          </p>
-          <p className="text-xs text-gray-400">
-            {lesson.language} - {lesson.duration} min
-          </p>
-        </div>
-
-        {/* Time / Countdown */}
-        <div className="text-right min-w-[140px]">
-          {isFirst ? (
-            <div>
-              <p className="text-xs text-gray-500">Your lesson will start in</p>
-              <p className="text-lg font-bold text-brand-500">
-                {countdown.hours}h {countdown.minutes}m {countdown.seconds}s
-              </p>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 justify-end">
-              <span className="text-xl font-bold text-gray-700">
-                {formatTime(lesson.scheduledAt)}
-              </span>
-              <span className="text-gray-300">•</span>
-              <span className="text-sm text-gray-400">
-                {formatDate(lesson.scheduledAt)}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Mobile lesson details */}
-      <div className="md:hidden mt-3 pt-3 border-t border-gray-100">
-        <p className="text-sm font-medium text-gray-700 truncate">
-          {lesson.lessonTitle}
-        </p>
-        <p className="text-xs text-gray-400">
-          {lesson.language} - {lesson.duration} min
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export default function Overview() {
   const { data, isLoading } = useLessonStats();
 
@@ -403,37 +312,6 @@ export default function Overview() {
           <span className="text-sm text-gray-500 font-medium">
             vs last week
           </span>
-        </div>
-      </div>
-
-      {/* Upcoming Lessons List */}
-      <div className="bg-gray-50 rounded-2xl p-6">
-        <div className="flex items-center gap-2 mb-5">
-          <span className="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
-          <h2 className="text-lg font-semibold text-gray-700">Upcoming</h2>
-          <span className="text-lg text-gray-400">•</span>
-          <span className="text-lg font-semibold text-gray-700">
-            {mockUpcomingLessons.length}
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          {mockUpcomingLessons.map((lesson, index) => (
-            <UpcomingLessonCard
-              key={lesson.id}
-              lesson={lesson}
-              isFirst={index === 0}
-            />
-          ))}
-        </div>
-
-        <div className="mt-5 flex justify-center">
-          <Link
-            to="/dashboard/upcoming"
-            className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
-          >
-            Show more
-          </Link>
         </div>
       </div>
     </div>

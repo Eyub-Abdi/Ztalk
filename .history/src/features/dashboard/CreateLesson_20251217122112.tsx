@@ -10,7 +10,6 @@ import {
   FiToggleRight,
   FiChevronDown,
   FiDollarSign,
-  FiX,
 } from "react-icons/fi";
 import { useCreateLesson } from "../lessons/api/useLessons";
 
@@ -132,7 +131,6 @@ export default function CreateLesson() {
       lessons20: "",
     });
     setDurationPrices({ min30: "", min45: "", min60: "", min90: "" });
-    setEnabledDurations([]);
     setIsAvailable(true);
   }, []);
 
@@ -533,36 +531,34 @@ export default function CreateLesson() {
             {/* Base Price (30 min) */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Base lesson price (USD) <span className="text-red-500">*</span>
+                Base lesson price (USD){" "}
+                <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center gap-3">
-                <div className="relative max-w-[140px]">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    $
-                  </span>
-                  <input
-                    type="number"
-                    min="5"
-                    max="120"
-                    step="0.01"
-                    placeholder="0"
-                    value={singlePrice}
-                    onChange={(e) => setSinglePrice(e.target.value)}
-                    className="w-full pl-7 pr-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
-                  />
-                </div>
-                <span className="text-sm text-gray-500">/ 30 min</span>
+              <div className="relative max-w-xs">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  $
+                </span>
+                <input
+                  type="number"
+                  min="5"
+                  max="120"
+                  step="0.01"
+                  placeholder="0"
+                  value={singlePrice}
+                  onChange={(e) => setSinglePrice(e.target.value)}
+                  className="w-full pl-8 pr-16 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                  / 30 min
+                </span>
               </div>
             </div>
 
             {/* Package Prices Table */}
             <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-medium text-gray-700">
-                  Package Pricing
-                </h4>
-                <span className="text-xs text-gray-400">Optional</span>
-              </div>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                Package Pricing
+              </h4>
               <div className="overflow-hidden rounded-xl border border-gray-200">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
@@ -623,102 +619,53 @@ export default function CreateLesson() {
               </div>
             </div>
 
-            {/* Additional Durations */}
+            {/* Duration Prices */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-medium text-gray-700">
-                  Additional Durations
-                </h4>
-                <span className="text-xs text-gray-400">Optional</span>
-              </div>
-
-              {/* Available durations to add */}
-              {enabledDurations.length < 3 && (
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {[
-                    { key: "min45", label: "45 min" },
-                    { key: "min60", label: "60 min" },
-                    { key: "min90", label: "90 min" },
-                  ]
-                    .filter((dur) => !enabledDurations.includes(dur.key))
-                    .map((dur) => (
-                      <button
-                        key={dur.key}
-                        type="button"
-                        onClick={() =>
-                          setEnabledDurations((prev) => [...prev, dur.key])
+              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                Price by Duration
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { key: "min30", label: "30 min" },
+                  { key: "min45", label: "45 min" },
+                  { key: "min60", label: "60 min", required: true },
+                  { key: "min90", label: "90 min" },
+                ].map((dur) => (
+                  <div key={dur.key}>
+                    <label className="block text-xs text-gray-500 mb-1.5">
+                      {dur.label}{" "}
+                      {dur.required && <span className="text-red-500">*</span>}
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        $
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                        value={
+                          dur.key === "min60"
+                            ? singlePrice
+                            : durationPrices[dur.key as keyof DurationPrices]
                         }
-                        className="px-3 py-1.5 rounded-lg border border-dashed border-gray-300 text-sm text-gray-500 hover:border-brand-400 hover:text-brand-600 hover:bg-brand-50/50 transition-all flex items-center gap-1.5"
-                      >
-                        <span className="text-lg leading-none">+</span>
-                        {dur.label}
-                      </button>
-                    ))}
-                </div>
-              )}
-
-              {/* Enabled duration inputs */}
-              {enabledDurations.length > 0 && (
-                <div className="space-y-3">
-                  {[
-                    { key: "min45", label: "45 min" },
-                    { key: "min60", label: "60 min" },
-                    { key: "min90", label: "90 min" },
-                  ]
-                    .filter((dur) => enabledDurations.includes(dur.key))
-                    .map((dur) => (
-                      <div key={dur.key} className="flex items-center gap-3">
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm text-gray-600 w-14">
-                            {dur.label}
-                          </span>
-                          <div className="relative max-w-[140px]">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                              $
-                            </span>
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              placeholder="0"
-                              value={
-                                durationPrices[dur.key as keyof DurationPrices]
-                              }
-                              onChange={(e) =>
-                                setDurationPrices((prev) => ({
-                                  ...prev,
-                                  [dur.key]: e.target.value,
-                                }))
-                              }
-                              className="w-full pl-7 pr-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
-                            />
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEnabledDurations((prev) =>
-                              prev.filter((d) => d !== dur.key)
-                            );
+                        onChange={(e) => {
+                          if (dur.key === "min60") {
+                            setSinglePrice(e.target.value);
+                          } else {
                             setDurationPrices((prev) => ({
                               ...prev,
-                              [dur.key]: "",
+                              [dur.key]: e.target.value,
                             }));
-                          }}
-                          className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
-                        >
-                          <FiX className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              )}
-
-              {enabledDurations.length === 0 && (
-                <p className="text-xs text-gray-400">
-                  Add more duration options to give students flexibility
-                </p>
-              )}
+                          }
+                        }}
+                        className="w-full pl-7 pr-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

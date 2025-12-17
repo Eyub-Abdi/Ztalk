@@ -557,12 +557,9 @@ export default function CreateLesson() {
 
             {/* Package Prices Table */}
             <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-medium text-gray-700">
-                  Package Pricing
-                </h4>
-                <span className="text-xs text-gray-400">Optional</span>
-              </div>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                Package Pricing
+              </h4>
               <div className="overflow-hidden rounded-xl border border-gray-200">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
