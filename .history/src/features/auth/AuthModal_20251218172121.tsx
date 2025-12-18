@@ -13,11 +13,7 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthModal } from "./AuthModalProvider";
 import { useAuth } from "./AuthProvider";
-import {
-  useLogin,
-  useRequestEmailVerification,
-  useResendEmailVerification,
-} from "./useAuthApi";
+import { useLogin, useRequestEmailVerification, useResendEmailVerification } from "./useAuthApi";
 import clsx from "clsx";
 
 interface WizardRegisterState {
@@ -133,40 +129,12 @@ export function AuthModal() {
   const { isOpen, view, close, openLogin, openSignup } = useAuthModal();
   const { setAuth } = useAuth();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const toast = useSimpleToast();
   const loginMutation = useLogin();
-  const requestEmailMutation = useRequestEmailVerification();
-  const resendEmailMutation = useResendEmailVerification();
   const [showPassword, setShowPassword] = useState(false);
   const [formLogin, setFormLogin] = useState({ email: "", password: "" });
   const [shouldRender, setShouldRender] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
-
-  // Handle email verification callback from email link
-  useEffect(() => {
-    const verified = searchParams.get("email_verified");
-    const email = searchParams.get("email");
-
-    if (verified === "true" && email) {
-      // User clicked verification link - open signup modal at details step
-      setFormRegister((prev) => ({
-        ...prev,
-        email: decodeURIComponent(email),
-      }));
-      setEmailVerified(true);
-      setEmailSent(true);
-      setSignupStep(1); // Go to details step
-      openSignup();
-      toast.show(
-        "Email verified! Please complete your registration.",
-        "success"
-      );
-
-      // Clear the URL params
-      setSearchParams({});
-    }
-  }, [searchParams, setSearchParams, openSignup, toast]);
 
   // Handle mount/unmount with animation
   useEffect(() => {
@@ -634,36 +602,13 @@ export function AuthModal() {
                                 toast.show("Enter a valid email", "error");
                                 return;
                               }
-
-                              requestEmailMutation.mutate(
-                                { email: formRegister.email },
-                                {
-                                  onSuccess: () => {
-                                    setEmailSent(true);
-                                    toast.show(
-                                      "Verification email sent! Check your inbox.",
-                                      "success"
-                                    );
-                                  },
-                                  onError: (err) => {
-                                    toast.show(
-                                      err.message ||
-                                        "Failed to send verification email",
-                                      "error"
-                                    );
-                                  },
-                                }
-                              );
+                              setEmailSent(true);
+                              toast.show("Verification email sent", "info");
                             }}
-                            disabled={requestEmailMutation.isPending}
-                            className="btn btn-primary w-full h-12 text-base font-semibold flex items-center justify-center gap-2 hover:-translate-y-0.5 hover:shadow-lg transition-all disabled:opacity-50"
+                            className="btn btn-primary w-full h-12 text-base font-semibold flex items-center justify-center gap-2 hover:-translate-y-0.5 hover:shadow-lg transition-all"
                           >
-                            {requestEmailMutation.isPending
-                              ? "Sending..."
-                              : "Send verification link"}
-                            {!requestEmailMutation.isPending && (
-                              <FiArrowRight />
-                            )}
+                            Send verification link
+                            <FiArrowRight />
                           </button>
                         )}
 
@@ -703,31 +648,24 @@ export function AuthModal() {
                               </p>
                               <div className="flex gap-2 pt-1">
                                 <button
-                                  onClick={() => {
-                                    resendEmailMutation.mutate(
-                                      { email: formRegister.email },
-                                      {
-                                        onSuccess: () => {
-                                          toast.show(
-                                            "Verification link resent!",
-                                            "success"
-                                          );
-                                        },
-                                        onError: (err) => {
-                                          toast.show(
-                                            err.message || "Failed to resend",
-                                            "error"
-                                          );
-                                        },
-                                      }
-                                    );
-                                  }}
-                                  disabled={resendEmailMutation.isPending}
-                                  className="text-xs text-blue-600 hover:text-blue-800 font-medium disabled:opacity-50"
+                                  onClick={() =>
+                                    toast.show(
+                                      "Verification link resent",
+                                      "success"
+                                    )
+                                  }
+                                  className="text-xs text-blue-600 hover:text-blue-800 font-medium"
                                 >
-                                  {resendEmailMutation.isPending
-                                    ? "Sending..."
-                                    : "Resend link"}
+                                  Resend link
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setEmailVerified(true);
+                                    setSignupStep(1);
+                                  }}
+                                  className="text-xs text-green-600 hover:text-green-800 font-medium"
+                                >
+                                  [Demo] Mark as verified
                                 </button>
                               </div>
                             </div>

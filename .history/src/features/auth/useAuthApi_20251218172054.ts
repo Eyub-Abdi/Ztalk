@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { AuthResponse, LoginPayload, RegisterPayload, User } from "./authTypes";
 import { z } from "zod";
-import axios, { AxiosError } from "axios";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL ||
@@ -76,28 +75,26 @@ async function postJson<TReq extends object, TRes>(
   url: string,
   payload: TReq
 ): Promise<TRes> {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  let data: unknown = null;
   try {
-    const { data } = await axios.post<TRes>(url, payload, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<{
-        message?: string;
-        detail?: string;
-      }>;
-      const message =
-        axiosError.response?.data?.message ||
-        axiosError.response?.data?.detail ||
-        axiosError.message ||
-        "Request failed";
-      throw new Error(message);
-    }
-    throw error;
+    data = await res.json();
+  } catch (e) {
+    // ignore JSON parse errors
   }
+  if (!res.ok) {
+    type ErrShape = { message?: string; detail?: string };
+    const possible = data as ErrShape | null;
+    const message = possible?.message || possible?.detail || "Request failed";
+    throw new Error(message);
+  }
+  return data as TRes;
 }
 
 export function useRegister<
@@ -123,93 +120,6 @@ export function useRegister<
   });
 }
 
-// Hook for requesting email verification (Step 1 of signup)
-export function useRequestEmailVerification() {
-  return useMutation<
-    { success: boolean; message: string },
-    Error,
-    { email: string }
-  >({
-    mutationFn: async (payload) => {
-      // Validate email with Zod
-      const validatedPayload = requestEmailSchema.parse(payload);
-
-      try {
-        const { data } = await axios.post<RequestEmailResponse>(
-          `${API_BASE}/auth/request-email/`,
-          validatedPayload
-        );
-
-        if (!data.success) {
-          const errorMessage =
-            formatErrors(data.errors) ||
-            data.message ||
-            "Failed to send verification email";
-          throw new Error(errorMessage);
-        }
-
-        return {
-          success: true,
-          message: data.message || "Verification email sent successfully",
-        };
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError<RequestEmailResponse>;
-          const errorMessage =
-            formatErrors(axiosError.response?.data?.errors) ||
-            axiosError.response?.data?.message ||
-            "Failed to send verification email";
-          throw new Error(errorMessage);
-        }
-        throw error;
-      }
-    },
-  });
-}
-
-// Hook for resending email verification
-export function useResendEmailVerification() {
-  return useMutation<
-    { success: boolean; message: string },
-    Error,
-    { email: string }
-  >({
-    mutationFn: async (payload) => {
-      const validatedPayload = requestEmailSchema.parse(payload);
-
-      try {
-        const { data } = await axios.post<RequestEmailResponse>(
-          `${API_BASE}/auth/request-email/`,
-          validatedPayload
-        );
-
-        if (!data.success) {
-          const errorMessage =
-            formatErrors(data.errors) ||
-            data.message ||
-            "Failed to resend verification email";
-          throw new Error(errorMessage);
-        }
-
-        return {
-          success: true,
-          message: data.message || "Verification email resent successfully",
-        };
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError<RequestEmailResponse>;
-          const errorMessage =
-            formatErrors(axiosError.response?.data?.errors) ||
-            axiosError.response?.data?.message ||
-            "Failed to resend verification email";
-          throw new Error(errorMessage);
-        }
-        throw error;
-      }
-    },
-  });
-}
-
 export function useLogin() {
   return useMutation<
     { user: User; access: string; refresh: string },
@@ -220,39 +130,38 @@ export function useLogin() {
       // Validate payload with Zod
       const validatedPayload = loginSchema.parse(payload);
 
+      // Use fetch directly to handle error responses properly
+      const res = await fetch(`${API_BASE}/auth/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validatedPayload),
+      });
+
+      let data: AuthResponse;
       try {
-        const { data } = await axios.post<AuthResponse>(
-          `${API_BASE}/auth/login/`,
-          validatedPayload
-        );
-
-        // Debug: log the entire response to see what we're getting
-        console.log("Login response:", data);
-
-        if (!data.success || !data.data) {
-          // Prioritize errors.error field for backend error messages
-          const errorMessage =
-            formatErrors(data.errors) || data.message || "Login failed";
-          console.log("Final error message:", errorMessage);
-          throw new Error(errorMessage);
-        }
-
-        const { access, refresh, user } = data.data;
-        localStorage.setItem("access_token", access);
-        localStorage.setItem("refresh_token", refresh);
-        localStorage.setItem("user", JSON.stringify(user));
-        return { access, refresh, user };
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError<AuthResponse>;
-          const errorMessage =
-            formatErrors(axiosError.response?.data?.errors) ||
-            axiosError.response?.data?.message ||
-            "Login failed";
-          throw new Error(errorMessage);
-        }
-        throw error;
+        data = await res.json();
+      } catch (e) {
+        throw new Error("Invalid response from server");
       }
+
+      // Debug: log the entire response to see what we're getting
+      console.log("Login response:", data);
+
+      if (!data.success || !data.data) {
+        // Prioritize errors.error field for backend error messages
+        const errorMessage =
+          formatErrors(data.errors) || data.message || "Login failed";
+        console.log("Final error message:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const { access, refresh, user } = data.data;
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
+      localStorage.setItem("user", JSON.stringify(user));
+      return { access, refresh, user };
     },
   });
 }

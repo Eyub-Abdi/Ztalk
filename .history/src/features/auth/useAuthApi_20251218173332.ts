@@ -85,15 +85,11 @@ async function postJson<TReq extends object, TRes>(
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<{
-        message?: string;
-        detail?: string;
-      }>;
-      const message =
-        axiosError.response?.data?.message ||
-        axiosError.response?.data?.detail ||
-        axiosError.message ||
-        "Request failed";
+      const axiosError = error as AxiosError<{ message?: string; detail?: string }>;
+      const message = axiosError.response?.data?.message || 
+                      axiosError.response?.data?.detail || 
+                      axiosError.message || 
+                      "Request failed";
       throw new Error(message);
     }
     throw error;
@@ -125,11 +121,7 @@ export function useRegister<
 
 // Hook for requesting email verification (Step 1 of signup)
 export function useRequestEmailVerification() {
-  return useMutation<
-    { success: boolean; message: string },
-    Error,
-    { email: string }
-  >({
+  return useMutation<{ success: boolean; message: string }, Error, { email: string }>({
     mutationFn: async (payload) => {
       // Validate email with Zod
       const validatedPayload = requestEmailSchema.parse(payload);
@@ -142,9 +134,7 @@ export function useRequestEmailVerification() {
 
         if (!data.success) {
           const errorMessage =
-            formatErrors(data.errors) ||
-            data.message ||
-            "Failed to send verification email";
+            formatErrors(data.errors) || data.message || "Failed to send verification email";
           throw new Error(errorMessage);
         }
 
@@ -169,11 +159,7 @@ export function useRequestEmailVerification() {
 
 // Hook for resending email verification
 export function useResendEmailVerification() {
-  return useMutation<
-    { success: boolean; message: string },
-    Error,
-    { email: string }
-  >({
+  return useMutation<{ success: boolean; message: string }, Error, { email: string }>({
     mutationFn: async (payload) => {
       const validatedPayload = requestEmailSchema.parse(payload);
 
@@ -185,9 +171,7 @@ export function useResendEmailVerification() {
 
         if (!data.success) {
           const errorMessage =
-            formatErrors(data.errors) ||
-            data.message ||
-            "Failed to resend verification email";
+            formatErrors(data.errors) || data.message || "Failed to resend verification email";
           throw new Error(errorMessage);
         }
 
