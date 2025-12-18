@@ -127,46 +127,20 @@ export default function Settings() {
       { language: "Russian", level: "A1" as const },
       { language: "Korean", level: "A1" as const },
     ],
-    interests: [
-      "Films & TV Series",
-      "Science",
-      "Tech",
-      "Travel",
-      "Music",
-      "Cooking",
-    ],
+    interests: ["Films & TV Series", "Science", "Tech", "Travel", "Music", "Cooking"],
     education: [
-      {
-        degree: "Bachelor of Arts in Linguistics",
-        institution: "University of Dar es Salaam",
-        year: "2019",
-      },
+      { degree: "Bachelor of Arts in Linguistics", institution: "University of Dar es Salaam", year: "2019" },
     ],
     certifications: [
-      {
-        name: "TEFL Certificate",
-        issuer: "International TEFL Academy",
-        year: "2020",
-      },
-      {
-        name: "Swahili Language Teaching",
-        issuer: "Zanzibar Language Institute",
-        year: "2018",
-      },
+      { name: "TEFL Certificate", issuer: "International TEFL Academy", year: "2020" },
+      { name: "Swahili Language Teaching", issuer: "Zanzibar Language Institute", year: "2018" },
     ],
     // New fields
     videoFile: null as File | null,
     videoUrl: "", // For existing uploaded video URL
-    teachingExperience:
-      "5 years of experience teaching Swahili to beginners and intermediate learners. I have taught students from various age groups including kids, teens, and adults in both online and classroom settings.",
-    teachingStyle:
-      "My teaching methodology is centered around conversation and practical application. I believe the best way to learn a language is by actually using it, so our lessons will be interactive and engaging.",
-    specialties: [
-      "Beginner Swahili",
-      "Conversational Practice",
-      "Travel Swahili",
-      "Cultural Context",
-    ] as string[],
+    teachingExperience: "5 years of experience teaching Swahili to beginners and intermediate learners. I have taught students from various age groups including kids, teens, and adults in both online and classroom settings.",
+    teachingStyle: "My teaching methodology is centered around conversation and practical application. I believe the best way to learn a language is by actually using it, so our lessons will be interactive and engaging.",
+    specialties: ["Beginner Swahili", "Conversational Practice", "Travel Swahili", "Cultural Context"] as string[],
     hourlyRate: 15,
   });
 
@@ -198,46 +172,17 @@ export default function Settings() {
 
   // Available languages for dropdowns
   const availableLanguages = [
-    "English",
-    "Spanish",
-    "French",
-    "German",
-    "Italian",
-    "Portuguese",
-    "Russian",
-    "Japanese",
-    "Chinese",
-    "Korean",
-    "Arabic",
-    "Swahili",
-    "Hindi",
-    "Turkish",
-    "Dutch",
-    "Polish",
-    "Norwegian",
-    "Swedish",
+    "English", "Spanish", "French", "German", "Italian", "Portuguese", 
+    "Russian", "Japanese", "Chinese", "Korean", "Arabic", "Swahili",
+    "Hindi", "Turkish", "Dutch", "Polish", "Norwegian", "Swedish"
   ];
-
-  const proficiencyLevels = [
-    "Native",
-    "C2",
-    "C1",
-    "B2",
-    "B1",
-    "A2",
-    "A1",
-  ] as const;
-  type ProficiencyLevel = (typeof proficiencyLevels)[number];
+  
+  const proficiencyLevels = ["Native", "C2", "C1", "B2", "B1", "A2", "A1"] as const;
+  type ProficiencyLevel = typeof proficiencyLevels[number];
 
   // Proficiency bars component
   const levelToBars: Record<string, number> = {
-    Native: 6,
-    C2: 6,
-    C1: 5,
-    B2: 4,
-    B1: 3,
-    A2: 2,
-    A1: 1,
+    Native: 6, C2: 6, C1: 5, B2: 4, B1: 3, A2: 2, A1: 1,
   };
 
   const ProficiencyBars = ({ level }: { level: string }) => {
@@ -675,7 +620,7 @@ export default function Settings() {
             <h3 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-6">
               Teaching Profile
             </h3>
-
+            
             <div className="space-y-8">
               {/* Tagline */}
               <div>
@@ -685,18 +630,11 @@ export default function Settings() {
                 <input
                   type="text"
                   value={teachingProfile.tagline}
-                  onChange={(e) =>
-                    setTeachingProfile({
-                      ...teachingProfile,
-                      tagline: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setTeachingProfile({ ...teachingProfile, tagline: e.target.value })}
                   placeholder="e.g., Experienced English teacher with 5 years experience"
                   className="w-full px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                 />
-                <p className="text-xs text-gray-500 mt-2">
-                  A short tagline that appears on your profile card
-                </p>
+                <p className="text-xs text-gray-500 mt-2">A short tagline that appears on your profile card</p>
               </div>
 
               {/* Location */}
@@ -708,17 +646,10 @@ export default function Settings() {
                   </label>
                   <select
                     value={teachingProfile.countryName}
-                    onChange={(e) =>
-                      setTeachingProfile({
-                        ...teachingProfile,
-                        countryName: e.target.value,
-                      })
-                    }
+                    onChange={(e) => setTeachingProfile({ ...teachingProfile, countryName: e.target.value })}
                     className="w-full px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                   >
-                    <option value="United Republic of Tanzania">
-                      Tanzania
-                    </option>
+                    <option value="United Republic of Tanzania">Tanzania</option>
                     <option value="United States">United States</option>
                     <option value="United Kingdom">United Kingdom</option>
                     <option value="Germany">Germany</option>
@@ -735,12 +666,7 @@ export default function Settings() {
                   <input
                     type="text"
                     value={teachingProfile.city}
-                    onChange={(e) =>
-                      setTeachingProfile({
-                        ...teachingProfile,
-                        city: e.target.value,
-                      })
-                    }
+                    onChange={(e) => setTeachingProfile({ ...teachingProfile, city: e.target.value })}
                     placeholder="e.g., Zanzibar"
                     className="w-full px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                   />
@@ -754,64 +680,39 @@ export default function Settings() {
                   Tutor Type
                 </label>
                 <div className="flex gap-4">
-                  <label
-                    className={clsx(
-                      "flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all",
-                      teachingProfile.tutorType === "Community Tutor"
-                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20"
-                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                    )}
-                  >
+                  <label className={clsx(
+                    "flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all",
+                    teachingProfile.tutorType === "Community Tutor"
+                      ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20"
+                      : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                  )}>
                     <input
                       type="radio"
                       name="tutorType"
                       value="Community Tutor"
                       checked={teachingProfile.tutorType === "Community Tutor"}
-                      onChange={(e) =>
-                        setTeachingProfile({
-                          ...teachingProfile,
-                          tutorType: e.target.value as any,
-                        })
-                      }
+                      onChange={(e) => setTeachingProfile({ ...teachingProfile, tutorType: e.target.value as any })}
                       className="sr-only"
                     />
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      Community Tutor
-                    </span>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Native or fluent speaker without formal teaching
-                      certification
-                    </p>
+                    <span className="font-semibold text-gray-900 dark:text-white">Community Tutor</span>
+                    <p className="text-xs text-gray-500 mt-1">Native or fluent speaker without formal teaching certification</p>
                   </label>
-                  <label
-                    className={clsx(
-                      "flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all",
-                      teachingProfile.tutorType === "Professional Teacher"
-                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20"
-                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                    )}
-                  >
+                  <label className={clsx(
+                    "flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all",
+                    teachingProfile.tutorType === "Professional Teacher"
+                      ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20"
+                      : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                  )}>
                     <input
                       type="radio"
                       name="tutorType"
                       value="Professional Teacher"
-                      checked={
-                        teachingProfile.tutorType === "Professional Teacher"
-                      }
-                      onChange={(e) =>
-                        setTeachingProfile({
-                          ...teachingProfile,
-                          tutorType: e.target.value as any,
-                        })
-                      }
+                      checked={teachingProfile.tutorType === "Professional Teacher"}
+                      onChange={(e) => setTeachingProfile({ ...teachingProfile, tutorType: e.target.value as any })}
                       className="sr-only"
                     />
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      Professional Teacher
-                    </span>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Certified teacher with formal teaching qualifications
-                    </p>
+                    <span className="font-semibold text-gray-900 dark:text-white">Professional Teacher</span>
+                    <p className="text-xs text-gray-500 mt-1">Certified teacher with formal teaching qualifications</p>
                   </label>
                 </div>
               </div>
@@ -825,15 +726,10 @@ export default function Settings() {
                   </label>
                   <button
                     type="button"
-                    onClick={() =>
-                      setTeachingProfile({
-                        ...teachingProfile,
-                        teaches: [
-                          ...teachingProfile.teaches,
-                          { language: "", level: "C1" },
-                        ],
-                      })
-                    }
+                    onClick={() => setTeachingProfile({
+                      ...teachingProfile,
+                      teaches: [...teachingProfile.teaches, { language: "", level: "C1" }]
+                    })}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors"
                   >
                     <FiPlus className="w-3.5 h-3.5" />
@@ -847,57 +743,33 @@ export default function Settings() {
                         value={lang.language}
                         onChange={(e) => {
                           const updated = [...teachingProfile.teaches];
-                          updated[idx] = {
-                            ...updated[idx],
-                            language: e.target.value,
-                          };
-                          setTeachingProfile({
-                            ...teachingProfile,
-                            teaches: updated,
-                          });
+                          updated[idx] = { ...updated[idx], language: e.target.value };
+                          setTeachingProfile({ ...teachingProfile, teaches: updated });
                         }}
                         className="flex-1 px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                       >
                         <option value="">Select language</option>
-                        {availableLanguages.map((l) => (
-                          <option key={l} value={l}>
-                            {l}
-                          </option>
-                        ))}
+                        {availableLanguages.map(l => <option key={l} value={l}>{l}</option>)}
                       </select>
                       <select
                         value={lang.level}
                         onChange={(e) => {
                           const updated = [...teachingProfile.teaches];
-                          updated[idx] = {
-                            ...updated[idx],
-                            level: e.target.value as ProficiencyLevel,
-                          };
-                          setTeachingProfile({
-                            ...teachingProfile,
-                            teaches: updated,
-                          });
+                          updated[idx] = { ...updated[idx], level: e.target.value as ProficiencyLevel };
+                          setTeachingProfile({ ...teachingProfile, teaches: updated });
                         }}
                         className="w-32 px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                       >
-                        {proficiencyLevels.map((l) => (
-                          <option key={l} value={l}>
-                            {l}
-                          </option>
-                        ))}
+                        {proficiencyLevels.map(l => <option key={l} value={l}>{l}</option>)}
                       </select>
                       <ProficiencyBars level={lang.level} />
                       {teachingProfile.teaches.length > 1 && (
                         <button
                           type="button"
-                          onClick={() =>
-                            setTeachingProfile({
-                              ...teachingProfile,
-                              teaches: teachingProfile.teaches.filter(
-                                (_, i) => i !== idx
-                              ),
-                            })
-                          }
+                          onClick={() => setTeachingProfile({
+                            ...teachingProfile,
+                            teaches: teachingProfile.teaches.filter((_, i) => i !== idx)
+                          })}
                           className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
@@ -916,15 +788,10 @@ export default function Settings() {
                   </label>
                   <button
                     type="button"
-                    onClick={() =>
-                      setTeachingProfile({
-                        ...teachingProfile,
-                        speaks: [
-                          ...teachingProfile.speaks,
-                          { language: "", level: "B1" },
-                        ],
-                      })
-                    }
+                    onClick={() => setTeachingProfile({
+                      ...teachingProfile,
+                      speaks: [...teachingProfile.speaks, { language: "", level: "B1" }]
+                    })}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors"
                   >
                     <FiPlus className="w-3.5 h-3.5" />
@@ -933,66 +800,37 @@ export default function Settings() {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {teachingProfile.speaks.map((lang, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
-                    >
+                    <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
                       <select
                         value={lang.language}
                         onChange={(e) => {
                           const updated = [...teachingProfile.speaks];
-                          updated[idx] = {
-                            ...updated[idx],
-                            language: e.target.value,
-                          };
-                          setTeachingProfile({
-                            ...teachingProfile,
-                            speaks: updated,
-                          });
+                          updated[idx] = { ...updated[idx], language: e.target.value };
+                          setTeachingProfile({ ...teachingProfile, speaks: updated });
                         }}
                         className="px-2 py-1 bg-transparent border-0 text-sm font-medium focus:outline-none"
                       >
                         <option value="">Select</option>
-                        {availableLanguages.map((l) => (
-                          <option key={l} value={l}>
-                            {l}
-                          </option>
-                        ))}
+                        {availableLanguages.map(l => <option key={l} value={l}>{l}</option>)}
                       </select>
                       <ProficiencyBars level={lang.level} />
                       <select
                         value={lang.level}
                         onChange={(e) => {
                           const updated = [...teachingProfile.speaks];
-                          updated[idx] = {
-                            ...updated[idx],
-                            level: e.target.value as ProficiencyLevel,
-                          };
-                          setTeachingProfile({
-                            ...teachingProfile,
-                            speaks: updated,
-                          });
+                          updated[idx] = { ...updated[idx], level: e.target.value as ProficiencyLevel };
+                          setTeachingProfile({ ...teachingProfile, speaks: updated });
                         }}
                         className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 text-xs rounded"
                       >
-                        {proficiencyLevels
-                          .filter((l) => l !== "Native")
-                          .map((l) => (
-                            <option key={l} value={l}>
-                              {l}
-                            </option>
-                          ))}
+                        {proficiencyLevels.filter(l => l !== "Native").map(l => <option key={l} value={l}>{l}</option>)}
                       </select>
                       <button
                         type="button"
-                        onClick={() =>
-                          setTeachingProfile({
-                            ...teachingProfile,
-                            speaks: teachingProfile.speaks.filter(
-                              (_, i) => i !== idx
-                            ),
-                          })
-                        }
+                        onClick={() => setTeachingProfile({
+                          ...teachingProfile,
+                          speaks: teachingProfile.speaks.filter((_, i) => i !== idx)
+                        })}
                         className="p-1 text-gray-400 hover:text-red-500 transition-colors"
                       >
                         <FiX className="w-3.5 h-3.5" />
@@ -1016,14 +854,10 @@ export default function Settings() {
                       {interest}
                       <button
                         type="button"
-                        onClick={() =>
-                          setTeachingProfile({
-                            ...teachingProfile,
-                            interests: teachingProfile.interests.filter(
-                              (_, i) => i !== idx
-                            ),
-                          })
-                        }
+                        onClick={() => setTeachingProfile({
+                          ...teachingProfile,
+                          interests: teachingProfile.interests.filter((_, i) => i !== idx)
+                        })}
                         className="text-gray-400 hover:text-red-500"
                       >
                         <FiX className="w-3.5 h-3.5" />
@@ -1039,16 +873,11 @@ export default function Settings() {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        const value = (
-                          e.target as HTMLInputElement
-                        ).value.trim();
-                        if (
-                          value &&
-                          !teachingProfile.interests.includes(value)
-                        ) {
+                        const value = (e.target as HTMLInputElement).value.trim();
+                        if (value && !teachingProfile.interests.includes(value)) {
                           setTeachingProfile({
                             ...teachingProfile,
-                            interests: [...teachingProfile.interests, value],
+                            interests: [...teachingProfile.interests, value]
                           });
                           (e.target as HTMLInputElement).value = "";
                         }
@@ -1058,13 +887,12 @@ export default function Settings() {
                   <button
                     type="button"
                     onClick={(e) => {
-                      const input = e.currentTarget
-                        .previousSibling as HTMLInputElement;
+                      const input = (e.currentTarget.previousSibling as HTMLInputElement);
                       const value = input.value.trim();
                       if (value && !teachingProfile.interests.includes(value)) {
                         setTeachingProfile({
                           ...teachingProfile,
-                          interests: [...teachingProfile.interests, value],
+                          interests: [...teachingProfile.interests, value]
                         });
                         input.value = "";
                       }
@@ -1085,15 +913,10 @@ export default function Settings() {
                   </label>
                   <button
                     type="button"
-                    onClick={() =>
-                      setTeachingProfile({
-                        ...teachingProfile,
-                        education: [
-                          ...teachingProfile.education,
-                          { degree: "", institution: "", year: "" },
-                        ],
-                      })
-                    }
+                    onClick={() => setTeachingProfile({
+                      ...teachingProfile,
+                      education: [...teachingProfile.education, { degree: "", institution: "", year: "" }]
+                    })}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors"
                   >
                     <FiPlus className="w-3.5 h-3.5" />
@@ -1102,10 +925,7 @@ export default function Settings() {
                 </div>
                 <div className="space-y-4">
                   {teachingProfile.education.map((edu, idx) => (
-                    <div
-                      key={idx}
-                      className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
-                    >
+                    <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 space-y-3">
                           <input
@@ -1113,14 +933,8 @@ export default function Settings() {
                             value={edu.degree}
                             onChange={(e) => {
                               const updated = [...teachingProfile.education];
-                              updated[idx] = {
-                                ...updated[idx],
-                                degree: e.target.value,
-                              };
-                              setTeachingProfile({
-                                ...teachingProfile,
-                                education: updated,
-                              });
+                              updated[idx] = { ...updated[idx], degree: e.target.value };
+                              setTeachingProfile({ ...teachingProfile, education: updated });
                             }}
                             placeholder="Degree / Field of Study"
                             className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
@@ -1131,14 +945,8 @@ export default function Settings() {
                               value={edu.institution}
                               onChange={(e) => {
                                 const updated = [...teachingProfile.education];
-                                updated[idx] = {
-                                  ...updated[idx],
-                                  institution: e.target.value,
-                                };
-                                setTeachingProfile({
-                                  ...teachingProfile,
-                                  education: updated,
-                                });
+                                updated[idx] = { ...updated[idx], institution: e.target.value };
+                                setTeachingProfile({ ...teachingProfile, education: updated });
                               }}
                               placeholder="Institution"
                               className="col-span-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
@@ -1148,14 +956,8 @@ export default function Settings() {
                               value={edu.year}
                               onChange={(e) => {
                                 const updated = [...teachingProfile.education];
-                                updated[idx] = {
-                                  ...updated[idx],
-                                  year: e.target.value,
-                                };
-                                setTeachingProfile({
-                                  ...teachingProfile,
-                                  education: updated,
-                                });
+                                updated[idx] = { ...updated[idx], year: e.target.value };
+                                setTeachingProfile({ ...teachingProfile, education: updated });
                               }}
                               placeholder="Year"
                               className="px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
@@ -1164,14 +966,10 @@ export default function Settings() {
                         </div>
                         <button
                           type="button"
-                          onClick={() =>
-                            setTeachingProfile({
-                              ...teachingProfile,
-                              education: teachingProfile.education.filter(
-                                (_, i) => i !== idx
-                              ),
-                            })
-                          }
+                          onClick={() => setTeachingProfile({
+                            ...teachingProfile,
+                            education: teachingProfile.education.filter((_, i) => i !== idx)
+                          })}
                           className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
@@ -1191,15 +989,10 @@ export default function Settings() {
                   </label>
                   <button
                     type="button"
-                    onClick={() =>
-                      setTeachingProfile({
-                        ...teachingProfile,
-                        certifications: [
-                          ...teachingProfile.certifications,
-                          { name: "", issuer: "", year: "" },
-                        ],
-                      })
-                    }
+                    onClick={() => setTeachingProfile({
+                      ...teachingProfile,
+                      certifications: [...teachingProfile.certifications, { name: "", issuer: "", year: "" }]
+                    })}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors"
                   >
                     <FiPlus className="w-3.5 h-3.5" />
@@ -1208,27 +1001,16 @@ export default function Settings() {
                 </div>
                 <div className="space-y-4">
                   {teachingProfile.certifications.map((cert, idx) => (
-                    <div
-                      key={idx}
-                      className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
-                    >
+                    <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 space-y-3">
                           <input
                             type="text"
                             value={cert.name}
                             onChange={(e) => {
-                              const updated = [
-                                ...teachingProfile.certifications,
-                              ];
-                              updated[idx] = {
-                                ...updated[idx],
-                                name: e.target.value,
-                              };
-                              setTeachingProfile({
-                                ...teachingProfile,
-                                certifications: updated,
-                              });
+                              const updated = [...teachingProfile.certifications];
+                              updated[idx] = { ...updated[idx], name: e.target.value };
+                              setTeachingProfile({ ...teachingProfile, certifications: updated });
                             }}
                             placeholder="Certificate Name"
                             className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
@@ -1238,17 +1020,9 @@ export default function Settings() {
                               type="text"
                               value={cert.issuer}
                               onChange={(e) => {
-                                const updated = [
-                                  ...teachingProfile.certifications,
-                                ];
-                                updated[idx] = {
-                                  ...updated[idx],
-                                  issuer: e.target.value,
-                                };
-                                setTeachingProfile({
-                                  ...teachingProfile,
-                                  certifications: updated,
-                                });
+                                const updated = [...teachingProfile.certifications];
+                                updated[idx] = { ...updated[idx], issuer: e.target.value };
+                                setTeachingProfile({ ...teachingProfile, certifications: updated });
                               }}
                               placeholder="Issuing Organization"
                               className="col-span-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
@@ -1257,17 +1031,9 @@ export default function Settings() {
                               type="text"
                               value={cert.year}
                               onChange={(e) => {
-                                const updated = [
-                                  ...teachingProfile.certifications,
-                                ];
-                                updated[idx] = {
-                                  ...updated[idx],
-                                  year: e.target.value,
-                                };
-                                setTeachingProfile({
-                                  ...teachingProfile,
-                                  certifications: updated,
-                                });
+                                const updated = [...teachingProfile.certifications];
+                                updated[idx] = { ...updated[idx], year: e.target.value };
+                                setTeachingProfile({ ...teachingProfile, certifications: updated });
                               }}
                               placeholder="Year"
                               className="px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
@@ -1276,15 +1042,10 @@ export default function Settings() {
                         </div>
                         <button
                           type="button"
-                          onClick={() =>
-                            setTeachingProfile({
-                              ...teachingProfile,
-                              certifications:
-                                teachingProfile.certifications.filter(
-                                  (_, i) => i !== idx
-                                ),
-                            })
-                          }
+                          onClick={() => setTeachingProfile({
+                            ...teachingProfile,
+                            certifications: teachingProfile.certifications.filter((_, i) => i !== idx)
+                          })}
                           className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
@@ -1295,243 +1056,12 @@ export default function Settings() {
                 </div>
               </div>
 
-              {/* Video Introduction */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <FiVideo className="w-5 h-5 text-brand-500" />
-                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Video Introduction
-                  </label>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl mb-4">
-                  <FiInfo className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-blue-800 dark:text-blue-200">
-                      A video introduction helps students get to know you
-                    </p>
-                    <p className="text-sm text-blue-700 dark:text-blue-300">
-                      Record a 2-3 minute video introducing yourself. Show your
-                      personality and teaching style!
-                    </p>
-                  </div>
-                </div>
-
-                {videoPreviewUrl ? (
-                  <div className="space-y-4">
-                    <div className="relative rounded-xl overflow-hidden bg-black">
-                      <video
-                        controls
-                        className="w-full max-h-80 mx-auto"
-                        src={videoPreviewUrl}
-                      >
-                        <track kind="captions" />
-                      </video>
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => videoInputRef.current?.click()}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <FiUpload className="w-4 h-4" />
-                        Change Video
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setTeachingProfile({
-                            ...teachingProfile,
-                            videoFile: null,
-                            videoUrl: "",
-                          })
-                        }
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    onClick={() => videoInputRef.current?.click()}
-                    className="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-brand-500 hover:bg-brand-50/50 dark:hover:bg-brand-900/10 transition-all group"
-                  >
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-brand-100 dark:group-hover:bg-brand-900/30 transition-colors">
-                        <FiVideo className="w-8 h-8 text-gray-400 group-hover:text-brand-500 transition-colors" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-700 dark:text-gray-300">
-                          Upload Video Introduction
-                        </p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          MP4, MOV, or AVI • Max 100MB • 2-3 minutes recommended
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        className="mt-2 px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold rounded-xl transition-colors"
-                      >
-                        Choose File
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                <input
-                  ref={videoInputRef}
-                  type="file"
-                  accept="video/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setTeachingProfile({
-                        ...teachingProfile,
-                        videoFile: file,
-                      });
-                    }
-                  }}
-                />
-              </div>
-
-              {/* Teaching Experience */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2.5">
-                  Teaching Experience
-                </label>
-                <textarea
-                  value={teachingProfile.teachingExperience}
-                  onChange={(e) =>
-                    setTeachingProfile({
-                      ...teachingProfile,
-                      teachingExperience: e.target.value,
-                    })
-                  }
-                  placeholder="Years of experience, age groups taught, teaching environments..."
-                  rows={4}
-                  className="w-full px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y font-medium"
-                />
-                <p className="text-xs text-gray-500 mt-2">
-                  Describe your teaching background and experience
-                </p>
-              </div>
-
-              {/* Teaching Style */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2.5">
-                  Teaching Style & Methodology
-                </label>
-                <textarea
-                  value={teachingProfile.teachingStyle}
-                  onChange={(e) =>
-                    setTeachingProfile({
-                      ...teachingProfile,
-                      teachingStyle: e.target.value,
-                    })
-                  }
-                  placeholder="Describe your teaching methodology and approach..."
-                  rows={4}
-                  className="w-full px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y font-medium"
-                />
-                <p className="text-xs text-gray-500 mt-2">
-                  Help students understand what to expect from your lessons
-                </p>
-              </div>
-
-              {/* Teaching Specialties */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2.5">
-                  Teaching Specialties
-                </label>
-                <p className="text-xs text-gray-500 mb-3">
-                  Select all areas you're comfortable teaching:
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                  {specialtyOptions.map((specialty) => (
-                    <label
-                      key={specialty}
-                      className={clsx(
-                        "flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all",
-                        teachingProfile.specialties.includes(specialty)
-                          ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20"
-                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                      )}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={teachingProfile.specialties.includes(
-                          specialty
-                        )}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setTeachingProfile({
-                              ...teachingProfile,
-                              specialties: [
-                                ...teachingProfile.specialties,
-                                specialty,
-                              ],
-                            });
-                          } else {
-                            setTeachingProfile({
-                              ...teachingProfile,
-                              specialties: teachingProfile.specialties.filter(
-                                (s) => s !== specialty
-                              ),
-                            });
-                          }
-                        }}
-                        className="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500"
-                      />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {specialty}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Hourly Rate */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2.5">
-                  <FiDollarSign className="inline w-4 h-4 mr-1.5" />
-                  Hourly Rate (USD)
-                </label>
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">
-                      $
-                    </span>
-                    <input
-                      type="number"
-                      min="5"
-                      max="200"
-                      value={teachingProfile.hourlyRate}
-                      onChange={(e) =>
-                        setTeachingProfile({
-                          ...teachingProfile,
-                          hourlyRate: parseInt(e.target.value) || 15,
-                        })
-                      }
-                      className="w-32 pl-8 pr-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-bold text-lg"
-                    />
-                  </div>
-                  <span className="text-gray-500">per hour</span>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Recommended: $15-25/hour for new tutors
-                </p>
-              </div>
-
               {/* Save Teaching Profile */}
               <button
                 onClick={() => {
                   toast.show({
                     title: "Teaching profile updated",
-                    description:
-                      "Your teaching profile has been saved successfully.",
+                    description: "Your teaching profile has been saved successfully.",
                     status: "success",
                   });
                 }}

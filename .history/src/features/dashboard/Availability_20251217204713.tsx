@@ -71,12 +71,16 @@ function timeToMinutes(time: string): number {
   return hrs * 60 + mins;
 }
 
-// Get week dates starting from a given date (7 days from that date)
+// Get week dates
 function getWeekDates(baseDate: Date): Date[] {
   const dates: Date[] = [];
+  const startOfWeek = new Date(baseDate);
+  const day = startOfWeek.getDay();
+  startOfWeek.setDate(startOfWeek.getDate() - day);
+
   for (let i = 0; i < 7; i++) {
-    const date = new Date(baseDate);
-    date.setDate(baseDate.getDate() + i);
+    const date = new Date(startOfWeek);
+    date.setDate(startOfWeek.getDate() + i);
     dates.push(date);
   }
   return dates;
@@ -112,10 +116,11 @@ export default function Availability() {
     loadStoredAvailability()
   );
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
-    // Start from today
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return today;
+    const day = today.getDay();
+    const start = new Date(today);
+    start.setDate(today.getDate() - day);
+    return start;
   });
   const [currentTime, setCurrentTime] = useState(new Date());
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
@@ -180,8 +185,10 @@ export default function Availability() {
 
   const goToToday = useCallback(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    setCurrentWeekStart(today);
+    const day = today.getDay();
+    const start = new Date(today);
+    start.setDate(today.getDate() - day);
+    setCurrentWeekStart(start);
   }, []);
 
   // Toggle availability for a specific hour
@@ -294,9 +301,9 @@ export default function Availability() {
     const minutes = currentTime.getMinutes();
     const firstHour = HOURS[0]; // 6am
     const lastHour = HOURS[HOURS.length - 1] + 1; // 12am (midnight)
-
+    
     if (hours < firstHour || hours >= lastHour) return null;
-
+    
     // Calculate position in pixels (each hour row is HOUR_HEIGHT px)
     const hourIndex = hours - firstHour;
     const minuteOffset = (minutes / 60) * HOUR_HEIGHT;
@@ -441,7 +448,7 @@ export default function Availability() {
                     isToday(date) ? "text-brand-600" : "text-gray-500"
                   )}
                 >
-                  {DAYS_OF_WEEK[date.getDay()]}
+                  {DAYS_OF_WEEK[idx]}
                 </div>
                 <div
                   className={clsx(
@@ -456,9 +463,9 @@ export default function Availability() {
           </div>
 
           {/* Time Grid - Scrollable */}
-          <div
+          <div 
             ref={scrollContainerRef}
-            className="relative overflow-y-auto scrollbar-hide"
+            className="relative overflow-y-auto"
             style={{ maxHeight: "600px" }}
           >
             {HOURS.map((hour) => (

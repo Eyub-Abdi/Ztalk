@@ -441,7 +441,7 @@ export default function Availability() {
                     isToday(date) ? "text-brand-600" : "text-gray-500"
                   )}
                 >
-                  {DAYS_OF_WEEK[date.getDay()]}
+                  {DAYS_OF_WEEK[idx]}
                 </div>
                 <div
                   className={clsx(
@@ -458,7 +458,7 @@ export default function Availability() {
           {/* Time Grid - Scrollable */}
           <div
             ref={scrollContainerRef}
-            className="relative overflow-y-auto scrollbar-hide"
+            className="relative overflow-y-auto"
             style={{ maxHeight: "600px" }}
           >
             {HOURS.map((hour) => (

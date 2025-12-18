@@ -458,7 +458,7 @@ export default function Availability() {
           {/* Time Grid - Scrollable */}
           <div
             ref={scrollContainerRef}
-            className="relative overflow-y-auto scrollbar-hide"
+            className="relative overflow-y-auto"
             style={{ maxHeight: "600px" }}
           >
             {HOURS.map((hour) => (

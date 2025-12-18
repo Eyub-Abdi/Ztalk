@@ -1636,7 +1636,7 @@ export default function TeacherApplication() {
 
       case 3:
         return (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Section Header */}
             <div className="text-center pb-4 border-b border-gray-100 dark:border-gray-700">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 text-white mb-3">
@@ -1650,29 +1650,41 @@ export default function TeacherApplication() {
               </p>
             </div>
 
-            {/* Tips Banner */}
             <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-              <FiInfo className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-700 dark:text-blue-300">
-                <span className="font-semibold text-blue-800 dark:text-blue-200">
-                  Tips:
-                </span>{" "}
-                Keep it 2-3 mins • Introduce yourself in Swahili & English •
-                Good lighting • Show your personality!
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                <FiInfo className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-blue-800 dark:text-blue-200">
+                  Tips for a great video
+                </p>
+                <ul className="text-sm text-blue-700 dark:text-blue-300 mt-2 space-y-1">
+                  <li>• Keep it 2-3 minutes long</li>
+                  <li>• Introduce yourself in both Swahili and English</li>
+                  <li>• Find a quiet, well-lit place to record</li>
+                  <li>• Speak clearly and show your personality!</li>
+                </ul>
               </div>
             </div>
 
-            {/* Two Column Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Example Video */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <FaPlay className="w-4 h-4 text-purple-500" />
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    Example Video
-                  </h3>
+            {/* Example Video Section */}
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                  <FaPlay className="w-4 h-4 text-purple-600 ml-0.5" />
                 </div>
-                <div className="rounded-xl overflow-hidden bg-black aspect-video relative">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Example Introduction
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Watch how a great tutor introduction looks
+                  </p>
+                </div>
+              </div>
+
+              <div className="max-w-sm mx-auto">
+                <div className="rounded-xl overflow-hidden bg-black aspect-video relative shadow-lg">
                   <iframe
                     src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
                     title="Example Tutor Introduction Video"
@@ -1681,63 +1693,63 @@ export default function TeacherApplication() {
                     className="w-full h-full absolute inset-0"
                   />
                 </div>
-                <p className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-3">
-                  <FiCheckCircle className="w-3.5 h-3.5 text-green-500" />
-                  Great example of a clear, friendly intro
-                </p>
               </div>
 
-              {/* Upload Your Video */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <FaUpload className="w-4 h-4 text-pink-500" />
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
+              <p className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-4">
+                <FiCheckCircle className="w-4 h-4 text-green-500" />
+                Clear, friendly introduction that students love
+              </p>
+            </div>
+
+            {/* Upload Section */}
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
+                  <FaUpload className="w-4 h-4 text-pink-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Your Video
                   </h3>
+                  <p className="text-sm text-gray-500">
+                    Upload your introduction video
+                  </p>
                 </div>
+              </div>
 
+              <div
+                className={clsx(
+                  "border-2 border-dashed rounded-2xl p-6 text-center transition-all",
+                  data.videoFile
+                    ? "border-green-300 bg-green-50 dark:bg-green-900/20"
+                    : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-brand-400"
+                )}
+              >
                 {data.videoFile ? (
-                  <div className="space-y-4">
-                    <div className="rounded-xl overflow-hidden bg-black aspect-video">
-                      <video
-                        controls
-                        className="w-full h-full object-contain"
-                        src={URL.createObjectURL(data.videoFile)}
-                      >
-                        <track kind="captions" />
-                      </video>
+                  <>
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-3">
+                      <FaCheckCircle className="w-6 h-6 text-green-500" />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-green-600 dark:text-green-400 truncate flex-1 mr-2">
-                        ✓ {data.videoFile.name}
-                      </p>
-                      <label
-                        htmlFor="intro-video"
-                        className="text-sm text-brand-600 hover:text-brand-700 font-medium cursor-pointer"
-                      >
-                        Change
-                      </label>
-                    </div>
-                  </div>
+                    <p className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                      Video Uploaded!
+                    </p>
+                    <p className="text-sm text-green-600 dark:text-green-400 truncate max-w-[250px] mx-auto">
+                      {data.videoFile.name}
+                    </p>
+                  </>
                 ) : (
-                  <div
-                    className="border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl aspect-video flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 hover:border-brand-400 transition-colors cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("intro-video")?.click()
-                    }
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
+                  <>
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
                       <FaPlay className="w-5 h-5 text-gray-400 ml-0.5" />
                     </div>
-                    <p className="font-medium text-gray-700 dark:text-gray-300 text-sm">
-                      Click to upload video
+                    <p className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                      Upload Your Video
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      MP4, MOV, AVI • Max 100MB
+                    <p className="text-sm text-gray-500 mb-3">
+                      Max 100MB • MP4, MOV, AVI
                     </p>
-                  </div>
+                  </>
                 )}
-
                 <input
                   id="intro-video"
                   type="file"
@@ -1747,14 +1759,40 @@ export default function TeacherApplication() {
                   }
                   className="hidden"
                 />
-
-                {errors.videoFile && (
-                  <p className="flex items-center gap-1 text-red-500 text-sm mt-3">
-                    <FiInfo className="w-4 h-4" />
-                    {errors.videoFile}
-                  </p>
-                )}
+                <label
+                  htmlFor="intro-video"
+                  className={clsx(
+                    "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold cursor-pointer transition-all text-sm",
+                    data.videoFile
+                      ? "bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-300"
+                      : "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/30 hover:shadow-xl"
+                  )}
+                >
+                  <FaUpload className="w-3.5 h-3.5" />
+                  {data.videoFile ? "Change Video" : "Choose Video"}
+                </label>
               </div>
+
+              {errors.videoFile && (
+                <p className="flex items-center gap-1 text-red-500 text-sm">
+                  <FiInfo className="w-4 h-4" />
+                  {errors.videoFile}
+                </p>
+              )}
+
+              {data.videoFile && (
+                <div className="max-w-sm mx-auto">
+                  <div className="rounded-xl overflow-hidden bg-black shadow-lg">
+                    <video
+                      controls
+                      className="w-full max-h-[220px]"
+                      src={URL.createObjectURL(data.videoFile)}
+                    >
+                      <track kind="captions" />
+                    </video>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );

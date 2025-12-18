@@ -1654,11 +1654,8 @@ export default function TeacherApplication() {
             <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
               <FiInfo className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-blue-700 dark:text-blue-300">
-                <span className="font-semibold text-blue-800 dark:text-blue-200">
-                  Tips:
-                </span>{" "}
-                Keep it 2-3 mins • Introduce yourself in Swahili & English •
-                Good lighting • Show your personality!
+                <span className="font-semibold text-blue-800 dark:text-blue-200">Tips:</span>{" "}
+                Keep it 2-3 mins • Introduce yourself in Swahili & English • Good lighting • Show your personality!
               </div>
             </div>
 
@@ -1722,9 +1719,7 @@ export default function TeacherApplication() {
                 ) : (
                   <div
                     className="border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl aspect-video flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 hover:border-brand-400 transition-colors cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("intro-video")?.click()
-                    }
+                    onClick={() => document.getElementById("intro-video")?.click()}
                   >
                     <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
                       <FaPlay className="w-5 h-5 text-gray-400 ml-0.5" />

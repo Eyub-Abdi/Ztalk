@@ -109,7 +109,8 @@ export default function TeacherApplicationSuccess() {
                 const colorClasses = {
                   blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-600",
                   amber: "bg-amber-100 dark:bg-amber-900/30 text-amber-600",
-                  purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-600",
+                  purple:
+                    "bg-purple-100 dark:bg-purple-900/30 text-purple-600",
                   green: "bg-green-100 dark:bg-green-900/30 text-green-600",
                 };
 
@@ -117,9 +118,7 @@ export default function TeacherApplicationSuccess() {
                   <div key={index} className="flex gap-4">
                     <div className="flex flex-col items-center">
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                          colorClasses[step.color as keyof typeof colorClasses]
-                        }`}
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${colorClasses[step.color as keyof typeof colorClasses]}`}
                       >
                         <Icon className="w-5 h-5" />
                       </div>
@@ -157,8 +156,9 @@ export default function TeacherApplicationSuccess() {
                   Have Questions?
                 </p>
                 <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                  If you have any questions about your application or the review
-                  process, feel free to contact our teacher support team at{" "}
+                  If you have any questions about your application or the
+                  review process, feel free to contact our teacher support team
+                  at{" "}
                   <a
                     href="mailto:teachers@ztalk.com"
                     className="font-semibold underline hover:no-underline"

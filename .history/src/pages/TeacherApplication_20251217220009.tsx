@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
 import {
@@ -24,21 +24,20 @@ import {
   FaCalendarAlt,
   FaClipboardCheck,
 } from "react-icons/fa";
-import {
-  FiCheck,
-  FiCheckCircle,
-  FiInfo,
-  FiUser,
-  FiBriefcase,
-  FiVideo,
-  FiClock,
+import { 
+  FiCheck, 
+  FiInfo, 
+  FiUser, 
+  FiBriefcase, 
+  FiVideo, 
+  FiClock, 
   FiFileText,
   FiChevronRight,
   FiChevronLeft,
   FiLoader,
   FiShield,
   FiAward,
-  FiZap,
+  FiZap
 } from "react-icons/fi";
 import { useAuth } from "../features/auth/AuthProvider";
 
@@ -185,21 +184,9 @@ const availabilitySlots = [
 
 const steps = [
   { title: "Teacher Type", icon: FiAward, description: "Choose your path" },
-  {
-    title: "Personal Info",
-    icon: FiUser,
-    description: "Tell us about yourself",
-  },
-  {
-    title: "Teaching Experience",
-    icon: FiBriefcase,
-    description: "Share your background",
-  },
-  {
-    title: "Video Introduction",
-    icon: FiVideo,
-    description: "Record your intro",
-  },
+  { title: "Personal Info", icon: FiUser, description: "Tell us about yourself" },
+  { title: "Teaching Experience", icon: FiBriefcase, description: "Share your background" },
+  { title: "Video Introduction", icon: FiVideo, description: "Record your intro" },
   { title: "Availability", icon: FiClock, description: "Set your schedule" },
   { title: "Review", icon: FiFileText, description: "Confirm and submit" },
 ];
@@ -314,8 +301,8 @@ function Dropdown({
         onClick={() => setOpen(!open)}
         className={clsx(
           "w-full flex items-center justify-between px-4 py-3.5 bg-white dark:bg-gray-800 border-2 rounded-xl text-left transition-all duration-200",
-          open
-            ? "border-brand-500 ring-4 ring-brand-500/20"
+          open 
+            ? "border-brand-500 ring-4 ring-brand-500/20" 
             : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
         )}
       >
@@ -323,9 +310,7 @@ function Dropdown({
           renderSelected ? (
             renderSelected(selected)
           ) : (
-            <span className="font-medium text-gray-900 dark:text-white">
-              {selected.label}
-            </span>
+            <span className="font-medium text-gray-900 dark:text-white">{selected.label}</span>
           )
         ) : (
           <span className="text-gray-400">{placeholder}</span>
@@ -349,8 +334,8 @@ function Dropdown({
               }}
               className={clsx(
                 "w-full px-4 py-3 text-left transition-colors first:rounded-t-lg last:rounded-b-lg",
-                opt.value === value
-                  ? "bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400"
+                opt.value === value 
+                  ? "bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400" 
                   : "hover:bg-gray-50 dark:hover:bg-gray-700"
               )}
             >
@@ -545,8 +530,7 @@ export default function TeacherApplication() {
                 Choose Your Teaching Path
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-                On Ztalk there are two types of teachers. Select the one that
-                best describes you.
+                On Ztalk there are two types of teachers. Select the one that best describes you.
               </p>
             </div>
 
@@ -571,7 +555,7 @@ export default function TeacherApplication() {
               >
                 {/* Background decoration */}
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/5 rounded-full transition-transform group-hover:scale-150" />
-
+                
                 {data.teacherType === "professional" && (
                   <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-lg">
                     <FaCheckCircle size={12} /> Selected
@@ -606,7 +590,7 @@ export default function TeacherApplication() {
                       </p>
                     </div>
                   </div>
-
+                  
                   <div className="space-y-4">
                     <div className="flex gap-3">
                       <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
@@ -617,8 +601,7 @@ export default function TeacherApplication() {
                           Background
                         </p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Native speaker with professional certification. 18+
-                          years old.
+                          Native speaker with professional certification. 18+ years old.
                         </p>
                       </div>
                     </div>
@@ -672,7 +655,7 @@ export default function TeacherApplication() {
               >
                 {/* Background decoration */}
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-green-500/5 rounded-full transition-transform group-hover:scale-150" />
-
+                
                 {data.teacherType === "community" && (
                   <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-lg">
                     <FaCheckCircle size={12} /> Selected
@@ -707,7 +690,7 @@ export default function TeacherApplication() {
                       </p>
                     </div>
                   </div>
-
+                  
                   <div className="space-y-4">
                     <div className="flex gap-3">
                       <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
@@ -718,8 +701,7 @@ export default function TeacherApplication() {
                           Background
                         </p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Native speaker who enjoys teaching informally. 18+
-                          years old.
+                          Native speaker who enjoys teaching informally. 18+ years old.
                         </p>
                       </div>
                     </div>
@@ -753,7 +735,7 @@ export default function TeacherApplication() {
                 </div>
               </div>
             </div>
-
+            
             {errors.teacherType && (
               <div className="flex items-center gap-2 text-red-500 text-sm bg-red-50 dark:bg-red-900/20 px-4 py-3 rounded-xl">
                 <FiInfo className="w-5 h-5 flex-shrink-0" />
@@ -771,12 +753,8 @@ export default function TeacherApplication() {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 text-white mb-3">
                 <FiUser className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Personal Information
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">
-                Tell us about yourself
-              </p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Personal Information</h2>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">Tell us about yourself</p>
             </div>
 
             {/* Basic Information */}
@@ -786,12 +764,8 @@ export default function TeacherApplication() {
                   <FiUser className="w-5 h-5 text-brand-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Basic Information
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Your public profile details
-                  </p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+                  <p className="text-sm text-gray-500">Your public profile details</p>
                 </div>
               </div>
 
@@ -944,7 +918,7 @@ export default function TeacherApplication() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     From
                   </p>
                   <Dropdown
@@ -956,14 +930,11 @@ export default function TeacherApplication() {
                     renderSelected={renderCountryOption}
                   />
                   {errors.from && (
-                    <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                      <FiInfo className="w-4 h-4" />
-                      {errors.from}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.from}</p>
                   )}
                 </div>
                 <div>
-                  <p className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Living in
                   </p>
                   <Dropdown
@@ -975,8 +946,7 @@ export default function TeacherApplication() {
                     renderSelected={renderCountryOption}
                   />
                   {errors.livingIn && (
-                    <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                      <FiInfo className="w-4 h-4" />
+                    <p className="text-red-500 text-sm mt-1">
                       {errors.livingIn}
                     </p>
                   )}
@@ -984,40 +954,35 @@ export default function TeacherApplication() {
               </div>
             </div>
 
+            <hr className="border-gray-200 dark:border-gray-700" />
+
             {/* Private Information */}
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                  <FiShield className="w-5 h-5 text-amber-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Private Information
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Must match your government-issued ID
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                2.2 Private
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Please make sure your information is identical to your
+                government-issued ID.
+              </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
                     htmlFor="first-name"
-                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
                     First Name
                   </label>
                   <input
                     id="first-name"
-                    className="w-full px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400 uppercase"
+                    className="input"
                     placeholder="AYUB"
                     value={data.firstName}
                     onChange={(e) => updateData("firstName", e.target.value)}
                   />
                   {errors.firstName && (
-                    <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                      <FiInfo className="w-4 h-4" />
+                    <p className="text-red-500 text-sm mt-1">
                       {errors.firstName}
                     </p>
                   )}
@@ -1025,13 +990,13 @@ export default function TeacherApplication() {
                 <div>
                   <label
                     htmlFor="last-name"
-                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
                     Last Name
                   </label>
                   <input
                     id="last-name"
-                    className="w-full px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400 uppercase"
+                    className="input"
                     placeholder="ABDI"
                     value={data.lastName}
                     onChange={(e) => updateData("lastName", e.target.value)}
@@ -1048,7 +1013,7 @@ export default function TeacherApplication() {
                 <div>
                   <label
                     htmlFor="dob"
-                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                   >
                     <FaBirthdayCake className="inline mr-2 text-brand-500" />
                     Birthday
@@ -1056,31 +1021,25 @@ export default function TeacherApplication() {
                   <input
                     id="dob"
                     type="date"
-                    className="w-full px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
+                    className="input"
                     value={data.dateOfBirth}
                     onChange={(e) => updateData("dateOfBirth", e.target.value)}
                   />
                   {errors.dateOfBirth && (
-                    <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                      <FiInfo className="w-4 h-4" />
+                    <p className="text-red-500 text-sm mt-1">
                       {errors.dateOfBirth}
                     </p>
                   )}
                 </div>
                 <div>
-                  <p className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Gender
                   </p>
-                  <div className="flex gap-3">
+                  <div className="flex gap-4">
                     {["male", "female", "other"].map((g) => (
                       <label
                         key={g}
-                        className={clsx(
-                          "flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-xl cursor-pointer transition-all",
-                          data.gender === g
-                            ? "border-brand-500 bg-brand-50 dark:bg-brand-900/20 ring-2 ring-brand-500/20"
-                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 bg-white dark:bg-gray-800"
-                        )}
+                        className="flex items-center gap-2 cursor-pointer"
                       >
                         <input
                           type="radio"
@@ -1088,48 +1047,31 @@ export default function TeacherApplication() {
                           value={g}
                           checked={data.gender === g}
                           onChange={(e) => updateData("gender", e.target.value)}
-                          className="sr-only"
+                          className="text-brand-500 focus:ring-brand-500"
                         />
-                        <span
-                          className={clsx(
-                            "capitalize font-medium text-sm",
-                            data.gender === g
-                              ? "text-brand-600 dark:text-brand-400"
-                              : "text-gray-700 dark:text-gray-300"
-                          )}
-                        >
-                          {g}
-                        </span>
+                        <span className="capitalize">{g}</span>
                       </label>
                     ))}
                   </div>
                   {errors.gender && (
-                    <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                      <FiInfo className="w-4 h-4" />
-                      {errors.gender}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
                   )}
                 </div>
               </div>
             </div>
 
+            <hr className="border-gray-200 dark:border-gray-700" />
+
             {/* Language Skills */}
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
+            <div className="space-y-4 bg-gray-50 dark:bg-gray-900 p-6 rounded-xl">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <FaLanguage className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Language Skills
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Languages you can teach in
-                  </p>
-                </div>
+                <FaGraduationCap className="w-6 h-6 text-brand-600" />
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  2.3 Language Skills
+                </h3>
               </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700">
+              <div className="card p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <FaStar className="w-6 h-6 text-brand-500" />
                   <div>
@@ -1156,15 +1098,15 @@ export default function TeacherApplication() {
                 )}
               </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700">
+              <div className="card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <FaComments className="w-6 h-6 text-green-500" />
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">
+                      <h4 className="font-bold text-gray-900 dark:text-white">
                         Additional Languages
                       </h4>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         Add other languages you speak
                       </p>
                     </div>
@@ -1177,32 +1119,29 @@ export default function TeacherApplication() {
                         { language: "", level: "" },
                       ])
                     }
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-medium text-sm transition-colors"
+                    className="btn btn-primary btn-sm flex items-center gap-2"
                   >
-                    <FaPlus className="w-3 h-3" /> Add
+                    <FaPlus /> Add Language
                   </button>
                 </div>
 
                 {data.otherLanguages.length === 0 ? (
-                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-8 text-center border-2 border-dashed border-gray-200 dark:border-gray-600">
-                    <FaGlobe className="w-10 h-10 mx-auto text-gray-300 mb-3" />
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">
+                  <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-8 text-center">
+                    <FaGlobe className="w-8 h-8 mx-auto text-gray-400 mb-3" />
+                    <p className="text-gray-600 dark:text-gray-400">
                       No additional languages yet
-                    </p>
-                    <p className="text-sm text-gray-400 mt-1">
-                      Click &quot;Add&quot; to add more languages
                     </p>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {data.otherLanguages.map((lang, index) => (
                       <div
                         key={index}
-                        className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-600"
+                        className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4"
                       >
                         <div className="flex items-center justify-between mb-3">
-                          <span className="px-2.5 py-1 bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 text-xs font-semibold rounded-lg">
-                            Language #{index + 1}
+                          <span className="badge bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300">
+                            #{index + 1}
                           </span>
                           <button
                             type="button"
@@ -1214,9 +1153,9 @@ export default function TeacherApplication() {
                                 )
                               )
                             }
-                            className="text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-1.5 rounded-lg transition-colors"
+                            className="text-red-500 hover:text-red-600"
                           >
-                            <FaTimes className="w-4 h-4" />
+                            <FaTimes />
                           </button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1264,17 +1203,17 @@ export default function TeacherApplication() {
               </div>
             </div>
 
+            <hr className="border-gray-200 dark:border-gray-700" />
+
             {/* Profile Photo */}
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
-                  <FaCamera className="w-5 h-5 text-pink-600" />
-                </div>
+            <div className="card p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <FaCamera className="w-6 h-6 text-purple-500" />
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Profile Photo
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    2.4 Profile Photo
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Upload a professional photo
                   </p>
                 </div>
@@ -1287,10 +1226,8 @@ export default function TeacherApplication() {
                   </p>
                   <div
                     className={clsx(
-                      "w-40 h-40 mx-auto rounded-2xl border-4 overflow-hidden bg-white dark:bg-gray-800 flex items-center justify-center transition-all",
-                      data.profilePhoto
-                        ? "border-green-400 shadow-lg shadow-green-500/20"
-                        : "border-gray-200 dark:border-gray-600"
+                      "w-48 h-48 mx-auto rounded-full border-[3px] overflow-hidden bg-gray-50 dark:bg-gray-800 flex items-center justify-center",
+                      data.profilePhoto ? "border-green-300" : "border-gray-300"
                     )}
                   >
                     {data.profilePhoto ? (
@@ -1300,7 +1237,7 @@ export default function TeacherApplication() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <FaUser className="w-14 h-14 text-gray-300" />
+                      <FaUser className="w-16 h-16 text-gray-400" />
                     )}
                   </div>
                 </div>
@@ -1308,28 +1245,24 @@ export default function TeacherApplication() {
                 <div className="space-y-4">
                   <div
                     className={clsx(
-                      "p-6 border-2 border-dashed rounded-2xl text-center transition-all",
+                      "p-8 border-2 border-dashed rounded-xl text-center transition-all",
                       data.profilePhoto
-                        ? "border-green-300 bg-green-50 dark:bg-green-900/20"
-                        : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-brand-400"
+                        ? "border-green-200 bg-green-50 dark:bg-green-900/20"
+                        : "border-gray-200 bg-gray-50 dark:bg-gray-800 hover:border-brand-300"
                     )}
                   >
                     {data.profilePhoto ? (
-                      <div className="w-14 h-14 mx-auto rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
-                        <FaCheckCircle className="w-7 h-7 text-green-500" />
-                      </div>
+                      <FaCheckCircle className="w-12 h-12 mx-auto text-green-500 mb-4" />
                     ) : (
-                      <div className="w-14 h-14 mx-auto rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
-                        <FaUpload className="w-6 h-6 text-gray-400" />
-                      </div>
+                      <FaUpload className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                     )}
-                    <p className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                    <p className="font-semibold mb-2">
                       {data.profilePhoto
                         ? "Photo Uploaded!"
                         : "Upload Your Photo"}
                     </p>
                     {data.profilePhoto && (
-                      <p className="text-sm text-green-600 dark:text-green-400 truncate max-w-[200px] mx-auto">
+                      <p className="text-sm text-green-600">
                         {data.profilePhoto.name}
                       </p>
                     )}
@@ -1345,18 +1278,15 @@ export default function TeacherApplication() {
                     <label
                       htmlFor="profile-photo"
                       className={clsx(
-                        "inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-xl font-semibold cursor-pointer transition-all",
-                        data.profilePhoto
-                          ? "bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-300"
-                          : "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/30 hover:shadow-xl"
+                        "btn mt-4 cursor-pointer inline-block",
+                        data.profilePhoto ? "btn-outline" : "btn-primary"
                       )}
                     >
-                      <FaCamera className="w-4 h-4" />
                       {data.profilePhoto ? "Change Photo" : "Choose Photo"}
                     </label>
                   </div>
 
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <FaImage className="text-blue-500" />
                       <span className="font-semibold text-blue-700 dark:text-blue-300 text-sm">
@@ -1403,31 +1333,27 @@ export default function TeacherApplication() {
 
       case 2:
         return (
-          <div className="space-y-8">
-            {/* Section Header */}
-            <div className="text-center pb-4 border-b border-gray-100 dark:border-gray-700">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white mb-3">
-                <FiBriefcase className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <span className="badge bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 px-3 py-1">
+                4
+              </span>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                 Teaching Experience
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">
-                Share your background and expertise
-              </p>
+              </h3>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
+            <div>
               <label
                 htmlFor="teaching-experience"
-                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Describe your teaching experience
               </label>
               <textarea
                 id="teaching-experience"
                 rows={4}
-                className="w-full px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400 resize-none"
+                className="input"
                 placeholder="Years of experience, age groups taught, teaching environments..."
                 value={data.teachingExperience}
                 onChange={(e) =>
@@ -1435,8 +1361,7 @@ export default function TeacherApplication() {
                 }
               />
               {errors.teachingExperience && (
-                <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                  <FiInfo className="w-4 h-4" />
+                <p className="text-red-500 text-sm mt-1">
                   {errors.teachingExperience}
                 </p>
               )}
@@ -1445,81 +1370,52 @@ export default function TeacherApplication() {
             <div>
               <label
                 htmlFor="education"
-                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Education Background
               </label>
               <textarea
                 id="education"
                 rows={3}
-                className="w-full px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400 resize-none"
+                className="input"
                 placeholder="Educational qualifications, degrees, and relevant training..."
                 value={data.education}
                 onChange={(e) => updateData("education", e.target.value)}
               />
               {errors.education && (
-                <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                  <FiInfo className="w-4 h-4" />
-                  {errors.education}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{errors.education}</p>
               )}
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                  <FaCertificate className="w-5 h-5 text-amber-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Certifications
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Upload teaching certificates (optional)
-                  </p>
-                </div>
-              </div>
-
-              <div className="border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl p-6 bg-white dark:bg-gray-800 text-center">
-                <input
-                  id="certifications"
-                  type="file"
-                  accept=".pdf"
-                  multiple
-                  onChange={(e) =>
-                    updateData(
-                      "certifications",
-                      Array.from(e.target.files || [])
-                    )
-                  }
-                  className="hidden"
-                />
-                <label htmlFor="certifications" className="cursor-pointer">
-                  <div className="w-12 h-12 mx-auto rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-3">
-                    <FaUpload className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <p className="font-semibold text-gray-800 dark:text-gray-200">
-                    Upload Certificates
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">PDF files only</p>
-                </label>
-              </div>
-
+            <div>
+              <label
+                htmlFor="certifications"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Certifications (Optional)
+              </label>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                Upload teaching certificates (PDF only)
+              </p>
+              <input
+                id="certifications"
+                type="file"
+                accept=".pdf"
+                multiple
+                onChange={(e) =>
+                  updateData("certifications", Array.from(e.target.files || []))
+                }
+                className="input"
+              />
               {data.certifications.length > 0 && (
-                <div className="space-y-2">
+                <div className="mt-2 space-y-1">
                   {data.certifications.map((file, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl"
+                      className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                          <FaCertificate className="w-4 h-4 text-amber-600" />
-                        </div>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[200px]">
-                          {file.name}
-                        </span>
-                      </div>
+                      <FaCertificate className="text-brand-500" />
+                      <span>{file.name}</span>
                       <button
                         type="button"
                         onClick={() =>
@@ -1528,9 +1424,9 @@ export default function TeacherApplication() {
                             data.certifications.filter((_, i) => i !== index)
                           )
                         }
-                        className="text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-1.5 rounded-lg transition-colors"
+                        className="text-red-500 hover:text-red-600 text-xs"
                       >
-                        <FaTimes className="w-4 h-4" />
+                        Remove
                       </button>
                     </div>
                   ))}
@@ -1538,44 +1434,19 @@ export default function TeacherApplication() {
               )}
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <FaStar className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Teaching Specialties
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Select all areas you&apos;re comfortable teaching
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div>
+              <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Teaching Specialties
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                Select all areas you&apos;re comfortable teaching:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {specialties.map((specialty) => (
                   <label
                     key={specialty}
-                    className={clsx(
-                      "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all border-2",
-                      data.specialties.includes(specialty)
-                        ? "bg-green-50 dark:bg-green-900/20 border-green-400 dark:border-green-600"
-                        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                    )}
+                    className="flex items-center gap-2 cursor-pointer"
                   >
-                    <div
-                      className={clsx(
-                        "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all",
-                        data.specialties.includes(specialty)
-                          ? "bg-green-500 border-green-500"
-                          : "border-gray-300 dark:border-gray-600"
-                      )}
-                    >
-                      {data.specialties.includes(specialty) && (
-                        <FiCheck className="w-3 h-3 text-white" />
-                      )}
-                    </div>
                     <input
                       type="checkbox"
                       checked={data.specialties.includes(specialty)}
@@ -1592,40 +1463,29 @@ export default function TeacherApplication() {
                           );
                         }
                       }}
-                      className="sr-only"
                     />
-                    <span
-                      className={clsx(
-                        "text-sm font-medium",
-                        data.specialties.includes(specialty)
-                          ? "text-green-700 dark:text-green-400"
-                          : "text-gray-700 dark:text-gray-300"
-                      )}
-                    >
-                      {specialty}
-                    </span>
+                    <span className="text-sm">{specialty}</span>
                   </label>
                 ))}
               </div>
               {errors.specialties && (
-                <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                  <FiInfo className="w-4 h-4" />
+                <p className="text-red-500 text-sm mt-1">
                   {errors.specialties}
                 </p>
               )}
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
+            <div>
               <label
                 htmlFor="teaching-style"
-                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Teaching Style
               </label>
               <textarea
                 id="teaching-style"
                 rows={3}
-                className="w-full px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400 resize-none"
+                className="input"
                 placeholder="Describe your teaching methodology..."
                 value={data.teachingStyle}
                 onChange={(e) => updateData("teachingStyle", e.target.value)}
@@ -1637,255 +1497,126 @@ export default function TeacherApplication() {
       case 3:
         return (
           <div className="space-y-6">
-            {/* Section Header */}
-            <div className="text-center pb-4 border-b border-gray-100 dark:border-gray-700">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 text-white mb-3">
-                <FiVideo className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Video Introduction
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">
-                Record a short video to introduce yourself
-              </p>
-            </div>
-
-            {/* Tips Banner */}
-            <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-              <FiInfo className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-700 dark:text-blue-300">
-                <span className="font-semibold text-blue-800 dark:text-blue-200">
-                  Tips:
-                </span>{" "}
-                Keep it 2-3 mins • Introduce yourself in Swahili & English •
-                Good lighting • Show your personality!
-              </div>
-            </div>
-
-            {/* Two Column Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Example Video */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <FaPlay className="w-4 h-4 text-purple-500" />
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    Example Video
-                  </h3>
-                </div>
-                <div className="rounded-xl overflow-hidden bg-black aspect-video relative">
-                  <iframe
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
-                    title="Example Tutor Introduction Video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full absolute inset-0"
-                  />
-                </div>
-                <p className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-3">
-                  <FiCheckCircle className="w-3.5 h-3.5 text-green-500" />
-                  Great example of a clear, friendly intro
+            <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <FiInfo className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-semibold text-blue-800 dark:text-blue-200">
+                  Video Introduction
+                </p>
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  Record a 2-3 minute video introducing yourself in Swahili and
+                  English.
                 </p>
               </div>
-
-              {/* Upload Your Video */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <FaUpload className="w-4 h-4 text-pink-500" />
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    Your Video
-                  </h3>
-                </div>
-
-                {data.videoFile ? (
-                  <div className="space-y-4">
-                    <div className="rounded-xl overflow-hidden bg-black aspect-video">
-                      <video
-                        controls
-                        className="w-full h-full object-contain"
-                        src={URL.createObjectURL(data.videoFile)}
-                      >
-                        <track kind="captions" />
-                      </video>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-green-600 dark:text-green-400 truncate flex-1 mr-2">
-                        ✓ {data.videoFile.name}
-                      </p>
-                      <label
-                        htmlFor="intro-video"
-                        className="text-sm text-brand-600 hover:text-brand-700 font-medium cursor-pointer"
-                      >
-                        Change
-                      </label>
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    className="border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl aspect-video flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 hover:border-brand-400 transition-colors cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("intro-video")?.click()
-                    }
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
-                      <FaPlay className="w-5 h-5 text-gray-400 ml-0.5" />
-                    </div>
-                    <p className="font-medium text-gray-700 dark:text-gray-300 text-sm">
-                      Click to upload video
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      MP4, MOV, AVI • Max 100MB
-                    </p>
-                  </div>
-                )}
-
-                <input
-                  id="intro-video"
-                  type="file"
-                  accept="video/*"
-                  onChange={(e) =>
-                    updateData("videoFile", e.target.files?.[0] || null)
-                  }
-                  className="hidden"
-                />
-
-                {errors.videoFile && (
-                  <p className="flex items-center gap-1 text-red-500 text-sm mt-3">
-                    <FiInfo className="w-4 h-4" />
-                    {errors.videoFile}
-                  </p>
-                )}
-              </div>
             </div>
+
+            <div>
+              <label
+                htmlFor="intro-video"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Upload Video Introduction
+              </label>
+              <input
+                id="intro-video"
+                type="file"
+                accept="video/*"
+                onChange={(e) =>
+                  updateData("videoFile", e.target.files?.[0] || null)
+                }
+                className="input"
+              />
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Max 100MB. Formats: MP4, MOV, AVI
+              </p>
+              {errors.videoFile && (
+                <p className="text-red-500 text-sm mt-1">{errors.videoFile}</p>
+              )}
+            </div>
+
+            {data.videoFile && (
+              <div>
+                <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Video Preview:
+                </p>
+                <video
+                  controls
+                  className="w-full max-w-xl rounded-lg"
+                  src={URL.createObjectURL(data.videoFile!)}
+                >
+                  <track kind="captions" />
+                </video>
+              </div>
+            )}
           </div>
         );
 
       case 4:
         return (
-          <div className="space-y-8">
-            {/* Section Header */}
-            <div className="text-center pb-4 border-b border-gray-100 dark:border-gray-700">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white mb-3">
-                <FiClock className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Availability & Rate
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">
-                Set your schedule and pricing
+          <div className="space-y-6">
+            <div>
+              <label
+                htmlFor="hourly-rate"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Hourly Rate (USD)
+              </label>
+              <input
+                id="hourly-rate"
+                type="number"
+                min="10"
+                max="100"
+                value={data.hourlyRate}
+                onChange={(e) =>
+                  updateData("hourlyRate", parseInt(e.target.value) || 15)
+                }
+                className="input w-32"
+              />
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Recommended: $15-25/hour
               </p>
+              {errors.hourlyRate && (
+                <p className="text-red-500 text-sm mt-1">{errors.hourlyRate}</p>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <FaDollarSign className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      Hourly Rate
-                    </h3>
-                    <p className="text-sm text-gray-500">Set your pricing</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-                    $
-                  </span>
-                  <input
-                    id="hourly-rate"
-                    type="number"
-                    min="10"
-                    max="100"
-                    value={data.hourlyRate}
-                    onChange={(e) =>
-                      updateData("hourlyRate", parseInt(e.target.value) || 15)
-                    }
-                    className="w-24 px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-xl font-bold text-center"
-                  />
-                  <span className="text-gray-500">/hour</span>
-                </div>
-                <p className="text-sm text-gray-500 mt-3">
-                  💡 Recommended: $15-25/hour for beginners
-                </p>
-                {errors.hourlyRate && (
-                  <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
-                    <FiInfo className="w-4 h-4" />
-                    {errors.hourlyRate}
-                  </p>
-                )}
-              </div>
-
-              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <FaGlobe className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      Timezone
-                    </h3>
-                    <p className="text-sm text-gray-500">Your local timezone</p>
-                  </div>
-                </div>
-
-                <select
-                  id="timezone"
-                  className="w-full px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
-                  value={data.timezone}
-                  onChange={(e) => updateData("timezone", e.target.value)}
-                >
-                  <option value="">Select timezone</option>
-                  <option value="Africa/Dar_es_Salaam">
-                    East Africa Time (EAT)
-                  </option>
-                  <option value="Africa/Nairobi">East Africa Time (EAT)</option>
-                  <option value="UTC">UTC</option>
-                  <option value="Europe/London">GMT</option>
-                  <option value="America/New_York">EST</option>
-                </select>
-              </div>
+            <div>
+              <label
+                htmlFor="timezone"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Timezone
+              </label>
+              <select
+                id="timezone"
+                className="input"
+                value={data.timezone}
+                onChange={(e) => updateData("timezone", e.target.value)}
+              >
+                <option value="">Select timezone</option>
+                <option value="Africa/Dar_es_Salaam">
+                  East Africa Time (EAT)
+                </option>
+                <option value="Africa/Nairobi">East Africa Time (EAT)</option>
+                <option value="UTC">UTC</option>
+                <option value="Europe/London">GMT</option>
+                <option value="America/New_York">EST</option>
+              </select>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 space-y-5">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <FaCalendarAlt className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    Weekly Availability
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Select time slots when you&apos;re available to teach
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div>
+              <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Availability
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                Select time slots when you&apos;re available:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {availabilitySlots.map((slot) => (
                   <label
                     key={slot}
-                    className={clsx(
-                      "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all border-2",
-                      data.availability.includes(slot)
-                        ? "bg-purple-50 dark:bg-purple-900/20 border-purple-400 dark:border-purple-600"
-                        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                    )}
+                    className="flex items-center gap-2 cursor-pointer"
                   >
-                    <div
-                      className={clsx(
-                        "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all",
-                        data.availability.includes(slot)
-                          ? "bg-purple-500 border-purple-500"
-                          : "border-gray-300 dark:border-gray-600"
-                      )}
-                    >
-                      {data.availability.includes(slot) && (
-                        <FiCheck className="w-3 h-3 text-white" />
-                      )}
-                    </div>
                     <input
                       type="checkbox"
                       checked={data.availability.includes(slot)}
@@ -1902,34 +1633,13 @@ export default function TeacherApplication() {
                           );
                         }
                       }}
-                      className="sr-only"
                     />
-                    <span
-                      className={clsx(
-                        "text-sm font-medium",
-                        data.availability.includes(slot)
-                          ? "text-purple-700 dark:text-purple-400"
-                          : "text-gray-700 dark:text-gray-300"
-                      )}
-                    >
-                      {slot}
-                    </span>
+                    <span className="text-sm">{slot}</span>
                   </label>
                 ))}
               </div>
-
-              {data.availability.length > 0 && (
-                <div className="flex items-center gap-2 text-sm text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 px-4 py-3 rounded-xl">
-                  <FiCheck className="w-4 h-4" />
-                  <span className="font-medium">
-                    {data.availability.length} time slots selected
-                  </span>
-                </div>
-              )}
-
               {errors.availability && (
-                <p className="flex items-center gap-1 text-red-500 text-sm">
-                  <FiInfo className="w-4 h-4" />
+                <p className="text-red-500 text-sm mt-1">
                   {errors.availability}
                 </p>
               )}
@@ -1939,146 +1649,78 @@ export default function TeacherApplication() {
 
       case 5:
         return (
-          <div className="space-y-8">
-            {/* Section Header */}
-            <div className="text-center pb-4 border-b border-gray-100 dark:border-gray-700">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white mb-3">
-                <FaClipboardCheck className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Review Your Application
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">
-                Please verify your information before submitting
-              </p>
-            </div>
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              Review Your Application
+            </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-5">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
-                    <FiUser className="w-4 h-4 text-brand-600" />
-                  </div>
-                  <p className="font-semibold text-gray-900 dark:text-white">
-                    Personal Information
-                  </p>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    <span className="font-medium text-gray-800 dark:text-gray-200">
-                      {data.firstName} {data.lastName}
-                    </span>
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {data.email}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {data.from} → {data.livingIn}
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-5">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <FaDollarSign className="w-4 h-4 text-green-600" />
-                  </div>
-                  <p className="font-semibold text-gray-900 dark:text-white">
-                    Rate & Schedule
-                  </p>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    <span className="text-2xl font-bold text-green-600">
-                      ${data.hourlyRate}
-                    </span>
-                    /hour
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {data.availability.length} time slots available
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-5">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <FaStar className="w-4 h-4 text-purple-600" />
-                </div>
+            <div className="card p-6 space-y-4">
+              <div>
                 <p className="font-semibold text-gray-900 dark:text-white">
-                  Teaching Specialties
+                  Personal Information
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {data.firstName} {data.lastName}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">{data.email}</p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {data.city}, {data.country}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {data.specialties.map((specialty) => (
-                  <span
-                    key={specialty}
-                    className="px-3 py-1.5 bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 text-sm font-medium rounded-lg"
-                  >
-                    {specialty}
-                  </span>
-                ))}
+
+              <div>
+                <p className="font-semibold text-gray-900 dark:text-white">
+                  Teaching Focus
+                </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {data.specialties.map((specialty) => (
+                    <span
+                      key={specialty}
+                      className="badge bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300"
+                    >
+                      {specialty}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="font-semibold text-gray-900 dark:text-white">
+                  Rate & Availability
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  ${data.hourlyRate}/hour
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {data.availability.length} time slots selected
+                </p>
               </div>
             </div>
 
-            <label
-              className={clsx(
-                "flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all border-2",
-                data.agreedToTerms
-                  ? "bg-green-50 dark:bg-green-900/20 border-green-400"
-                  : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300"
-              )}
-            >
-              <div
-                className={clsx(
-                  "w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5",
-                  data.agreedToTerms
-                    ? "bg-green-500 border-green-500"
-                    : "border-gray-300 dark:border-gray-600"
-                )}
-              >
-                {data.agreedToTerms && (
-                  <FiCheck className="w-4 h-4 text-white" />
-                )}
-              </div>
+            <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={data.agreedToTerms}
                 onChange={(e) => updateData("agreedToTerms", e.target.checked)}
-                className="sr-only"
+                className="mt-1"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">
-                I agree to the{" "}
-                <span className="text-brand-600 dark:text-brand-400 font-medium hover:underline">
-                  Terms of Service
-                </span>{" "}
-                and{" "}
-                <span className="text-brand-600 dark:text-brand-400 font-medium hover:underline">
-                  Privacy Policy
-                </span>{" "}
-                for teachers on Ztalk
+                I agree to the Terms of Service and Privacy Policy for teachers
               </span>
             </label>
             {errors.agreedToTerms && (
-              <p className="flex items-center gap-1 text-red-500 text-sm">
-                <FiInfo className="w-4 h-4" />
-                {errors.agreedToTerms}
-              </p>
+              <p className="text-red-500 text-sm">{errors.agreedToTerms}</p>
             )}
 
-            <div className="flex items-start gap-4 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                <FiInfo className="w-5 h-5 text-blue-600" />
-              </div>
+            <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <FiInfo className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="font-semibold text-blue-800 dark:text-blue-200">
-                  What happens next?
+                  Next Steps
                 </p>
-                <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
                   After submission, our team will review your application within
-                  2-3 business days. You&apos;ll receive an email notification
-                  with the result.
+                  2-3 business days.
                 </p>
               </div>
             </div>
@@ -2094,16 +1736,7 @@ export default function TeacherApplication() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Hero Header */}
       <div className="relative bg-gradient-to-r from-brand-600 via-brand-500 to-blue-500 overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)",
-              backgroundSize: "20px 20px",
-            }}
-          />
-        </div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z\" fill=\"rgba(255,255,255,0.07)\"%3E%3C/path%3E%3C/svg%3E')] opacity-50"></div>
         <div className="relative max-w-4xl mx-auto px-4 py-12 md:py-16">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 text-sm font-medium mb-4">
@@ -2114,8 +1747,7 @@ export default function TeacherApplication() {
               Become a Ztalk Teacher
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
-              Share your knowledge, set your own schedule, and earn money
-              teaching Swahili to students worldwide
+              Share your knowledge, set your own schedule, and earn money teaching Swahili to students worldwide
             </p>
           </div>
         </div>
@@ -2130,7 +1762,7 @@ export default function TeacherApplication() {
                 const StepIcon = step.icon;
                 const isCompleted = index < activeStep;
                 const isCurrent = index === activeStep;
-
+                
                 return (
                   <div key={index} className="flex items-center flex-1">
                     <div className="flex flex-col items-center relative">
@@ -2151,16 +1783,10 @@ export default function TeacherApplication() {
                         )}
                       </div>
                       <div className="mt-2 text-center">
-                        <p
-                          className={clsx(
-                            "text-sm font-semibold",
-                            isCurrent
-                              ? "text-brand-600 dark:text-brand-400"
-                              : isCompleted
-                              ? "text-green-600"
-                              : "text-gray-500"
-                          )}
-                        >
+                        <p className={clsx(
+                          "text-sm font-semibold",
+                          isCurrent ? "text-brand-600 dark:text-brand-400" : isCompleted ? "text-green-600" : "text-gray-500"
+                        )}>
                           {step.title}
                         </p>
                         <p className="text-xs text-gray-400 dark:text-gray-500 hidden lg:block">
@@ -2170,11 +1796,11 @@ export default function TeacherApplication() {
                     </div>
                     {index < steps.length - 1 && (
                       <div className="flex-1 h-1 mx-4 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                        <div
+                        <div 
                           className={clsx(
                             "h-full rounded-full transition-all duration-500",
-                            index < activeStep
-                              ? "bg-green-500 w-full"
+                            index < activeStep 
+                              ? "bg-green-500 w-full" 
                               : "bg-gray-200 dark:bg-gray-600 w-0"
                           )}
                         />

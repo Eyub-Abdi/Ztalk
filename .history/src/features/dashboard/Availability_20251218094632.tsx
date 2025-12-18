@@ -180,8 +180,10 @@ export default function Availability() {
 
   const goToToday = useCallback(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    setCurrentWeekStart(today);
+    const day = today.getDay();
+    const start = new Date(today);
+    start.setDate(today.getDate() - day);
+    setCurrentWeekStart(start);
   }, []);
 
   // Toggle availability for a specific hour
@@ -441,7 +443,7 @@ export default function Availability() {
                     isToday(date) ? "text-brand-600" : "text-gray-500"
                   )}
                 >
-                  {DAYS_OF_WEEK[date.getDay()]}
+                  {DAYS_OF_WEEK[idx]}
                 </div>
                 <div
                   className={clsx(
@@ -458,7 +460,7 @@ export default function Availability() {
           {/* Time Grid - Scrollable */}
           <div
             ref={scrollContainerRef}
-            className="relative overflow-y-auto scrollbar-hide"
+            className="relative overflow-y-auto"
             style={{ maxHeight: "600px" }}
           >
             {HOURS.map((hour) => (
