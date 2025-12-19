@@ -44,9 +44,7 @@ function NavItem({
       className={({ isActive }) =>
         clsx(
           "flex items-center rounded-xl transition-all duration-200 group",
-          isCollapsed
-            ? "justify-center w-9 h-9"
-            : "gap-3 px-4 py-3 min-h-[48px]",
+          isCollapsed ? "justify-center w-9 h-9" : "gap-3 px-4 py-3 min-h-[48px]",
           isActive
             ? "bg-brand-500 text-white shadow-lg shadow-brand-500/20"
             : "text-gray-700 hover:bg-gray-100"
@@ -294,56 +292,48 @@ function SidebarContent({
             icon={FiHome}
             label="Overview"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
           <NavItem
             to="/dashboard/teacher/bookings"
             icon={FiCalendar}
             label="My Bookings"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
           <NavItem
             to="/dashboard/teacher/upcoming"
             icon={FiClock}
             label="Upcoming Lessons"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
           <NavItem
             to="/dashboard/teacher/lessons/new"
             icon={FiBookOpen}
             label="Create Lesson"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
           <NavItem
             to="/dashboard/teacher/availability"
             icon={FiClock}
             label="Availability"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
           <NavItem
             to="/dashboard/teacher/find-tutors"
             icon={FiUsers}
             label="My Students"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
           <NavItem
             to="/dashboard/teacher/wallet"
             icon={FiDollarSign}
             label="Wallet"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
           <NavItem
             to="/dashboard/teacher/settings"
             icon={FiSettings}
             label="Settings"
             onClick={onClose}
-            isCollapsed={isCollapsed}
           />
         </nav>
       </div>
@@ -354,8 +344,8 @@ function SidebarContent({
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("teacher-sidebar-visible");
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('teacher-sidebar-visible');
       return saved !== null ? JSON.parse(saved) : true;
     }
     return true;
@@ -371,10 +361,7 @@ export function DashboardLayout() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
-      "teacher-sidebar-visible",
-      JSON.stringify(sidebarVisible)
-    );
+    localStorage.setItem('teacher-sidebar-visible', JSON.stringify(sidebarVisible));
   }, [sidebarVisible]);
 
   const displayUser = user || {
@@ -398,11 +385,7 @@ export function DashboardLayout() {
         <aside
           className={clsx(
             "bg-gray-50 flex-shrink-0 fixed top-[89px] left-0 h-[calc(100vh-89px)] z-30 transition-all duration-300 ease-in-out",
-            isMobile
-              ? "-translate-x-full"
-              : sidebarVisible
-              ? "w-[300px] translate-x-0"
-              : "w-[80px] translate-x-0"
+            isMobile ? "-translate-x-full" : sidebarVisible ? "w-[300px] translate-x-0" : "w-[80px] translate-x-0"
           )}
         >
           <div
