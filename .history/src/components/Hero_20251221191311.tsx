@@ -1,10 +1,4 @@
-import {
-  FiPlay,
-  FiCheckCircle,
-  FiUsers,
-  FiBookOpen,
-  FiStar,
-} from "react-icons/fi";
+import { FiSearch, FiPlay, FiCheckCircle } from "react-icons/fi";
 import { ReactNode, useMemo } from "react";
 import { motion } from "framer-motion";
 
@@ -178,96 +172,53 @@ function FloatingElements() {
 function StatCard({ label, value, icon }: StatProps) {
   return (
     <MotionDiv
-      initial={{ opacity: 0, y: 50, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 40, rotateY: -20 }}
+      animate={{ opacity: 1, y: 0, rotateY: 0 }}
       transition={{
-        duration: 0.8,
-        delay: 1.4,
+        duration: 0.9,
+        delay: 1.2,
         type: "spring",
-        stiffness: 150,
-        damping: 25,
+        stiffness: 120,
+        damping: 20,
       }}
       whileHover={{
-        y: -8,
-        rotateY: 5,
-        boxShadow: "0 30px 60px rgba(59, 130, 246, 0.25)",
+        scale: 1.08,
+        rotateY: 8,
+        boxShadow: "0 25px 50px rgba(59, 130, 246, 0.15)",
         transition: {
           type: "spring",
-          stiffness: 500,
-          damping: 30,
-        },
-      }}
-      transition={{
-        duration: 0.8,
-        delay: 1.4,
-        type: "spring",
-        stiffness: 150,
-        damping: 25,
-        // Instant exit transitions
-        exit: {
-          duration: 0,
-          type: "tween",
-          ease: "linear",
+          stiffness: 400,
+          damping: 25,
         },
       }}
       style={{ transformStyle: "preserve-3d" }}
     >
-      <div className="relative px-3 py-2 rounded-xl bg-white/70 backdrop-blur-xl shadow-lg border border-white/20 overflow-hidden group">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-500/10 via-transparent to-brand-600/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
+      <div className="flex flex-col p-5 rounded-2xl bg-white/95 backdrop-blur-sm shadow-lg border border-gray-100 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-50/0 to-brand-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Top accent line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700 ease-out" />
-
-        {/* Icon with enhanced styling */}
-        <div className="flex items-center justify-center mb-1 relative z-10">
-          <motion.div
-            className="flex items-center justify-center p-1.5 rounded-md bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-sm shadow-brand-500/30 group-hover:shadow-brand-500/50"
-            whileHover={{
-              rotate: [0, -5, 5, 0],
-              boxShadow: "0 10px 20px rgba(59, 130, 246, 0.4)",
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 25,
-              // Instant exit for better responsiveness
-              exit: {
-                duration: 0,
-                type: "tween",
-                ease: "linear",
-              },
-            }}
-          >
-            <div className="flex items-center justify-center w-3 h-3">
-              {icon}
-            </div>
-          </motion.div>
+        <div className="flex items-center gap-3 mb-3 text-brand-600 text-sm relative z-10">
+          <div className="p-1 rounded-lg bg-brand-100 group-hover:bg-brand-200 transition-colors duration-300">
+            {icon}
+          </div>
+          <span className="font-semibold tracking-wide">{label}</span>
         </div>
 
-        {/* Value with counter animation effect */}
         <motion.div
-          className="text-center mb-1 relative z-10"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{
-            duration: 0.8,
-            delay: 1.8,
+            duration: 0.6,
+            delay: 1.5,
             type: "spring",
             stiffness: 200,
           }}
+          className="relative z-10"
         >
-          <h3 className="text-base font-bold text-gray-900 group-hover:text-brand-700 transition-colors duration-300 tracking-tight">
+          <h4 className="text-2xl font-bold text-gray-900 group-hover:text-brand-700 transition-colors duration-300">
             {value}
-          </h3>
+          </h4>
         </motion.div>
-
-        {/* Label with better typography */}
-        <div className="text-center relative z-10">
-          <p className="text-[10px] font-medium text-gray-600 group-hover:text-brand-600 transition-colors duration-300 tracking-wide uppercase">
-            {label}
-          </p>
-        </div>
       </div>
     </MotionDiv>
   );
@@ -280,7 +231,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-brand-25 via-white to-brand-50/30 pb-20 md:pb-24 pt-8 md:pt-16 w-full max-w-full">
+    <section className="relative overflow-hidden bg-gradient-to-br from-brand-25 via-white to-brand-50/30 pb-20 md:pb-24 pt-12 md:pt-24 w-full max-w-full">
       {/* Enhanced background blur effect */}
       <div
         className="absolute -top-[8%] md:-top-[12%] right-0 w-[60%] md:w-[50%] h-[75%] md:h-[85%] bg-gradient-to-bl from-brand-200/60 to-brand-100/40 pointer-events-none overflow-hidden"
@@ -293,26 +244,40 @@ export function Hero() {
       <div className="absolute top-1/4 left-0 w-[30%] h-[50%] bg-gradient-to-br from-brand-50/20 to-transparent rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-[25%] h-[40%] bg-gradient-to-tl from-brand-100/30 to-transparent rounded-full blur-2xl" />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
-          <div className="flex items-start">
-            <div className="space-y-6 -mt-2">
+      <div className="container-main relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="flex items-center">
+            <div className="space-y-6">
               <MotionDiv
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
-                className="relative"
+                initial={{ opacity: 0, x: -20, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                transition={{ duration: 0.6, type: "spring", stiffness: 150 }}
+                whileHover={{ scale: 1.05 }}
               >
-                <div className="hidden md:block absolute inset-0">
+                <span className="inline-flex items-center gap-2 badge bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/25 rounded-full px-4 py-2 font-semibold text-sm">
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                  Swahili for Real Journeys
+                </span>
+              </MotionDiv>
+
+              <div className="relative overflow-hidden">
+                <div className="hidden md:block">
                   <FloatingElements />
                 </div>
-                <h1 className="text-[2rem] sm:text-[2.3rem] md:text-[3rem] lg:text-[3.3rem] font-extrabold leading-[1.1] tracking-tight text-gray-900 relative z-10">
-                  <AnimatedText
-                    text="SWAHILI MADE SIMPLE, FUN, PRACTICAL"
-                    delay={0.4}
-                  />
-                </h1>
-              </MotionDiv>
+                <MotionDiv
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+                >
+                  <h1 className="text-[2.2rem] sm:text-[2.6rem] md:text-[3.5rem] lg:text-[3.8rem] font-extrabold leading-[1.1] tracking-tight text-gray-900">
+                    <AnimatedText
+                      text="Master Swahili before your Tanzania adventure"
+                      highlight="Master Swahili"
+                      delay={0.4}
+                    />
+                  </h1>
+                </MotionDiv>
+              </div>
 
               <MotionDiv
                 initial={{ opacity: 0, y: 25 }}
@@ -354,7 +319,7 @@ export function Hero() {
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
-                    <button className="btn btn-lg bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold shadow-lg shadow-brand-500/25 w-full sm:w-auto relative overflow-hidden group border-0 px-8 py-4 focus:outline-none focus:ring-0 focus:border-0 active:outline-none">
+                    <button className="btn btn-lg bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold shadow-lg shadow-brand-500/25 w-full sm:w-auto relative overflow-hidden group border-0 px-8 py-4">
                       <span className="relative z-10">Start Your Journey</span>
                       <motion.span
                         animate={{ x: [0, 4, 0] }}
@@ -379,7 +344,7 @@ export function Hero() {
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
-                    <button className="btn btn-lg border-2 border-brand-300 text-brand-700 hover:bg-brand-50 hover:border-brand-400 font-semibold w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-0 focus:border-brand-300 active:outline-none">
+                    <button className="btn btn-lg border-2 border-brand-300 text-brand-700 hover:bg-brand-50 hover:border-brand-400 font-semibold w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm">
                       Meet Our Tutors
                     </button>
                   </MotionDiv>
@@ -391,29 +356,50 @@ export function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 1.0 }}
               >
+                <form
+                  onSubmit={(e) => e.preventDefault()}
+                  role="search"
+                  aria-label="Find a tutor"
+                >
+                  <label htmlFor="tutor-search" className="sr-only">
+                    Find a tutor
+                  </label>
+                  <div className="relative max-w-full md:max-w-[400px] w-full">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                      <FiSearch className="text-brand-500 w-5 h-5" />
+                    </div>
+                    <input
+                      id="tutor-search"
+                      type="text"
+                      placeholder="Search by language or location..."
+                      className="w-full pl-12 pr-4 py-4 text-base bg-white/90 backdrop-blur-sm border-2 border-gray-200 rounded-2xl shadow-sm focus:border-brand-400 focus:shadow-xl focus:bg-white hover:border-brand-300 transition-all duration-300 font-medium placeholder:text-gray-500"
+                    />
+                  </div>
+                </form>
+
                 {/* Mobile stats */}
                 <div className="grid grid-cols-3 gap-3 mt-8 md:hidden">
                   <StatCard
-                    label="Native Tutors"
-                    value="150+"
-                    icon={<FiUsers className="w-4 h-4" />}
+                    label="Expert Tutors"
+                    value="120+"
+                    icon={<FiCheckCircle className="w-4 h-4" />}
                   />
                   <StatCard
-                    label="Active Learners"
-                    value="2.4K+"
-                    icon={<FiBookOpen className="w-4 h-4" />}
+                    label="Essential Phrases"
+                    value="800+"
+                    icon={<FiCheckCircle className="w-4 h-4" />}
                   />
                   <StatCard
-                    label="Success Rate"
-                    value="98%"
-                    icon={<FiStar className="w-4 h-4" />}
+                    label="Rating"
+                    value="4.9★"
+                    icon={<FiCheckCircle className="w-4 h-4" />}
                   />
                 </div>
               </MotionDiv>
             </div>
           </div>
 
-          <div className="hidden md:flex items-start justify-center">
+          <div className="hidden md:flex items-center justify-center">
             <div className="w-full max-w-lg space-y-8">
               <MotionDiv
                 initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
@@ -429,31 +415,31 @@ export function Hero() {
                   rotateY: -5,
                   transition: { type: "spring", stiffness: 300 },
                 }}
-                className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-brand-500/10 bg-gradient-to-br from-brand-50 to-white"
+                className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-brand-500/10 bg-gradient-to-br from-brand-50 to-white p-4"
               >
                 <img
-                  src="/images/ztalk_hero.png"
-                  alt="ZTalk Hero - Learn Swahili"
-                  className="w-full h-full object-cover filter drop-shadow-lg"
+                  src="/images/ztalk-hero.png"
+                  alt="Tanzania Flag - Learn Swahili"
+                  className="w-full h-full object-contain filter drop-shadow-lg"
                   loading="lazy"
                 />
               </MotionDiv>
 
               <div className="grid grid-cols-3 gap-4 w-full">
                 <StatCard
-                  label="Native Tutors"
-                  value="150+"
-                  icon={<FiUsers className="w-4 h-4" />}
+                  label="Expert Tutors"
+                  value="120+"
+                  icon={<FiCheckCircle className="w-4 h-4" />}
                 />
                 <StatCard
-                  label="Active Learners"
-                  value="2.4K+"
-                  icon={<FiBookOpen className="w-4 h-4" />}
+                  label="Essential Phrases"
+                  value="800+"
+                  icon={<FiCheckCircle className="w-4 h-4" />}
                 />
                 <StatCard
-                  label="Success Rate"
-                  value="98%"
-                  icon={<FiStar className="w-4 h-4" />}
+                  label="Student Rating"
+                  value="4.9★"
+                  icon={<FiCheckCircle className="w-4 h-4" />}
                 />
               </div>
             </div>

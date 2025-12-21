@@ -354,7 +354,7 @@ export function Hero() {
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
-                    <button className="btn btn-lg bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold shadow-lg shadow-brand-500/25 w-full sm:w-auto relative overflow-hidden group border-0 px-8 py-4 focus:outline-none focus:ring-0 focus:border-0 active:outline-none">
+                    <button className="btn btn-lg bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-semibold shadow-lg shadow-brand-500/25 w-full sm:w-auto relative overflow-hidden group border-0 px-8 py-4">
                       <span className="relative z-10">Start Your Journey</span>
                       <motion.span
                         animate={{ x: [0, 4, 0] }}
@@ -379,7 +379,7 @@ export function Hero() {
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
-                    <button className="btn btn-lg border-2 border-brand-300 text-brand-700 hover:bg-brand-50 hover:border-brand-400 font-semibold w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-0 focus:border-brand-300 active:outline-none">
+                    <button className="btn btn-lg border-2 border-brand-300 text-brand-700 hover:bg-brand-50 hover:border-brand-400 font-semibold w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm">
                       Meet Our Tutors
                     </button>
                   </MotionDiv>
