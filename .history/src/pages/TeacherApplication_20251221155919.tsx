@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { clsx } from "clsx";
@@ -55,35 +55,10 @@ type CountryItem = {
   flag_emoji?: string;
   flag_url?: string;
 };
-type LanguageItem = {
-  id: number;
-  name: string;
-  code: string;
-  native_name: string;
-  flag_image: string;
-  native_countries: CountryItem[];
-};
 
 // Local draft storage key helper
 const getDraftStorageKey = (email?: string) =>
   `teacher-application-draft:${email || "anon"}`;
-
-// API response type for native languages endpoint
-interface NativeLanguagesApiResponse {
-  success: boolean;
-  message: string;
-  data: {
-    native_languages: LanguageItem[];
-    allowed_countries: CountryItem[];
-    total: number;
-    filter: {
-      country_code: string | null;
-      description: string;
-    };
-    note: string;
-  };
-  errors: null;
-}
 
 // Remove non-serializable fields like File objects before storage
 const sanitizeDataForStorage = (data: TeacherApplicationData) => ({
@@ -91,14 +66,14 @@ const sanitizeDataForStorage = (data: TeacherApplicationData) => ({
   profilePhoto: null,
   videoFile: null,
 });
-// API function to fetch native languages and allowed countries
+// API function to fetch allowed countries (for 'From')
 const fetchAllowedCountries = async () => {
   console.log(
-    "Fetching native languages from:",
-    `${API_BASE_URL}/teachers/languages/native/`
+    "Fetching allowed countries from:",
+    `${API_BASE_URL}/teachers/allowed-countries/`
   );
-  const response = await axios.get<NativeLanguagesApiResponse>(
-    `${API_BASE_URL}/teachers/languages/native/`,
+  const response = await axios.get(
+    `${API_BASE_URL}/teachers/allowed-countries/`,
     {
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -106,21 +81,18 @@ const fetchAllowedCountries = async () => {
       },
     }
   );
-  if (response.data?.success && response.data?.data) {
-    return {
-      allowed_countries: response.data.data.allowed_countries || [],
-      native_languages: response.data.data.native_languages || [],
-    };
+  if (response.data?.success && response.data?.data?.allowed_countries) {
+    return response.data.data.allowed_countries;
   }
-  throw new Error("Unexpected response when fetching native languages");
+  if (response.data?.success && response.data?.data?.countries) {
+    return response.data.data.countries;
+  }
+  throw new Error("Unexpected response when fetching allowed countries");
 };
-// Hook for native languages and allowed countries
-const useNativeLanguagesAndCountries = () => {
-  return useQuery<{
-    allowed_countries: CountryItem[];
-    native_languages: LanguageItem[];
-  }>({
-    queryKey: ["native-languages-countries"],
+// Hook for allowed countries
+const useAllowedCountries = () => {
+  return useQuery<CountryItem[]>({
+    queryKey: ["allowed-countries"],
     queryFn: fetchAllowedCountries,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 3,
@@ -158,8 +130,6 @@ const useAllCountries = () => {
     retry: 3,
   });
 };
-
-// Languages are now fetched as part of the allowed countries API
 
 // Countries list
 const countries = [
@@ -446,14 +416,12 @@ function Dropdown({
   renderSelected?: (opt: { value: string; label: string }) => React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const [filterText, setFilterText] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setOpen(false);
-        setFilterText("");
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -462,38 +430,11 @@ function Dropdown({
 
   const selected = options.find((o) => o.value === value);
 
-  // Filter options based on search text - show countries starting with typed letters
-  const filteredOptions = filterText
-    ? options.filter((opt) =>
-        opt.label.toLowerCase().startsWith(filterText.toLowerCase().trim())
-      )
-    : options;
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Only handle letter keys, space, and control keys
-    if (e.key.length === 1 && /[a-zA-Z\s]/.test(e.key)) {
-      e.preventDefault();
-      setFilterText((prev) => prev + e.key);
-      setOpen(true);
-    } else if (e.key === "Backspace") {
-      e.preventDefault();
-      setFilterText((prev) => prev.slice(0, -1));
-      if (!open) setOpen(true);
-    } else if (e.key === "Escape") {
-      setOpen(false);
-      setFilterText("");
-    } else if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setOpen(!open);
-    }
-  };
-
   return (
     <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        onKeyDown={handleKeyDown}
         className={clsx(
           "w-full flex items-center justify-between px-4 py-3.5 bg-white dark:bg-gray-800 border-2 rounded-xl text-left transition-all duration-200",
           open
@@ -501,24 +442,17 @@ function Dropdown({
             : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
         )}
       >
-        <div className="flex-1">
-          {selected ? (
-            renderSelected ? (
-              renderSelected(selected)
-            ) : (
-              <span className="font-medium text-gray-900 dark:text-white">
-                {selected.label}
-              </span>
-            )
+        {selected ? (
+          renderSelected ? (
+            renderSelected(selected)
           ) : (
-            <span className="text-gray-400">{placeholder}</span>
-          )}
-          {filterText && (
-            <div className="text-xs text-brand-600 dark:text-brand-400 mt-1">
-              Filtering: {filterText}
-            </div>
-          )}
-        </div>
+            <span className="font-medium text-gray-900 dark:text-white">
+              {selected.label}
+            </span>
+          )
+        ) : (
+          <span className="text-gray-400">{placeholder}</span>
+        )}
         <FaChevronDown
           className={clsx(
             "w-4 h-4 text-gray-400 transition-transform duration-200",
@@ -528,31 +462,24 @@ function Dropdown({
       </button>
       {open && (
         <div className="absolute z-50 mt-2 w-full max-h-60 overflow-auto bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl shadow-xl">
-          {filteredOptions.length === 0 ? (
-            <div className="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm">
-              No countries found starting with &ldquo;{filterText}&rdquo;
-            </div>
-          ) : (
-            filteredOptions.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
-                  setFilterText("");
-                }}
-                className={clsx(
-                  "w-full px-4 py-3 text-left transition-colors first:rounded-t-lg last:rounded-b-lg",
-                  opt.value === value
-                    ? "bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400"
-                    : "hover:bg-gray-50 dark:hover:bg-gray-700"
-                )}
-              >
-                {renderOption ? renderOption(opt) : <span>{opt.label}</span>}
-              </button>
-            ))
-          )}
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => {
+                onChange(opt.value);
+                setOpen(false);
+              }}
+              className={clsx(
+                "w-full px-4 py-3 text-left transition-colors first:rounded-t-lg last:rounded-b-lg",
+                opt.value === value
+                  ? "bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400"
+                  : "hover:bg-gray-50 dark:hover:bg-gray-700"
+              )}
+            >
+              {renderOption ? renderOption(opt) : <span>{opt.label}</span>}
+            </button>
+          ))}
         </div>
       )}
     </div>
@@ -641,12 +568,9 @@ function DatePicker({
         2,
         "0"
       )}-${String(selectedDay).padStart(2, "0")}`;
-      // Only notify parent if the value actually changes
-      if (value !== dateStr) {
-        onChange(dateStr);
-      }
+      onChange(dateStr);
     }
-  }, [selectedDay, selectedMonth, selectedYear, value, onChange]);
+  }, [selectedDay, selectedMonth, selectedYear, onChange]);
 
   // Get days in month
   const getDaysInMonth = (month: number, year: number) => {
@@ -1458,19 +1382,16 @@ export default function TeacherApplication() {
   // Language availability hooks
   const { data: teachableLanguages } = useTeachableLanguages();
   const {
-    data: allowedCountriesData,
+    data: allowedCountries,
     isLoading: isLoadingCountries,
     error: countriesError,
-  } = useNativeLanguagesAndCountries();
+  } = useAllowedCountries();
 
-  // Extract data from the combined API response
-  const allowedCountries = allowedCountriesData?.allowed_countries || [];
-  const nativeLanguages = useMemo(
-    () => allowedCountriesData?.native_languages || [],
-    [allowedCountriesData?.native_languages]
-  );
-  const isLoadingLanguages = isLoadingCountries;
-  const languagesError = countriesError;
+  const {
+    data: allCountries,
+    isLoading: isLoadingAllCountries,
+    error: allCountriesError,
+  } = useAllCountries();
 
   // Load saved draft on mount
   useEffect(() => {
@@ -1552,54 +1473,25 @@ export default function TeacherApplication() {
     }
   }, [user]);
 
-  const updateData = useCallback(
-    (
-      field: keyof TeacherApplicationData,
-      value:
-        | string
-        | number
-        | boolean
-        | string[]
-        | File
-        | File[]
-        | null
-        | { language: string; level: string }[]
-        | EducationEntry[]
-        | TeachingExperienceEntry[]
-        | SpecialtyCertificate[]
-    ) => {
-      // Avoid redundant updates to prevent unnecessary re-renders/loops
-      setData((prev) => {
-        const current = prev[field] as unknown;
-        const isPrimitiveOrNull = value === null || typeof value !== "object";
-        if (isPrimitiveOrNull && current === (value as unknown)) {
-          return prev; // no change
-        }
-        return { ...prev, [field]: value };
-      });
-      if (errors[field]) {
-        setErrors((prev) => ({ ...prev, [field]: "" }));
-      }
-    },
-    [errors]
-  );
-
-  // Clear native language when "from" country changes and current selection is no longer valid
-  useEffect(() => {
-    if (data.nativeLanguage && data.from && nativeLanguages.length > 0) {
-      const selectedLanguage = nativeLanguages.find(
-        (lang) => lang.name === data.nativeLanguage
-      );
-      if (selectedLanguage) {
-        const isValidForCountry = selectedLanguage.native_countries.some(
-          (country) => country.name === data.from
-        );
-        if (!isValidForCountry) {
-          updateData("nativeLanguage", "");
-        }
-      }
+  const updateData = (
+    field: keyof TeacherApplicationData,
+    value:
+      | string
+      | number
+      | boolean
+      | string[]
+      | File
+      | File[]
+      | null
+      | { language: string; level: string }[]
+      | EducationEntry[]
+      | TeachingExperienceEntry[]
+  ) => {
+    setData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
-  }, [data.from, data.nativeLanguage, nativeLanguages, updateData]);
+  };
 
   const addEducationEntry = (entry: EducationEntry) => {
     setData((prev) => ({
@@ -1651,20 +1543,6 @@ export default function TeacherApplication() {
         if (!data.gender) newErrors.gender = "Gender is required";
         if (!data.nativeLanguage)
           newErrors.nativeLanguage = "Native language is required";
-        // Validate native language matches the selected "from" country
-        if (data.nativeLanguage && data.from) {
-          const selectedLanguage = nativeLanguages.find(
-            (lang) => lang.name === data.nativeLanguage
-          );
-          if (selectedLanguage) {
-            const isValidForCountry = selectedLanguage.native_countries.some(
-              (country) => country.name === data.from
-            );
-            if (!isValidForCountry) {
-              newErrors.nativeLanguage = `This native language is not available for ${data.from}`;
-            }
-          }
-        }
         // Validate languages taught - need at least one language at Native/C2 level that's available
         {
           const teachableLanguagesFromList = data.otherLanguages.filter(
@@ -1758,7 +1636,7 @@ export default function TeacherApplication() {
   };
 
   // Country options for 'from' (only allowed countries from API)
-  const allowedCountryOptions = allowedCountries.map((c) => ({
+  const allowedCountryOptions = (allowedCountries || []).map((c) => ({
     value: c.name,
     label: c.name,
     code: c.code,
@@ -1767,11 +1645,6 @@ export default function TeacherApplication() {
   }));
 
   // Country options for 'livingIn' (from backend)
-  const {
-    data: allCountries,
-    isLoading: isLoadingAllCountries,
-    error: allCountriesError,
-  } = useAllCountries();
   const allCountryOptions = (allCountries || []).map((c) => ({
     value: c.name,
     label: c.name,
@@ -1780,28 +1653,10 @@ export default function TeacherApplication() {
     flagUrl: c.flag_url,
   }));
 
-  // Filter native languages based on selected "from" country
-  const availableLanguagesForCountry = data.from
-    ? nativeLanguages.filter((lang) =>
-        lang.native_countries.some((country) => country.name === data.from)
-      )
-    : nativeLanguages;
-
-  const languageOptions =
-    availableLanguagesForCountry && availableLanguagesForCountry.length > 0
-      ? availableLanguagesForCountry.map((l) => ({
-          value: l.name,
-          label: l.name,
-        }))
-      : commonLanguages.map((l) => ({ value: l.name, label: l.name }));
-
-  const languageCodeMap: Record<string, string | undefined> =
-    Object.fromEntries((nativeLanguages || []).map((l) => [l.name, l.code]));
-
-  const languageFlagMap: Record<string, string | undefined> =
-    Object.fromEntries(
-      (nativeLanguages || []).map((l) => [l.name, l.flag_image])
-    );
+  const languageOptions = commonLanguages.map((l) => ({
+    value: l.name,
+    label: l.name,
+  }));
   const levelOptions = languageLevels.map((l) => ({
     value: l.value,
     label: l.label,
@@ -1868,30 +1723,10 @@ export default function TeacherApplication() {
   };
 
   const renderLanguageOption = (opt: { value: string; label: string }) => {
-    const flagImageFromApi = languageFlagMap[opt.value];
-    const codeFromApi = languageCodeMap[opt.value];
     const lang = commonLanguages.find((l) => l.name === opt.value);
     return (
       <div className="flex items-center gap-2">
-        {flagImageFromApi ? (
-          <img
-            src={flagImageFromApi}
-            alt=""
-            className="w-5 h-4 object-cover rounded-sm"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-          />
-        ) : codeFromApi ? (
-          <img
-            src={getFlagUrl(codeFromApi)}
-            alt=""
-            className="w-5 h-4 object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-          />
-        ) : lang?.code === "world" ? (
+        {lang?.code === "world" ? (
           <FaGlobe className="w-5 h-5 text-gray-500" />
         ) : (
           lang && (
@@ -2562,32 +2397,14 @@ export default function TeacherApplication() {
                     </p>
                   </div>
                 </div>
-                {isLoadingLanguages ? (
-                  <div className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl flex items-center gap-2">
-                    <Spinner />
-                    <span className="text-gray-500">Loading languages...</span>
-                  </div>
-                ) : languageOptions.length === 0 ? (
-                  <div className="w-full px-4 py-2.5 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600 rounded-xl">
-                    <p className="text-yellow-600 text-sm">
-                      No languages found. Please contact support.
-                    </p>
-                  </div>
-                ) : (
-                  <Dropdown
-                    placeholder="Select your native language"
-                    value={data.nativeLanguage}
-                    options={languageOptions}
-                    onChange={(v) => updateData("nativeLanguage", v)}
-                    renderOption={renderLanguageOption}
-                    renderSelected={renderLanguageOption}
-                  />
-                )}
-                {languagesError && !isLoadingLanguages && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    Using a fallback list due to a network issue.
-                  </p>
-                )}
+                <Dropdown
+                  placeholder="Select your native language"
+                  value={data.nativeLanguage}
+                  options={languageOptions}
+                  onChange={(v) => updateData("nativeLanguage", v)}
+                  renderOption={renderLanguageOption}
+                  renderSelected={renderLanguageOption}
+                />
                 {errors.nativeLanguage && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.nativeLanguage}

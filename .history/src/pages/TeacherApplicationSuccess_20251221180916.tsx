@@ -187,6 +187,7 @@ export default function TeacherApplicationSuccess() {
               Learn More About Teaching
             </Link>
           </div>
+
         </div>
       </div>
     </div>

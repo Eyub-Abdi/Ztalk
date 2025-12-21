@@ -109,17 +109,14 @@ const fetchAllowedCountries = async () => {
   if (response.data?.success && response.data?.data) {
     return {
       allowed_countries: response.data.data.allowed_countries || [],
-      native_languages: response.data.data.native_languages || [],
+      native_languages: response.data.data.native_languages || []
     };
   }
   throw new Error("Unexpected response when fetching native languages");
 };
 // Hook for native languages and allowed countries
 const useNativeLanguagesAndCountries = () => {
-  return useQuery<{
-    allowed_countries: CountryItem[];
-    native_languages: LanguageItem[];
-  }>({
+  return useQuery<{allowed_countries: CountryItem[], native_languages: LanguageItem[]}>({
     queryKey: ["native-languages-countries"],
     queryFn: fetchAllowedCountries,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -1789,19 +1786,14 @@ export default function TeacherApplication() {
 
   const languageOptions =
     availableLanguagesForCountry && availableLanguagesForCountry.length > 0
-      ? availableLanguagesForCountry.map((l) => ({
-          value: l.name,
-          label: l.name,
-        }))
+      ? availableLanguagesForCountry.map((l) => ({ value: l.name, label: l.name }))
       : commonLanguages.map((l) => ({ value: l.name, label: l.name }));
 
   const languageCodeMap: Record<string, string | undefined> =
     Object.fromEntries((nativeLanguages || []).map((l) => [l.name, l.code]));
-
+  
   const languageFlagMap: Record<string, string | undefined> =
-    Object.fromEntries(
-      (nativeLanguages || []).map((l) => [l.name, l.flag_image])
-    );
+    Object.fromEntries((nativeLanguages || []).map((l) => [l.name, l.flag_image]));
   const levelOptions = languageLevels.map((l) => ({
     value: l.value,
     label: l.label,

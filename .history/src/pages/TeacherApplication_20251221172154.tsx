@@ -68,37 +68,20 @@ type LanguageItem = {
 const getDraftStorageKey = (email?: string) =>
   `teacher-application-draft:${email || "anon"}`;
 
-// API response type for native languages endpoint
-interface NativeLanguagesApiResponse {
-  success: boolean;
-  message: string;
-  data: {
-    native_languages: LanguageItem[];
-    allowed_countries: CountryItem[];
-    total: number;
-    filter: {
-      country_code: string | null;
-      description: string;
-    };
-    note: string;
-  };
-  errors: null;
-}
-
 // Remove non-serializable fields like File objects before storage
 const sanitizeDataForStorage = (data: TeacherApplicationData) => ({
   ...data,
   profilePhoto: null,
   videoFile: null,
 });
-// API function to fetch native languages and allowed countries
+// API function to fetch allowed countries and native languages
 const fetchAllowedCountries = async () => {
   console.log(
-    "Fetching native languages from:",
-    `${API_BASE_URL}/teachers/languages/native/`
+    "Fetching allowed countries from:",
+    `${API_BASE_URL}/teachers/allowed-countries/`
   );
-  const response = await axios.get<NativeLanguagesApiResponse>(
-    `${API_BASE_URL}/teachers/languages/native/`,
+  const response = await axios.get(
+    `${API_BASE_URL}/teachers/allowed-countries/`,
     {
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -109,18 +92,15 @@ const fetchAllowedCountries = async () => {
   if (response.data?.success && response.data?.data) {
     return {
       allowed_countries: response.data.data.allowed_countries || [],
-      native_languages: response.data.data.native_languages || [],
+      native_languages: response.data.data.native_languages || []
     };
   }
-  throw new Error("Unexpected response when fetching native languages");
+  throw new Error("Unexpected response when fetching allowed countries");
 };
-// Hook for native languages and allowed countries
-const useNativeLanguagesAndCountries = () => {
-  return useQuery<{
-    allowed_countries: CountryItem[];
-    native_languages: LanguageItem[];
-  }>({
-    queryKey: ["native-languages-countries"],
+// Hook for allowed countries and native languages
+const useAllowedCountries = () => {
+  return useQuery<{allowed_countries: CountryItem[], native_languages: LanguageItem[]}>({
+    queryKey: ["allowed-countries"],
     queryFn: fetchAllowedCountries,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 3,
@@ -1461,7 +1441,7 @@ export default function TeacherApplication() {
     data: allowedCountriesData,
     isLoading: isLoadingCountries,
     error: countriesError,
-  } = useNativeLanguagesAndCountries();
+  } = useAllowedCountries();
 
   // Extract data from the combined API response
   const allowedCountries = allowedCountriesData?.allowed_countries || [];
@@ -1552,38 +1532,6 @@ export default function TeacherApplication() {
     }
   }, [user]);
 
-  const updateData = useCallback(
-    (
-      field: keyof TeacherApplicationData,
-      value:
-        | string
-        | number
-        | boolean
-        | string[]
-        | File
-        | File[]
-        | null
-        | { language: string; level: string }[]
-        | EducationEntry[]
-        | TeachingExperienceEntry[]
-        | SpecialtyCertificate[]
-    ) => {
-      // Avoid redundant updates to prevent unnecessary re-renders/loops
-      setData((prev) => {
-        const current = prev[field] as unknown;
-        const isPrimitiveOrNull = value === null || typeof value !== "object";
-        if (isPrimitiveOrNull && current === (value as unknown)) {
-          return prev; // no change
-        }
-        return { ...prev, [field]: value };
-      });
-      if (errors[field]) {
-        setErrors((prev) => ({ ...prev, [field]: "" }));
-      }
-    },
-    [errors]
-  );
-
   // Clear native language when "from" country changes and current selection is no longer valid
   useEffect(() => {
     if (data.nativeLanguage && data.from && nativeLanguages.length > 0) {
@@ -1600,6 +1548,35 @@ export default function TeacherApplication() {
       }
     }
   }, [data.from, data.nativeLanguage, nativeLanguages, updateData]);
+
+  const updateData = (
+    field: keyof TeacherApplicationData,
+    value:
+      | string
+      | number
+      | boolean
+      | string[]
+      | File
+      | File[]
+      | null
+      | { language: string; level: string }[]
+      | EducationEntry[]
+      | TeachingExperienceEntry[]
+      | SpecialtyCertificate[]
+  ) => {
+    // Avoid redundant updates to prevent unnecessary re-renders/loops
+    setData((prev) => {
+      const current = prev[field] as unknown;
+      const isPrimitiveOrNull = value === null || typeof value !== "object";
+      if (isPrimitiveOrNull && current === (value as unknown)) {
+        return prev; // no change
+      }
+      return { ...prev, [field]: value };
+    });
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
 
   const addEducationEntry = (entry: EducationEntry) => {
     setData((prev) => ({
@@ -1789,19 +1766,11 @@ export default function TeacherApplication() {
 
   const languageOptions =
     availableLanguagesForCountry && availableLanguagesForCountry.length > 0
-      ? availableLanguagesForCountry.map((l) => ({
-          value: l.name,
-          label: l.name,
-        }))
+      ? availableLanguagesForCountry.map((l) => ({ value: l.name, label: l.name }))
       : commonLanguages.map((l) => ({ value: l.name, label: l.name }));
 
   const languageCodeMap: Record<string, string | undefined> =
     Object.fromEntries((nativeLanguages || []).map((l) => [l.name, l.code]));
-
-  const languageFlagMap: Record<string, string | undefined> =
-    Object.fromEntries(
-      (nativeLanguages || []).map((l) => [l.name, l.flag_image])
-    );
   const levelOptions = languageLevels.map((l) => ({
     value: l.value,
     label: l.label,
@@ -1868,21 +1837,11 @@ export default function TeacherApplication() {
   };
 
   const renderLanguageOption = (opt: { value: string; label: string }) => {
-    const flagImageFromApi = languageFlagMap[opt.value];
     const codeFromApi = languageCodeMap[opt.value];
     const lang = commonLanguages.find((l) => l.name === opt.value);
     return (
       <div className="flex items-center gap-2">
-        {flagImageFromApi ? (
-          <img
-            src={flagImageFromApi}
-            alt=""
-            className="w-5 h-4 object-cover rounded-sm"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-          />
-        ) : codeFromApi ? (
+        {codeFromApi ? (
           <img
             src={getFlagUrl(codeFromApi)}
             alt=""
