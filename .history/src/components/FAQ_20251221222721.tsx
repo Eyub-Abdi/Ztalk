@@ -135,7 +135,7 @@ export function FAQ() {
   return (
     <section
       id="faq"
-      className="py-8 md:py-12 bg-gradient-to-b from-gray-50 to-white"
+      className="py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <motion.div

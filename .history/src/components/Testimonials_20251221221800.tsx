@@ -102,7 +102,7 @@ function TestimonialCard({ t, index }: { t: Testimonial; index: number }) {
         y: -4,
         transition: { type: "spring", stiffness: 400, damping: 25 },
       }}
-      className="group relative h-full max-w-sm mx-auto"
+      className="group relative h-full"
     >
       <div className="relative p-6 rounded-3xl bg-white shadow-lg hover:shadow-xl border border-gray-100 h-full flex flex-col transition-all duration-300">
         <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
@@ -162,10 +162,10 @@ export function Testimonials() {
       },
       renderMode: "precision",
       breakpoints: {
-        "(min-width: 1024px)": { slides: { perView: 3, spacing: 32 } },
-        "(min-width: 640px)": { slides: { perView: 3, spacing: 24 } },
+        "(min-width: 1024px)": { slides: { perView: 4.8, spacing: 18 } },
+        "(min-width: 640px)": { slides: { perView: 3.2, spacing: 14 } },
       },
-      slides: { perView: 1, spacing: 16 },
+      slides: { perView: 1.6, spacing: 10 },
     },
     [
       (slider) => {

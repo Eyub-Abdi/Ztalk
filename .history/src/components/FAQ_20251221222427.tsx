@@ -59,19 +59,17 @@ function AccordionItem({
             onClick={onToggle}
             className={clsx(
               "w-full flex items-center justify-between p-6 text-left font-semibold transition-all duration-300 group",
-              isOpen
-                ? "text-brand-700 bg-brand-50/80"
+              isOpen 
+                ? "text-brand-700 bg-brand-50/80" 
                 : "text-gray-900 hover:text-brand-600"
             )}
             aria-expanded={isOpen}
           >
             <span className="flex items-center gap-3 text-base md:text-lg">
-              <FiHelpCircle
+              <FiHelpCircle 
                 className={clsx(
                   "w-5 h-5 transition-colors duration-300",
-                  isOpen
-                    ? "text-brand-500"
-                    : "text-gray-400 group-hover:text-brand-500"
+                  isOpen ? "text-brand-500" : "text-gray-400 group-hover:text-brand-500"
                 )}
               />
               {question}
@@ -83,15 +81,13 @@ function AccordionItem({
               <FiChevronDown
                 className={clsx(
                   "w-5 h-5 transition-colors duration-300",
-                  isOpen
-                    ? "text-brand-500"
-                    : "text-gray-400 group-hover:text-brand-500"
+                  isOpen ? "text-brand-500" : "text-gray-400 group-hover:text-brand-500"
                 )}
               />
             </motion.div>
           </button>
         </h3>
-
+        
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -110,7 +106,7 @@ function AccordionItem({
           )}
         </AnimatePresence>
       </div>
-
+      
       {/* Subtle gradient border effect */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-brand-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
     </motion.div>
@@ -133,27 +129,18 @@ export function FAQ() {
   };
 
   return (
-    <section
-      id="faq"
-      className="py-8 md:py-12 bg-gradient-to-b from-gray-50 to-white"
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Got <span className="text-brand-600">Questions?</span>
+    <section id="faq" className="py-12 md:py-20 bg-gray-50">
+      <div className="container-main">
+        <div className="space-y-6 mb-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Frequently Asked Questions
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Find answers to the most commonly asked questions about learning
-            Swahili with our expert tutors.
+          <p className="text-sm md:text-base text-gray-600">
+            Quick answers to common questions about the platform.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="max-w-3xl mx-auto">
           {FAQS.map((item, idx) => (
             <AccordionItem
               key={idx}
@@ -164,21 +151,6 @@ export function FAQ() {
             />
           ))}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-center mt-12"
-        >
-          <p className="text-gray-600 mb-4">
-            Still have questions? We're here to help!
-          </p>
-          <button className="inline-flex items-center gap-2 px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
-            <FiHelpCircle className="w-4 h-4" />
-            Contact Support
-          </button>
-        </motion.div>
       </div>
     </section>
   );

@@ -162,8 +162,8 @@ export function Testimonials() {
       },
       renderMode: "precision",
       breakpoints: {
-        "(min-width: 1024px)": { slides: { perView: 3, spacing: 32 } },
-        "(min-width: 640px)": { slides: { perView: 3, spacing: 24 } },
+        "(min-width: 1024px)": { slides: { perView: 3, spacing: 24 } },
+        "(min-width: 640px)": { slides: { perView: 2, spacing: 20 } },
       },
       slides: { perView: 1, spacing: 16 },
     },

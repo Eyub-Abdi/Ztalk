@@ -102,26 +102,26 @@ function TestimonialCard({ t, index }: { t: Testimonial; index: number }) {
         y: -4,
         transition: { type: "spring", stiffness: 400, damping: 25 },
       }}
-      className="group relative h-full max-w-sm mx-auto"
+      className="group relative h-full"
     >
-      <div className="relative p-6 rounded-3xl bg-white shadow-lg hover:shadow-xl border border-gray-100 h-full flex flex-col transition-all duration-300">
-        <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
+      <div className="relative p-8 rounded-3xl bg-white shadow-lg hover:shadow-xl border border-gray-100 h-full flex flex-col transition-all duration-300">
+        <div className="absolute top-0 left-8 right-8 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6">
           <Stars count={t.rating} />
           <span className="bg-brand-50 text-brand-700 px-3 py-1 rounded-full text-xs font-semibold">
             {t.rating.toFixed(1)}
           </span>
         </div>
 
-        <div className="flex-1 mb-6">
-          <p className="text-gray-600 leading-relaxed text-sm font-normal">
+        <div className="flex-1 mb-8">
+          <p className="text-gray-600 leading-relaxed text-base font-normal">
             "{t.quote}"
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
             {t.name.charAt(0)}
           </div>
           <div>
@@ -163,9 +163,9 @@ export function Testimonials() {
       renderMode: "precision",
       breakpoints: {
         "(min-width: 1024px)": { slides: { perView: 3, spacing: 32 } },
-        "(min-width: 640px)": { slides: { perView: 3, spacing: 24 } },
+        "(min-width: 640px)": { slides: { perView: 2, spacing: 24 } },
       },
-      slides: { perView: 1, spacing: 16 },
+      slides: { perView: 1.1, spacing: 20 },
     },
     [
       (slider) => {

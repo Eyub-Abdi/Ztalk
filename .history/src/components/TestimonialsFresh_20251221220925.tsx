@@ -63,10 +63,7 @@ const DATA: Testimonial[] = [
 
 function Stars({ count }: { count: number }) {
   return (
-    <div
-      className="flex items-center gap-1"
-      aria-label={`${count} star rating`}
-    >
+    <div className="flex items-center gap-1" aria-label={`${count} star rating`}>
       {Array.from({ length: 5 }).map((_, i) => {
         const isFilled = i < count;
         return (
@@ -100,28 +97,28 @@ function TestimonialCard({ t, index }: { t: Testimonial; index: number }) {
       }}
       whileHover={{
         y: -4,
-        transition: { type: "spring", stiffness: 400, damping: 25 },
+        transition: { type: "spring", stiffness: 400, damping: 25 }
       }}
-      className="group relative h-full max-w-sm mx-auto"
+      className="group relative h-full"
     >
-      <div className="relative p-6 rounded-3xl bg-white shadow-lg hover:shadow-xl border border-gray-100 h-full flex flex-col transition-all duration-300">
-        <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
+      <div className="relative p-8 rounded-3xl bg-white shadow-lg hover:shadow-xl border border-gray-100 h-full flex flex-col transition-all duration-300">
+        <div className="absolute top-0 left-8 right-8 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6">
           <Stars count={t.rating} />
           <span className="bg-brand-50 text-brand-700 px-3 py-1 rounded-full text-xs font-semibold">
             {t.rating.toFixed(1)}
           </span>
         </div>
 
-        <div className="flex-1 mb-6">
-          <p className="text-gray-600 leading-relaxed text-sm font-normal">
+        <div className="flex-1 mb-8">
+          <p className="text-gray-600 leading-relaxed text-base font-normal">
             "{t.quote}"
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
             {t.name.charAt(0)}
           </div>
           <div>
@@ -163,9 +160,9 @@ export function Testimonials() {
       renderMode: "precision",
       breakpoints: {
         "(min-width: 1024px)": { slides: { perView: 3, spacing: 32 } },
-        "(min-width: 640px)": { slides: { perView: 3, spacing: 24 } },
+        "(min-width: 640px)": { slides: { perView: 2, spacing: 24 } },
       },
-      slides: { perView: 1, spacing: 16 },
+      slides: { perView: 1.1, spacing: 20 },
     },
     [
       (slider) => {
@@ -213,11 +210,12 @@ export function Testimonials() {
             className="text-center max-w-2xl mx-auto"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              What Our <span className="text-brand-600">Students</span> Say
+              What Our{" "}
+              <span className="text-brand-600">Students</span>{" "}
+              Say
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Real experiences from travelers who mastered Swahili with our
-              expert tutors.
+              Real experiences from travelers who mastered Swahili with our expert tutors.
             </p>
           </motion.div>
 
@@ -277,7 +275,7 @@ export function Testimonials() {
               >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
-
+              
               <button
                 aria-label="Next testimonial"
                 className="p-3 rounded-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 hover:text-brand-600 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -285,7 +283,7 @@ export function Testimonials() {
               >
                 <FiChevronRight className="w-5 h-5" />
               </button>
-
+              
               <button
                 aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
                 className="ml-2 p-3 rounded-full bg-brand-600 hover:bg-brand-700 text-white transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"

@@ -59,19 +59,17 @@ function AccordionItem({
             onClick={onToggle}
             className={clsx(
               "w-full flex items-center justify-between p-6 text-left font-semibold transition-all duration-300 group",
-              isOpen
-                ? "text-brand-700 bg-brand-50/80"
+              isOpen 
+                ? "text-brand-700 bg-brand-50/80" 
                 : "text-gray-900 hover:text-brand-600"
             )}
             aria-expanded={isOpen}
           >
             <span className="flex items-center gap-3 text-base md:text-lg">
-              <FiHelpCircle
+              <FiHelpCircle 
                 className={clsx(
                   "w-5 h-5 transition-colors duration-300",
-                  isOpen
-                    ? "text-brand-500"
-                    : "text-gray-400 group-hover:text-brand-500"
+                  isOpen ? "text-brand-500" : "text-gray-400 group-hover:text-brand-500"
                 )}
               />
               {question}
@@ -83,15 +81,13 @@ function AccordionItem({
               <FiChevronDown
                 className={clsx(
                   "w-5 h-5 transition-colors duration-300",
-                  isOpen
-                    ? "text-brand-500"
-                    : "text-gray-400 group-hover:text-brand-500"
+                  isOpen ? "text-brand-500" : "text-gray-400 group-hover:text-brand-500"
                 )}
               />
             </motion.div>
           </button>
         </h3>
-
+        
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -110,7 +106,7 @@ function AccordionItem({
           )}
         </AnimatePresence>
       </div>
-
+      
       {/* Subtle gradient border effect */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-brand-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
     </motion.div>
@@ -133,12 +129,9 @@ export function FAQ() {
   };
 
   return (
-    <section
-      id="faq"
-      className="py-8 md:py-12 bg-gradient-to-b from-gray-50 to-white"
-    >
+    <section id="faq" className="py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <motion.div
+        <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -148,8 +141,7 @@ export function FAQ() {
             Got <span className="text-brand-600">Questions?</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Find answers to the most commonly asked questions about learning
-            Swahili with our expert tutors.
+            Find answers to the most commonly asked questions about learning Swahili with our expert tutors.
           </p>
         </motion.div>
 
@@ -164,7 +156,7 @@ export function FAQ() {
             />
           ))}
         </div>
-
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
