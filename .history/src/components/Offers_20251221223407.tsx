@@ -1,6 +1,7 @@
 import { FiUserCheck, FiUsers, FiMessageCircle } from "react-icons/fi";
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface OfferItem {
   title: string;
@@ -41,10 +42,7 @@ const OFFERS: OfferItem[] = [
 
 export function Offers() {
   return (
-    <section
-      id="offers"
-      className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50"
-    >
+    <section id="offers" className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -67,16 +65,13 @@ export function Offers() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{
-                y: -8,
-                transition: { type: "spring", stiffness: 300, damping: 20 },
-              }}
+              whileHover={{ y: -8, transition: { type: "spring", stiffness: 300, damping: 20 } }}
               className="group relative"
             >
               <div className="relative bg-white rounded-3xl border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden backdrop-blur-sm h-full flex flex-col">
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
+                
                 <div className="relative rounded-t-3xl overflow-hidden">
                   <div className="aspect-video relative">
                     <img
@@ -97,11 +92,9 @@ export function Offers() {
                     <h3 className="text-xl font-bold text-gray-900 group-hover:text-brand-600 transition-colors duration-300">
                       {o.title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed text-sm">
-                      {o.description}
-                    </p>
+                    <p className="text-gray-600 leading-relaxed text-sm">{o.description}</p>
                   </div>
-
+                  
                   {/* Subtle bottom accent */}
                   <div className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>

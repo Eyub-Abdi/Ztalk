@@ -78,7 +78,7 @@ function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <motion.header
+      <motion.header 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -86,7 +86,10 @@ function Layout({ children }: { children: ReactNode }) {
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
           <div className="flex items-center justify-between h-16">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <RouterLink
                 to="/"
                 className="text-2xl font-black bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 bg-clip-text text-transparent hover:from-brand-700 hover:to-indigo-700 transition-all duration-300"
@@ -95,30 +98,23 @@ function Layout({ children }: { children: ReactNode }) {
                 Ztalk
               </RouterLink>
             </motion.div>
-
+            
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-3">
               {isAuthenticated ? (
                 <>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <RouterLink
                       to="/join-plus"
                       className="px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
                     >
-                      <span className="text-yellow-200 text-lg">✦</span> Join
-                      Plus
+                      <span className="text-yellow-200 text-lg">✦</span> Join Plus
                     </RouterLink>
                   </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <RouterLink
                       to="/become-teacher"
-                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 flex items-center"
+                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300"
                     >
                       Apply Now
                     </RouterLink>
@@ -163,25 +159,18 @@ function Layout({ children }: { children: ReactNode }) {
                   >
                     Sign Up
                   </motion.button>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <RouterLink
                       to="/join-plus"
                       className="px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
                     >
-                      <span className="text-yellow-200 text-lg">✦</span> Join
-                      Plus
+                      <span className="text-yellow-200 text-lg">✦</span> Join Plus
                     </RouterLink>
                   </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <RouterLink
                       to="/become-teacher"
-                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 flex items-center"
+                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300"
                     >
                       Apply Now
                     </RouterLink>
@@ -189,7 +178,7 @@ function Layout({ children }: { children: ReactNode }) {
                 </>
               )}
             </div>
-
+            
             {/* Mobile menu toggle */}
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -207,7 +196,7 @@ function Layout({ children }: { children: ReactNode }) {
             </motion.button>
           </div>
         </div>
-
+        
         {/* Mobile menu content */}
         <AnimatePresence>
           {isOpen && (
@@ -222,23 +211,16 @@ function Layout({ children }: { children: ReactNode }) {
                 <div className="flex flex-col gap-3 py-6">
                   {isAuthenticated ? (
                     <>
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <RouterLink
                           to="/join-plus"
                           onClick={onClose}
                           className="py-3 text-center text-sm font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full flex items-center justify-center gap-2"
                         >
-                          <span className="text-yellow-200 text-lg">✦</span>{" "}
-                          Join Plus
+                          <span className="text-yellow-200 text-lg">✦</span> Join Plus
                         </RouterLink>
                       </motion.div>
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <RouterLink
                           to="/become-teacher"
                           onClick={onClose}
@@ -296,23 +278,16 @@ function Layout({ children }: { children: ReactNode }) {
                       >
                         Sign Up
                       </motion.button>
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <RouterLink
                           to="/join-plus"
                           onClick={onClose}
                           className="py-3 text-center text-sm font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full flex items-center justify-center gap-2"
                         >
-                          <span className="text-yellow-200 text-lg">✦</span>{" "}
-                          Join Plus
+                          <span className="text-yellow-200 text-lg">✦</span> Join Plus
                         </RouterLink>
                       </motion.div>
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <RouterLink
                           to="/become-teacher"
                           onClick={onClose}

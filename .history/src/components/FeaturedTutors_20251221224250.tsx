@@ -85,6 +85,14 @@ function TutorCard({ tutor, index }: { tutor: Tutor; index: number }) {
         {/* Preview video placeholder */}
         <div className="relative rounded-2xl overflow-hidden aspect-[5/3] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
           <FiVideo className="w-12 h-12 text-gray-400 group-hover:text-brand-500 transition-colors duration-300" />
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-2 text-xs font-semibold bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+          >
+            <FiPlay className="w-3 h-3" />
+            Preview
+          </motion.button>
         </div>
 
         {/* Tutor info header */}

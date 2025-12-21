@@ -118,7 +118,7 @@ function Layout({ children }: { children: ReactNode }) {
                   >
                     <RouterLink
                       to="/become-teacher"
-                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 flex items-center"
+                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300"
                     >
                       Apply Now
                     </RouterLink>
@@ -181,7 +181,7 @@ function Layout({ children }: { children: ReactNode }) {
                   >
                     <RouterLink
                       to="/become-teacher"
-                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 flex items-center"
+                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300"
                     >
                       Apply Now
                     </RouterLink>
