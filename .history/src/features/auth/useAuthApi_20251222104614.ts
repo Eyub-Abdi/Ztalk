@@ -335,21 +335,14 @@ export function useCompleteRegistration() {
 
         const raw = data.data as any;
         const access: string | undefined =
-          raw?.access ||
-          raw?.access_token ||
-          raw?.token ||
-          raw?.jwt ||
-          raw?.tokens?.access;
+          raw?.access || raw?.access_token || raw?.token || raw?.jwt || raw?.tokens?.access;
         const refresh: string | undefined =
           raw?.refresh || raw?.refresh_token || raw?.tokens?.refresh;
-        const user: User =
-          raw?.user || raw?.profile || raw?.data || raw?.account;
+        const user: User = raw?.user || raw?.profile || raw?.data || raw?.account;
 
         if (!access || !refresh || !user) {
           console.warn("Complete registration: missing tokens or user", raw);
-          throw new Error(
-            "Registration failed: missing tokens in server response"
-          );
+          throw new Error("Registration failed: missing tokens in server response");
         }
 
         localStorage.setItem("access_token", access);
@@ -402,15 +395,10 @@ export function useLogin() {
 
         const raw = data.data as any;
         const access: string | undefined =
-          raw?.access ||
-          raw?.access_token ||
-          raw?.token ||
-          raw?.jwt ||
-          raw?.tokens?.access;
+          raw?.access || raw?.access_token || raw?.token || raw?.jwt || raw?.tokens?.access;
         const refresh: string | undefined =
           raw?.refresh || raw?.refresh_token || raw?.tokens?.refresh;
-        const user: User =
-          raw?.user || raw?.profile || raw?.data || raw?.account;
+        const user: User = raw?.user || raw?.profile || raw?.data || raw?.account;
 
         if (!access || !refresh || !user) {
           console.warn("Login: missing tokens or user in response", raw);

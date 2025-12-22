@@ -32,18 +32,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const storedUser = localStorage.getItem("user");
       const storedAccessRaw = localStorage.getItem("access_token");
       const storedRefreshRaw = localStorage.getItem("refresh_token");
-      const storedAccess =
-        storedAccessRaw &&
-        storedAccessRaw !== "undefined" &&
-        storedAccessRaw !== "null"
-          ? storedAccessRaw
-          : null;
-      const storedRefresh =
-        storedRefreshRaw &&
-        storedRefreshRaw !== "undefined" &&
-        storedRefreshRaw !== "null"
-          ? storedRefreshRaw
-          : null;
+      const storedAccess = storedAccessRaw && storedAccessRaw !== "undefined" && storedAccessRaw !== "null" ? storedAccessRaw : null;
+      const storedRefresh = storedRefreshRaw && storedRefreshRaw !== "undefined" && storedRefreshRaw !== "null" ? storedRefreshRaw : null;
       if (storedUser && storedAccess && storedRefresh) {
         setUser(JSON.parse(storedUser));
         setAccessToken(storedAccess);
