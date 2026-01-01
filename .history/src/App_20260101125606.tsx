@@ -36,6 +36,8 @@ import Wallet from "./features/dashboard/Wallet";
 import { StudentDashboardLayout } from "./features/dashboard/StudentDashboardLayout";
 import StudentOverview from "./features/dashboard/StudentOverview";
 import StudentFindTutors from "./features/dashboard/StudentFindTutors";
+import Apply from "./features/dashboard/Apply";
+import clsx from "clsx";
 
 // Pages
 function LandingPage() {
@@ -370,7 +372,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 }
 
 export function App() {
-  // const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   return (
     <div>
       <Routes>

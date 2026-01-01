@@ -2,7 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 // API base URL (includes /api as requested)
-export const API_BASE_URL = "https://a1e8df5b0691.ngrok-free.app/api";
+export const API_BASE_URL = "https://0f06a824bddb.ngrok-free.app/api";
 
 export async function http<T>(
   path: string,

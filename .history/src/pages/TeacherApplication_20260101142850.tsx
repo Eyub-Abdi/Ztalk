@@ -530,11 +530,7 @@ function Dropdown({
         <div className="absolute z-50 mt-2 w-full max-h-60 overflow-auto bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl shadow-xl">
           {filteredOptions.length === 0 ? (
             <div className="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm">
-              {filterText ? (
-                <>No options found starting with &ldquo;{filterText}&rdquo;</>
-              ) : (
-                "No options available"
-              )}
+              No countries found starting with &ldquo;{filterText}&rdquo;
             </div>
           ) : (
             filteredOptions.map((opt) => (
@@ -1449,7 +1445,6 @@ export default function TeacherApplication() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -1461,11 +1456,7 @@ export default function TeacherApplication() {
   const deleteDraftMutation = useDeleteApplicationDraft();
 
   // Language availability hooks
-  const {
-    data: teachableLanguages,
-    isLoading: isLoadingTeachableLanguages,
-    error: teachableLanguagesError,
-  } = useTeachableLanguages();
+  const { data: teachableLanguages } = useTeachableLanguages();
   const {
     data: allowedCountriesData,
     isLoading: isLoadingCountries,
@@ -1480,21 +1471,6 @@ export default function TeacherApplication() {
   );
   const isLoadingLanguages = isLoadingCountries;
   const languagesError = countriesError;
-
-  // Stable object URL for video preview to avoid recreation issues
-  useEffect(() => {
-    if (!data.videoFile) {
-      setVideoPreviewUrl(null);
-      return;
-    }
-
-    const url = URL.createObjectURL(data.videoFile);
-    setVideoPreviewUrl(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [data.videoFile]);
 
   // Load saved draft on mount
   useEffect(() => {
@@ -1735,8 +1711,6 @@ export default function TeacherApplication() {
       case 4:
         if (!data.videoFile)
           newErrors.videoFile = "Video introduction is required";
-        else if (data.videoFile.size > 500 * 1024 * 1024)
-          newErrors.videoFile = "Video file must be 500MB or smaller";
         if (!data.introText || data.introText.trim().length < 100)
           newErrors.introText =
             "Please write an introduction (minimum 100 characters)";
@@ -1910,7 +1884,9 @@ export default function TeacherApplication() {
     value: string;
     label: string;
   }) => {
-    const teachable = teachableLanguages?.find((l) => l.name === opt.value);
+    const teachable = teachableLanguages?.find(
+      (l) => l.name === opt.value
+    );
     const flagImage = teachable?.flagImage || null;
 
     return (
@@ -1918,8 +1894,11 @@ export default function TeacherApplication() {
         {flagImage ? (
           <img
             src={flagImage}
-            alt={opt.label}
+            alt=""
             className="w-5 h-4 object-cover rounded-sm"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
           />
         ) : (
           <FaGlobe className="w-5 h-5 text-gray-500" />
@@ -2673,50 +2652,17 @@ export default function TeacherApplication() {
                   </div>
                   <button
                     type="button"
-                    disabled={
-                      isLoadingTeachableLanguages ||
-                      !!teachableLanguagesError ||
-                      teachableLanguageOptions.length === 0
-                    }
                     onClick={() =>
                       updateData("otherLanguages", [
                         ...data.otherLanguages,
                         { language: "", level: "" },
                       ])
                     }
-                    className={clsx(
-                      "flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-colors",
-                      isLoadingTeachableLanguages ||
-                        !!teachableLanguagesError ||
-                        teachableLanguageOptions.length === 0
-                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                        : "bg-brand-500 hover:bg-brand-600 text-white"
-                    )}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-medium text-sm transition-colors"
                   >
                     <FaPlus className="w-3 h-3" /> Add Language
                   </button>
                 </div>
-
-                {isLoadingTeachableLanguages && (
-                  <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
-                    <Spinner /> Loading available teaching languages...
-                  </p>
-                )}
-                {teachableLanguagesError && !isLoadingTeachableLanguages && (
-                  <p className="text-xs text-red-600 mb-3 flex items-center gap-1">
-                    <FiInfo className="w-4 h-4" />
-                    Failed to load teaching languages. Please try again later.
-                  </p>
-                )}
-                {!isLoadingTeachableLanguages &&
-                  !teachableLanguagesError &&
-                  teachableLanguageOptions.length === 0 && (
-                    <p className="text-xs text-amber-600 mb-3 flex items-center gap-1">
-                      <FiInfo className="w-4 h-4" />
-                      No teaching languages are currently configured. Please
-                      contact support.
-                    </p>
-                  )}
 
                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
                   <div className="flex items-start gap-2">
@@ -3629,7 +3575,7 @@ export default function TeacherApplication() {
                       <video
                         controls
                         className="w-full h-full object-contain"
-                        src={videoPreviewUrl || undefined}
+                        src={URL.createObjectURL(data.videoFile)}
                       >
                         <track kind="captions" />
                       </video>
@@ -3660,7 +3606,7 @@ export default function TeacherApplication() {
                       Click to upload video
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      MP4, MOV, AVI  Max 500MB
+                      MP4, MOV, AVI • Max 100MB
                     </p>
                   </div>
                 )}

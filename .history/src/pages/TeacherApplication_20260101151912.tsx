@@ -1449,7 +1449,6 @@ export default function TeacherApplication() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -1480,21 +1479,6 @@ export default function TeacherApplication() {
   );
   const isLoadingLanguages = isLoadingCountries;
   const languagesError = countriesError;
-
-  // Stable object URL for video preview to avoid recreation issues
-  useEffect(() => {
-    if (!data.videoFile) {
-      setVideoPreviewUrl(null);
-      return;
-    }
-
-    const url = URL.createObjectURL(data.videoFile);
-    setVideoPreviewUrl(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [data.videoFile]);
 
   // Load saved draft on mount
   useEffect(() => {
@@ -3629,7 +3613,7 @@ export default function TeacherApplication() {
                       <video
                         controls
                         className="w-full h-full object-contain"
-                        src={videoPreviewUrl || undefined}
+                        src={URL.createObjectURL(data.videoFile)}
                       >
                         <track kind="captions" />
                       </video>

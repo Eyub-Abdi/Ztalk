@@ -35,8 +35,6 @@ interface AvailabilityResponse {
 
 export interface TeachableLanguage {
   name: string;
-  code: string;
-  flagImage: string | null;
   available: boolean;
   spotsRemaining: number;
   limit: number;
@@ -57,8 +55,6 @@ const fetchTeachableLanguages = async (): Promise<TeachableLanguage[]> => {
 
     return {
       name: lang.name,
-      code: lang.code,
-      flagImage: lang.flag_image || null,
       available,
       // Backend does not give per-language capacity, so we expose
       // a simple 0/1-style count and let the UI show a textual status.

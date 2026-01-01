@@ -1449,7 +1449,6 @@ export default function TeacherApplication() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -1480,21 +1479,6 @@ export default function TeacherApplication() {
   );
   const isLoadingLanguages = isLoadingCountries;
   const languagesError = countriesError;
-
-  // Stable object URL for video preview to avoid recreation issues
-  useEffect(() => {
-    if (!data.videoFile) {
-      setVideoPreviewUrl(null);
-      return;
-    }
-
-    const url = URL.createObjectURL(data.videoFile);
-    setVideoPreviewUrl(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [data.videoFile]);
 
   // Load saved draft on mount
   useEffect(() => {
@@ -1735,8 +1719,6 @@ export default function TeacherApplication() {
       case 4:
         if (!data.videoFile)
           newErrors.videoFile = "Video introduction is required";
-        else if (data.videoFile.size > 500 * 1024 * 1024)
-          newErrors.videoFile = "Video file must be 500MB or smaller";
         if (!data.introText || data.introText.trim().length < 100)
           newErrors.introText =
             "Please write an introduction (minimum 100 characters)";
@@ -1918,8 +1900,11 @@ export default function TeacherApplication() {
         {flagImage ? (
           <img
             src={flagImage}
-            alt={opt.label}
+            alt=""
             className="w-5 h-4 object-cover rounded-sm"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
           />
         ) : (
           <FaGlobe className="w-5 h-5 text-gray-500" />
@@ -2698,9 +2683,9 @@ export default function TeacherApplication() {
                 </div>
 
                 {isLoadingTeachableLanguages && (
-                  <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
-                    <Spinner /> Loading available teaching languages...
-                  </p>
+                  <div className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+                    <Spinner /> <span>Loading available teaching languages...</span>
+                  </div>
                 )}
                 {teachableLanguagesError && !isLoadingTeachableLanguages && (
                   <p className="text-xs text-red-600 mb-3 flex items-center gap-1">
@@ -3629,7 +3614,7 @@ export default function TeacherApplication() {
                       <video
                         controls
                         className="w-full h-full object-contain"
-                        src={videoPreviewUrl || undefined}
+                        src={URL.createObjectURL(data.videoFile)}
                       >
                         <track kind="captions" />
                       </video>
@@ -3660,7 +3645,7 @@ export default function TeacherApplication() {
                       Click to upload video
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      MP4, MOV, AVI  Max 500MB
+                      MP4, MOV, AVI • Max 100MB
                     </p>
                   </div>
                 )}

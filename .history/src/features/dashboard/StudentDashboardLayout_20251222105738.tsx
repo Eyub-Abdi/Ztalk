@@ -118,9 +118,9 @@ function DashboardHeader({
           {/* Join Plus Button */}
           <a
             href="/join-plus"
-            className="px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
+            className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-full hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-1.5"
           >
-            <span className="text-yellow-200 text-lg">✦</span> Join Plus
+            <span className="text-yellow-200">✦</span> Join Plus
           </a>
 
           {/* Notifications */}

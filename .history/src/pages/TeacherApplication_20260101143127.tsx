@@ -530,11 +530,9 @@ function Dropdown({
         <div className="absolute z-50 mt-2 w-full max-h-60 overflow-auto bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl shadow-xl">
           {filteredOptions.length === 0 ? (
             <div className="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm">
-              {filterText ? (
-                <>No options found starting with &ldquo;{filterText}&rdquo;</>
-              ) : (
-                "No options available"
-              )}
+              {filterText
+                ? <>No options found starting with &ldquo;{filterText}&rdquo;</>
+                : "No options available"}
             </div>
           ) : (
             filteredOptions.map((opt) => (
@@ -1449,7 +1447,6 @@ export default function TeacherApplication() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -1480,21 +1477,6 @@ export default function TeacherApplication() {
   );
   const isLoadingLanguages = isLoadingCountries;
   const languagesError = countriesError;
-
-  // Stable object URL for video preview to avoid recreation issues
-  useEffect(() => {
-    if (!data.videoFile) {
-      setVideoPreviewUrl(null);
-      return;
-    }
-
-    const url = URL.createObjectURL(data.videoFile);
-    setVideoPreviewUrl(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [data.videoFile]);
 
   // Load saved draft on mount
   useEffect(() => {
@@ -1735,8 +1717,6 @@ export default function TeacherApplication() {
       case 4:
         if (!data.videoFile)
           newErrors.videoFile = "Video introduction is required";
-        else if (data.videoFile.size > 500 * 1024 * 1024)
-          newErrors.videoFile = "Video file must be 500MB or smaller";
         if (!data.introText || data.introText.trim().length < 100)
           newErrors.introText =
             "Please write an introduction (minimum 100 characters)";
@@ -1910,7 +1890,9 @@ export default function TeacherApplication() {
     value: string;
     label: string;
   }) => {
-    const teachable = teachableLanguages?.find((l) => l.name === opt.value);
+    const teachable = teachableLanguages?.find(
+      (l) => l.name === opt.value
+    );
     const flagImage = teachable?.flagImage || null;
 
     return (
@@ -1918,8 +1900,11 @@ export default function TeacherApplication() {
         {flagImage ? (
           <img
             src={flagImage}
-            alt={opt.label}
+            alt=""
             className="w-5 h-4 object-cover rounded-sm"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
           />
         ) : (
           <FaGlobe className="w-5 h-5 text-gray-500" />
@@ -3629,7 +3614,7 @@ export default function TeacherApplication() {
                       <video
                         controls
                         className="w-full h-full object-contain"
-                        src={videoPreviewUrl || undefined}
+                        src={URL.createObjectURL(data.videoFile)}
                       >
                         <track kind="captions" />
                       </video>
@@ -3660,7 +3645,7 @@ export default function TeacherApplication() {
                       Click to upload video
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      MP4, MOV, AVI  Max 500MB
+                      MP4, MOV, AVI • Max 100MB
                     </p>
                   </div>
                 )}

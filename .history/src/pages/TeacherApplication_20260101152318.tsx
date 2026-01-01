@@ -3629,7 +3629,7 @@ export default function TeacherApplication() {
                       <video
                         controls
                         className="w-full h-full object-contain"
-                        src={videoPreviewUrl || undefined}
+                        src={URL.createObjectURL(data.videoFile)}
                       >
                         <track kind="captions" />
                       </video>

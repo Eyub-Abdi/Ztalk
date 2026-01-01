@@ -59,6 +59,9 @@ const fetchTeachableLanguages = async (): Promise<TeachableLanguage[]> => {
       name: lang.name,
       code: lang.code,
       flagImage: lang.flag_image || null,
+      // This "available" flag is derived directly from the
+      // availability endpoint and is the single source of truth
+      // for whether a tutor can teach this language.
       available,
       // Backend does not give per-language capacity, so we expose
       // a simple 0/1-style count and let the UI show a textual status.

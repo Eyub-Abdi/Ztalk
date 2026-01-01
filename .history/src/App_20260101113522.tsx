@@ -33,9 +33,11 @@ import Availability from "./features/dashboard/Availability";
 import CreateLesson from "./features/dashboard/CreateLesson";
 import UpcomingLessons from "./features/dashboard/UpcomingLessons";
 import Wallet from "./features/dashboard/Wallet";
+import Apply from "./features/dashboard/Apply";
 import { StudentDashboardLayout } from "./features/dashboard/StudentDashboardLayout";
 import StudentOverview from "./features/dashboard/StudentOverview";
 import StudentFindTutors from "./features/dashboard/StudentFindTutors";
+import clsx from "clsx";
 
 // Pages
 function LandingPage() {
@@ -370,7 +372,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 }
 
 export function App() {
-  // const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   return (
     <div>
       <Routes>

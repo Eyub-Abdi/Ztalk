@@ -4,7 +4,7 @@ import PrivacyPage from "./pages/Privacy";
 import LessonsDemoPage from "./pages/LessonsDemo";
 import BecomeTeacher from "./pages/BecomeTeacher";
 import JoinPlus from "./pages/JoinPlus";
-import TeacherApplication from "./pages/TeacherApplication";
+import { TutorApplicationWizard } from "./features/tutor-application/TutorApplicationWizard";
 import TeacherApplicationSuccess from "./pages/TeacherApplicationSuccess";
 import VerifyEmail from "./pages/VerifyEmail";
 import CompleteRegistration from "./pages/CompleteRegistration";
@@ -36,6 +36,7 @@ import Wallet from "./features/dashboard/Wallet";
 import { StudentDashboardLayout } from "./features/dashboard/StudentDashboardLayout";
 import StudentOverview from "./features/dashboard/StudentOverview";
 import StudentFindTutors from "./features/dashboard/StudentFindTutors";
+import clsx from "clsx";
 
 // Pages
 function LandingPage() {
@@ -370,7 +371,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 }
 
 export function App() {
-  // const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   return (
     <div>
       <Routes>
@@ -436,7 +437,7 @@ export function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <TeacherApplication />
+                <TutorApplicationWizard />
               </Layout>
             </ProtectedRoute>
           }
