@@ -90,10 +90,6 @@ const sanitizeDataForStorage = (data: TeacherApplicationData) => ({
   ...data,
   profilePhoto: null,
   videoFile: null,
-  certifications: data.certifications.map((cert) => ({
-    ...cert,
-    attachment: null, // Remove File object from certificates
-  })),
 });
 // API function to fetch native languages and allowed countries
 const fetchAllowedCountries = async () => {
@@ -158,60 +154,6 @@ const useAllCountries = () => {
   return useQuery<CountryItem[]>({
     queryKey: ["all-countries"],
     queryFn: fetchAllCountries,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 3,
-  });
-};
-
-// API function to fetch teaching materials
-const fetchTeachingMaterials = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/teachers/teaching-materials/`,
-    {
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-        Accept: "application/json",
-      },
-    }
-  );
-  if (response.data?.success && response.data?.data?.materials) {
-    return response.data.data.materials;
-  }
-  throw new Error("Unexpected response when fetching teaching materials");
-};
-
-// Hook for teaching materials
-const useTeachingMaterials = () => {
-  return useQuery<{ value: string; label: string }[]>({
-    queryKey: ["teaching-materials"],
-    queryFn: fetchTeachingMaterials,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 3,
-  });
-};
-
-// API function to fetch teaching interests
-const fetchTeachingInterests = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/teachers/teaching-interests/`,
-    {
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-        Accept: "application/json",
-      },
-    }
-  );
-  if (response.data?.success && response.data?.data?.interests) {
-    return response.data.data.interests;
-  }
-  throw new Error("Unexpected response when fetching teaching interests");
-};
-
-// Hook for teaching interests
-const useTeachingInterests = () => {
-  return useQuery<{ value: string; label: string }[]>({
-    queryKey: ["teaching-interests"],
-    queryFn: fetchTeachingInterests,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 3,
   });
@@ -1546,20 +1488,6 @@ export default function TeacherApplication() {
     error: countriesError,
   } = useNativeLanguagesAndCountries();
 
-  // Teaching materials hook
-  const {
-    data: teachingMaterials,
-    isLoading: isLoadingTeachingMaterials,
-    error: teachingMaterialsError,
-  } = useTeachingMaterials();
-
-  // Teaching interests hook
-  const {
-    data: teachingInterests,
-    isLoading: isLoadingTeachingInterests,
-    error: teachingInterestsError,
-  } = useTeachingInterests();
-
   // Extract data from the combined API response
   const allowedCountries = allowedCountriesData?.allowed_countries || [];
   const nativeLanguages = useMemo(
@@ -1568,82 +1496,6 @@ export default function TeacherApplication() {
   );
   const isLoadingLanguages = isLoadingCountries;
   const languagesError = countriesError;
-
-  // Sanitize teaching specializations (interests) when interests are loaded
-  // This removes any old label-based values from drafts and enforces max 5
-  useEffect(() => {
-    if (!teachingInterests || teachingInterests.length === 0) return;
-
-    const validValues = new Set(teachingInterests.map((i) => i.value));
-
-    setData((prev) => {
-      const filtered = prev.teachingStyles.filter((v) => validValues.has(v));
-      const limited = filtered.slice(0, 5);
-
-      if (
-        limited.length === prev.teachingStyles.length &&
-        limited.every((v, idx) => v === prev.teachingStyles[idx])
-      ) {
-        return prev;
-      }
-
-      return {
-        ...prev,
-        teachingStyles: limited,
-      };
-    });
-  }, [teachingInterests]);
-
-  // Sanitize teaching materials when materials are loaded
-  // This drops any legacy label values (e.g. "PDF file") and de-duplicates
-  useEffect(() => {
-    if (!teachingMaterials || teachingMaterials.length === 0) return;
-
-    const validValues = new Set(teachingMaterials.map((m) => m.value));
-
-    setData((prev) => {
-      const filtered = prev.specialties.filter((v) => validValues.has(v));
-      const deduped = Array.from(new Set(filtered));
-
-      if (
-        deduped.length === prev.specialties.length &&
-        deduped.every((v, idx) => v === prev.specialties[idx])
-      ) {
-        return prev;
-      }
-
-      return {
-        ...prev,
-        specialties: deduped,
-      };
-    });
-  }, [teachingMaterials]);
-
-  // Sanitize teaching specializations when interests are loaded
-  // This removes any old label-based values from drafts and limits to max 5
-  useEffect(() => {
-    if (!teachingInterests || teachingInterests.length === 0) return;
-
-    const validValues = new Set(teachingInterests.map((i) => i.value));
-
-    setData((prev) => {
-      const filtered = prev.teachingStyles.filter((v) => validValues.has(v));
-      const limited = filtered.slice(0, 5);
-
-      // If nothing changed, avoid unnecessary state updates
-      if (
-        limited.length === prev.teachingStyles.length &&
-        limited.every((v, idx) => v === prev.teachingStyles[idx])
-      ) {
-        return prev;
-      }
-
-      return {
-        ...prev,
-        teachingStyles: limited,
-      };
-    });
-  }, [teachingInterests]);
 
   // Stable object URL for video preview to avoid recreation issues
   useEffect(() => {
@@ -1672,25 +1524,9 @@ export default function TeacherApplication() {
 
     if (savedDraft) {
       setActiveStep(savedDraft.step);
-      const draftData = savedDraft.data as Partial<TeacherApplicationData>;
-      // Remove null file fields to preserve uploaded files
-      const { profilePhoto, videoFile, certifications, ...restData } =
-        draftData;
       setData((prev) => ({
         ...prev,
-        ...restData,
-        // Only update certifications if they exist, preserving attachments
-        ...(certifications &&
-          certifications.length > 0 && {
-            certifications: certifications.map((cert, index) => ({
-              ...cert,
-              // Preserve existing attachment if new cert doesn't have one
-              attachment:
-                cert.attachment ||
-                prev.certifications[index]?.attachment ||
-                null,
-            })),
-          }),
+        ...(savedDraft.data as Partial<TeacherApplicationData>),
       }));
       setIsInitialized(true);
     } else if (raw) {
@@ -1702,25 +1538,7 @@ export default function TeacherApplication() {
         if (parsed) {
           if (typeof parsed.step === "number") setActiveStep(parsed.step);
           if (parsed.data) {
-            const { profilePhoto, videoFile, certifications, ...restData } =
-              parsed.data;
-            // Remove null file fields to preserve uploaded files
-            setData((prev) => ({
-              ...prev,
-              ...restData,
-              // Only update certifications if they exist, preserving attachments
-              ...(certifications &&
-                certifications.length > 0 && {
-                  certifications: certifications.map((cert, index) => ({
-                    ...cert,
-                    // Preserve existing attachment if new cert doesn't have one
-                    attachment:
-                      cert.attachment ||
-                      prev.certifications[index]?.attachment ||
-                      null,
-                  })),
-                }),
-            }));
+            setData((prev) => ({ ...prev, ...parsed.data }));
           }
         }
       } catch (e) {
@@ -1915,40 +1733,6 @@ export default function TeacherApplication() {
           newErrors.profilePhoto = "Profile photo is required";
         if (!data.photoAgreement)
           newErrors.photoAgreement = "You must agree to photo requirements";
-
-        // Video platform specific validation
-        if (data.videoPlayform === "zoom") {
-          const zoomLink = data.zoomMeetingLink.trim();
-          const zoomId = data.zoomMeetingId.trim();
-
-          if (!zoomLink) {
-            newErrors.zoomMeetingLink = "Zoom meeting link is required";
-          } else if (!zoomLink.includes("zoom.us")) {
-            newErrors.zoomMeetingLink =
-              "Zoom meeting link must contain 'zoom.us'";
-          }
-
-          if (!zoomId) {
-            newErrors.zoomMeetingId = "Zoom personal meeting ID is required";
-          } else if (!/^\d{10,11}$/.test(zoomId)) {
-            newErrors.zoomMeetingId =
-              "Zoom personal meeting ID must be 10–11 digits";
-          }
-
-          if (data.zoomPasscode && data.zoomPasscode.length > 100) {
-            newErrors.zoomPasscode =
-              "Zoom meeting password must be at most 100 characters";
-          }
-        } else if (data.videoPlayform === "google-meet") {
-          const meetLink = data.googleMeetLink.trim();
-
-          if (!meetLink) {
-            newErrors.googleMeetLink = "Google Meet link is required";
-          } else if (!meetLink.includes("meet.google.com")) {
-            newErrors.googleMeetLink =
-              "Google Meet link must contain 'meet.google.com'";
-          }
-        }
         break;
       case 2:
         if (data.educationEntries.length === 0)
@@ -1957,12 +1741,8 @@ export default function TeacherApplication() {
         if (!data.teacherBio || data.teacherBio.trim().length < 50)
           newErrors.teacherBio =
             "Please write a teacher bio (minimum 50 characters)";
-        if (data.certifications.length === 0) {
+        if (data.certifications.length === 0)
           newErrors.certifications = "Please add at least one certificate";
-        } else if (data.certifications.some((cert) => !cert.attachment)) {
-          newErrors.certifications =
-            "Please upload the certificate document for each certificate";
-        }
         break;
       case 3:
         if (data.specialties.length === 0)
@@ -1995,241 +1775,136 @@ export default function TeacherApplication() {
 
   const prevStep = () => setActiveStep(activeStep - 1);
 
-  // Helper function to convert File to base64
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const result = reader.result as string;
-        // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
-        const base64 = result.split(",")[1];
-        resolve(base64);
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   const submitApplication = async () => {
-    // Always validate the current step first
     if (!validateStep(activeStep)) return;
-
-    // Guard against critical missing fields that the backend requires
-    const missingProfilePhoto = !data.profilePhoto;
-    const missingCertAttachment = data.certifications.some(
-      (cert) => !cert.attachment
-    );
-
-    if (missingProfilePhoto || missingCertAttachment) {
-      const newErrors: Record<string, string> = {};
-      if (missingProfilePhoto) {
-        newErrors.profilePhoto = "Profile photo is required";
-      }
-      if (missingCertAttachment) {
-        newErrors.certifications =
-          "Please upload the certificate document for each certificate";
-      }
-
-      setErrors((prev) => ({ ...prev, ...newErrors }));
-
-      if (missingProfilePhoto) {
-        setActiveStep(1);
-      } else if (missingCertAttachment) {
-        setActiveStep(2);
-      }
-
-      setToastMessage({
-        message: "Please fix the highlighted fields before submitting.",
-        type: "error",
-      });
-      return;
-    }
     setIsSubmitting(true);
     try {
       // Get country codes from the selected country names
       const fromCountry = allowedCountries.find((c) => c.name === data.from);
-      const livingInCountry = allCountries?.find(
-        (c) => c.name === data.livingIn
-      );
+      const livingInCountry = allCountries?.find((c) => c.name === data.livingIn);
 
-      // Helper function to convert File to base64 object
-      const convertFileToBase64Object = async (
-        file: File | null | undefined
-      ) => {
-        if (!file || !(file instanceof File)) {
-          return null;
-        }
-        const base64Content = await fileToBase64(file);
-        return {
-          filename: file.name,
-          content: base64Content,
-          content_type: file.type,
-        };
-      };
-
-      // Convert files to base64
-      console.log("Profile photo:", data.profilePhoto);
-      console.log("Video file:", data.videoFile);
-
-      const profilePictureBase64 =
-        data.profilePhoto instanceof File
-          ? await convertFileToBase64Object(data.profilePhoto)
-          : null;
-
-      const introductionVideoBase64 =
-        data.videoFile instanceof File
-          ? await convertFileToBase64Object(data.videoFile)
-          : null;
-
-      console.log("Profile picture base64 object:", profilePictureBase64);
-      console.log("Introduction video base64 object:", introductionVideoBase64);
-
-      // Convert certificate attachments to base64
-      const certificatesWithAttachments = await Promise.all(
-        data.certifications.map(async (cert) => {
-          const certData: any = {
-            name: cert.name,
-            institution: cert.institution,
-            type: cert.type,
-            year_issued: parseInt(cert.yearIssued),
-            ...(cert.expiryYear && { expiry_year: parseInt(cert.expiryYear) }),
-            ...(cert.description && { description: cert.description }),
-          };
-
-          if (cert.attachment instanceof File) {
-            const attachmentBase64 = await convertFileToBase64Object(
-              cert.attachment
-            );
-            console.log("Certificate attachment base64:", attachmentBase64);
-            certData.attachment = attachmentBase64;
-          }
-
-          return certData;
-        })
-      );
-
-      console.log(
-        "Certificates with attachments:",
-        certificatesWithAttachments
-      );
-
+      // Transform frontend data to backend expected format
+      const formData = new FormData();
+      
+      // Basic info
+      formData.append("teacher_type", data.teacherType);
+      formData.append("first_name", data.firstName);
+      formData.append("last_name", data.lastName);
+      formData.append("phone_number", data.phone);
+      formData.append("date_of_birth", data.dateOfBirth);
+      formData.append("gender", data.gender);
+      
+      // Location
+      formData.append("country_from", fromCountry?.code || data.from);
+      formData.append("country_living_in", livingInCountry?.code || data.livingIn);
+      formData.append("city_living_in", data.city);
+      
       // Languages
-      const otherLanguages =
-        data.otherLanguages.length > 0
-          ? data.otherLanguages.map((lang) => ({
-              language: lang.language,
-              proficiency_level: lang.level,
-              can_teach_beginners:
-                lang.level === "native" ||
-                lang.level === "c2" ||
-                lang.level === "c1",
-              can_teach_advanced:
-                lang.level === "native" || lang.level === "c2",
-            }))
-          : [];
-
-      // Video platform - normalize google-meet to google_meet
-      const platform =
-        data.videoPlayform === "google-meet"
-          ? "google_meet"
-          : data.videoPlayform;
-
-      // Teaching materials: ensure only valid values and remove duplicates
-      const validMaterialsSet = teachingMaterials
-        ? new Set(teachingMaterials.map((m) => m.value))
-        : null;
-      const materials = Array.from(
-        new Set(
-          data.specialties.filter((m) =>
-            validMaterialsSet ? validMaterialsSet.has(m) : true
-          )
-        )
-      );
-      // Teaching interests are already values (e.g., "music", "sports_fitness")
-      const interests = data.teachingStyles;
-
-      // Build the JSON payload
-      const payload: any = {
-        teacher_type: data.teacherType,
-        first_name: data.firstName,
-        last_name: data.lastName,
-        date_of_birth: data.dateOfBirth,
-        gender: data.gender,
-        country_from: fromCountry?.code || data.from,
-        country_living_in: livingInCountry?.code || data.livingIn,
-        city_living_in: data.city || "Not specified",
-        native_language: data.nativeLanguage,
-        other_languages: otherLanguages,
-        education_entries: data.educationEntries.map((entry) => ({
+      formData.append("native_language", data.nativeLanguage);
+      formData.append("other_languages", JSON.stringify(
+        data.otherLanguages.map((lang) => ({
+          language: lang.language,
+          proficiency_level: lang.level,
+          can_teach_beginners: lang.level === "native" || lang.level === "c2" || lang.level === "c1",
+          can_teach_advanced: lang.level === "native" || lang.level === "c2"
+        }))
+      ));
+      
+      // Education
+      formData.append("education_entries", JSON.stringify(
+        data.educationEntries.map((entry) => ({
           institution: entry.institution,
           degree: entry.degree,
           major: entry.major,
           start_year: parseInt(entry.fromYear),
           end_year: parseInt(entry.toYear),
-          description: entry.description,
-        })),
-        teaching_experience_entries: data.teachingExperienceEntries.map(
-          (entry) => ({
-            institution: entry.company,
-            position: entry.position,
-            start_year: parseInt(entry.fromYear),
-            end_year: parseInt(entry.toYear),
-            country: livingInCountry?.code || data.country,
-            city: data.city,
-            description: entry.description,
-          })
-        ),
-        specialty_certificates: certificatesWithAttachments,
-        about_me: data.introText,
-        me_as_teacher: data.teacherBio,
-        teaching_materials: materials,
-        teaching_interests: interests,
-        preferred_platform: platform,
-        terms_accepted: data.agreedToTerms,
-        privacy_policy_accepted: data.agreedToTerms,
-        internet_ready: true,
-        video_webcam_available: data.webcamConfirmation,
-        video_agrees_to_publishing: data.youtubePublishConsent,
-      };
-
-      // Add only the selected platform fields
-      if (platform === "zoom") {
-        payload.zoom_meeting_link = data.zoomMeetingLink;
-        payload.zoom_personal_meeting_id = data.zoomMeetingId;
-        if (data.zoomPasscode) {
-          payload.zoom_meeting_password = data.zoomPasscode;
+          description: entry.description
+        }))
+      ));
+      
+      // Teaching Experience
+      formData.append("teaching_experience_entries", JSON.stringify(
+        data.teachingExperienceEntries.map((entry) => ({
+          institution: entry.company,
+          position: entry.position,
+          start_year: parseInt(entry.fromYear),
+          end_year: parseInt(entry.toYear),
+          country: livingInCountry?.code || data.country,
+          city: data.city,
+          description: entry.description
+        }))
+      ));
+      
+      // Certifications
+      formData.append("specialty_certificates", JSON.stringify(
+        data.certifications.map((cert) => ({
+          name: cert.name,
+          institution: cert.institution,
+          type: cert.type,
+          year_issued: parseInt(cert.yearIssued),
+          expiry_year: cert.expiryYear ? parseInt(cert.expiryYear) : undefined,
+          description: cert.description
+        }))
+      ));
+      
+      // Upload certificate attachments
+      data.certifications.forEach((cert, index) => {
+        if (cert.attachment) {
+          formData.append(`certificate_attachment_${index}`, cert.attachment);
         }
-      } else if (platform === "google_meet") {
-        // Normalize Google Meet link so backend URL validator accepts it
-        if (data.googleMeetLink) {
-          const raw = data.googleMeetLink.trim();
-          const withProtocol = /^https?:\/\//i.test(raw)
-            ? raw
-            : `https://${raw}`;
-          payload.google_meeting_link = withProtocol;
-        }
-      }
-
-      // Add files
-      if (profilePictureBase64) {
-        payload.profile_picture = profilePictureBase64;
-      }
-      if (introductionVideoBase64) {
-        payload.introduction_video = introductionVideoBase64;
-      }
-
-      console.log("Submitting application with JSON payload");
-      console.log("Payload:", JSON.stringify(payload, null, 2));
-
-      // Submit to backend
-      await axios.post(`${API_BASE_URL}/teachers/apply/`, payload, {
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-          ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-        },
       });
+      
+      // Bio and teaching info
+      formData.append("about_me", data.introText);
+      formData.append("me_as_teacher", data.teacherBio);
+      formData.append("teaching_materials", JSON.stringify(data.specialties));
+      formData.append("teaching_interests", JSON.stringify(data.teachingStyles));
+      
+      // Video platform
+      formData.append("preferred_platform", data.videoPlayform);
+      if (data.videoPlayform === "zoom") {
+        formData.append("zoom_meeting_link", data.zoomMeetingLink);
+        formData.append("zoom_personal_meeting_id", data.zoomMeetingId);
+        formData.append("zoom_meeting_password", data.zoomPasscode);
+      } else if (data.videoPlayform === "google-meet") {
+        formData.append("google_meet_link", data.googleMeetLink);
+      }
+      
+      // Agreements and confirmations
+      formData.append("terms_accepted", String(data.agreedToTerms));
+      formData.append("privacy_policy_accepted", String(data.agreedToTerms));
+      formData.append("internet_ready", "true");
+      formData.append("video_webcam_available", String(data.webcamConfirmation));
+      formData.append("video_agrees_to_publishing", String(data.youtubePublishConsent));
+      
+      // Files
+      if (data.profilePhoto) {
+        formData.append("profile_picture", data.profilePhoto);
+      }
+      if (data.videoFile) {
+        formData.append("introduction_video", data.videoFile);
+      }
 
+      console.log("Submitting application with FormData");
+      
+      // Submit to backend
+      const response = await axios.post(
+        `${API_BASE_URL}/teachers/apply/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "ngrok-skip-browser-warning": "true",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setToastMessage({
+          message: "Application submitted successfully!",
+          type: "success",
+        });
+      }
       deleteDraftMutation.mutate(); // Clear saved draft after successful submission
       // Clear local draft
       try {
@@ -2243,40 +1918,24 @@ export default function TeacherApplication() {
       navigate("/teacher-application-success");
     } catch (error: any) {
       console.error("Submission failed:", error);
-      console.error("Error response data:", error.response?.data);
-      console.error("Error response status:", error.response?.status);
-
+      
       // Extract error message from backend response
       let errorMessage = "Failed to submit application. Please try again.";
-
+      
       if (error.response?.data) {
         const errorData = error.response.data;
-        console.log("Detailed error data:", JSON.stringify(errorData, null, 2));
-
-        // Check for nested error structure (multiple possible formats)
-        if (errorData.errors?.detail) {
-          // Token errors: { errors: { detail: "...", code: "..." } }
-          errorMessage = errorData.errors.detail;
-        } else if (errorData.errors?.error) {
-          // Application errors: { errors: { error: "..." } }
+        // Check for nested error structure
+        if (errorData.errors?.error) {
           errorMessage = errorData.errors.error;
-        } else if (errorData.detail) {
-          // Direct detail field
-          errorMessage = errorData.detail;
-        } else if (errorData.error) {
-          // Direct error field
-          errorMessage = errorData.error;
-        } else if (errorData.message && errorData.message !== "Error") {
-          // Message field (only if not generic "Error")
+        } else if (errorData.message) {
           errorMessage = errorData.message;
-        } else if (typeof errorData.errors === "string") {
-          // Errors as a string
-          errorMessage = errorData.errors;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
         }
       } else if (error.message) {
         errorMessage = error.message;
       }
-
+      
       setToastMessage({
         message: errorMessage,
         type: "error",
@@ -2836,12 +2495,6 @@ export default function TeacherApplication() {
                               updateData("zoomMeetingLink", e.target.value)
                             }
                           />
-                          {errors.zoomMeetingLink && (
-                            <p className="flex items-center gap-1 text-red-500 text-sm mt-1">
-                              <FiInfo className="w-4 h-4" />
-                              {errors.zoomMeetingLink}
-                            </p>
-                          )}
                           <div className="grid grid-cols-2 gap-3">
                             <input
                               className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400"
@@ -2851,12 +2504,6 @@ export default function TeacherApplication() {
                                 updateData("zoomMeetingId", e.target.value)
                               }
                             />
-                            {errors.zoomMeetingId && (
-                              <p className="col-span-2 flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.zoomMeetingId}
-                              </p>
-                            )}
                             <input
                               className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400"
                               placeholder="Passcode"
@@ -2865,12 +2512,6 @@ export default function TeacherApplication() {
                                 updateData("zoomPasscode", e.target.value)
                               }
                             />
-                            {errors.zoomPasscode && (
-                              <p className="col-span-2 flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.zoomPasscode}
-                              </p>
-                            )}
                           </div>
                         </div>
                       )}
@@ -2896,12 +2537,6 @@ export default function TeacherApplication() {
                                 updateData("googleMeetLink", e.target.value)
                               }
                             />
-                            {errors.googleMeetLink && (
-                              <p className="flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.googleMeetLink}
-                              </p>
-                            )}
                           </div>
                         )}
                     </div>
@@ -3932,82 +3567,58 @@ export default function TeacherApplication() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {isLoadingTeachingMaterials ? (
-                  <div className="col-span-3 flex items-center justify-center py-8">
-                    <Spinner />
-                    <span className="ml-2 text-gray-500">
-                      Loading materials...
-                    </span>
-                  </div>
-                ) : teachingMaterialsError ? (
-                  <div className="col-span-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600 rounded-xl p-4">
-                    <p className="text-red-600 text-sm">
-                      Failed to load teaching materials. Please refresh the
-                      page.
-                    </p>
-                  </div>
-                ) : teachingMaterials && teachingMaterials.length > 0 ? (
-                  teachingMaterials.map((material) => (
-                    <label
-                      key={material.value}
+                {specialties.map((specialty) => (
+                  <label
+                    key={specialty}
+                    className={clsx(
+                      "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all border-2",
+                      data.specialties.includes(specialty)
+                        ? "bg-green-50 dark:bg-green-900/20 border-green-400 dark:border-green-600"
+                        : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                    )}
+                  >
+                    <div
                       className={clsx(
-                        "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all border-2",
-                        data.specialties.includes(material.value)
-                          ? "bg-green-50 dark:bg-green-900/20 border-green-400 dark:border-green-600"
-                          : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                        "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all",
+                        data.specialties.includes(specialty)
+                          ? "bg-green-500 border-green-500"
+                          : "border-gray-300 dark:border-gray-600"
                       )}
                     >
-                      <div
-                        className={clsx(
-                          "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all",
-                          data.specialties.includes(material.value)
-                            ? "bg-green-500 border-green-500"
-                            : "border-gray-300 dark:border-gray-600"
-                        )}
-                      >
-                        {data.specialties.includes(material.value) && (
-                          <FiCheck className="w-3 h-3 text-white" />
-                        )}
-                      </div>
-                      <input
-                        type="checkbox"
-                        checked={data.specialties.includes(material.value)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            updateData("specialties", [
-                              ...data.specialties,
-                              material.value,
-                            ]);
-                          } else {
-                            updateData(
-                              "specialties",
-                              data.specialties.filter(
-                                (s) => s !== material.value
-                              )
-                            );
-                          }
-                        }}
-                        className="sr-only"
-                      />
-                      <span
-                        className={clsx(
-                          "text-sm font-medium",
-                          data.specialties.includes(material.value)
-                            ? "text-green-700 dark:text-green-400"
-                            : "text-gray-700 dark:text-gray-300"
-                        )}
-                      >
-                        {material.label}
-                      </span>
-                    </label>
-                  ))
-                ) : (
-                  <div className="col-span-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600 rounded-xl p-4">
-                    <p className="text-yellow-600 text-sm">
-                      No teaching materials available.
-                    </p>
-                  </div>
-                )}
+                      {data.specialties.includes(specialty) && (
+                        <FiCheck className="w-3 h-3 text-white" />
+                      )}
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={data.specialties.includes(specialty)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          updateData("specialties", [
+                            ...data.specialties,
+                            specialty,
+                          ]);
+                        } else {
+                          updateData(
+                            "specialties",
+                            data.specialties.filter((s) => s !== specialty)
+                          );
+                        }
+                      }}
+                      className="sr-only"
+                    />
+                    <span
+                      className={clsx(
+                        "text-sm font-medium",
+                        data.specialties.includes(specialty)
+                          ? "text-green-700 dark:text-green-400"
+                          : "text-gray-700 dark:text-gray-300"
+                      )}
+                    >
+                      {specialty}
+                    </span>
+                  </label>
+                ))}
               </div>
               {errors.specialties && (
                 <p className="flex items-center gap-1 text-red-500 text-sm mt-2">
@@ -4022,84 +3633,50 @@ export default function TeacherApplication() {
                 Teaching Specialist
               </p>
               <p className="text-sm text-gray-500 mb-4">
-                Select the areas that best describe your specialization (up to
-                5)
+                Select the areas that best describe your specialization
               </p>
               <div className="flex flex-wrap gap-2">
-                {isLoadingTeachingInterests ? (
-                  <div className="w-full flex items-center justify-center py-8">
-                    <Spinner />
-                    <span className="ml-2 text-gray-500">
-                      Loading interests...
-                    </span>
-                  </div>
-                ) : teachingInterestsError ? (
-                  <div className="w-full bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600 rounded-xl p-4">
-                    <p className="text-red-600 text-sm">
-                      Failed to load teaching interests. Please refresh the
-                      page.
-                    </p>
-                  </div>
-                ) : teachingInterests && teachingInterests.length > 0 ? (
-                  teachingInterests.map((interest) => (
-                    <label
-                      key={interest.value}
+                {teachingStyles.map((style) => (
+                  <label
+                    key={style}
+                    className={clsx(
+                      "relative flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-all",
+                      data.teachingStyles.includes(style)
+                        ? "border-brand-500 bg-brand-50 dark:bg-brand-900/30"
+                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800"
+                    )}
+                  >
+                    {data.teachingStyles.includes(style) && (
+                      <FiCheck className="w-4 h-4 text-brand-500" />
+                    )}
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={data.teachingStyles.includes(style)}
+                      onChange={(e) =>
+                        e.target.checked
+                          ? updateData("teachingStyles", [
+                              ...data.teachingStyles,
+                              style,
+                            ])
+                          : updateData(
+                              "teachingStyles",
+                              data.teachingStyles.filter((s) => s !== style)
+                            )
+                      }
+                    />
+                    <span
                       className={clsx(
-                        "relative flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all",
-                        data.teachingStyles.includes(interest.value)
-                          ? "border-brand-500 bg-brand-50 dark:bg-brand-900/30 cursor-pointer"
-                          : !data.teachingStyles.includes(interest.value) &&
-                            data.teachingStyles.length >= 5
-                          ? "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/50 opacity-50 cursor-not-allowed"
-                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800 cursor-pointer"
+                        "text-sm font-medium",
+                        data.teachingStyles.includes(style)
+                          ? "text-brand-700 dark:text-brand-300"
+                          : "text-gray-700 dark:text-gray-300"
                       )}
                     >
-                      {data.teachingStyles.includes(interest.value) && (
-                        <FiCheck className="w-4 h-4 text-brand-500" />
-                      )}
-                      <input
-                        type="checkbox"
-                        className="sr-only"
-                        checked={data.teachingStyles.includes(interest.value)}
-                        disabled={
-                          !data.teachingStyles.includes(interest.value) &&
-                          data.teachingStyles.length >= 5
-                        }
-                        onChange={(e) =>
-                          e.target.checked
-                            ? data.teachingStyles.length < 5
-                              ? updateData("teachingStyles", [
-                                  ...data.teachingStyles,
-                                  interest.value,
-                                ])
-                              : null
-                            : updateData(
-                                "teachingStyles",
-                                data.teachingStyles.filter(
-                                  (s) => s !== interest.value
-                                )
-                              )
-                        }
-                      />
-                      <span
-                        className={clsx(
-                          "text-sm font-medium",
-                          data.teachingStyles.includes(interest.value)
-                            ? "text-brand-700 dark:text-brand-300"
-                            : "text-gray-700 dark:text-gray-300"
-                        )}
-                      >
-                        {interest.label}
-                      </span>
-                    </label>
-                  ))
-                ) : (
-                  <div className="w-full bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600 rounded-xl p-4">
-                    <p className="text-yellow-600 text-sm">
-                      No teaching interests available.
-                    </p>
-                  </div>
-                )}
+                      {style}
+                    </span>
+                  </label>
+                ))}
               </div>
             </div>
           </div>

@@ -1915,40 +1915,6 @@ export default function TeacherApplication() {
           newErrors.profilePhoto = "Profile photo is required";
         if (!data.photoAgreement)
           newErrors.photoAgreement = "You must agree to photo requirements";
-
-        // Video platform specific validation
-        if (data.videoPlayform === "zoom") {
-          const zoomLink = data.zoomMeetingLink.trim();
-          const zoomId = data.zoomMeetingId.trim();
-
-          if (!zoomLink) {
-            newErrors.zoomMeetingLink = "Zoom meeting link is required";
-          } else if (!zoomLink.includes("zoom.us")) {
-            newErrors.zoomMeetingLink =
-              "Zoom meeting link must contain 'zoom.us'";
-          }
-
-          if (!zoomId) {
-            newErrors.zoomMeetingId = "Zoom personal meeting ID is required";
-          } else if (!/^\d{10,11}$/.test(zoomId)) {
-            newErrors.zoomMeetingId =
-              "Zoom personal meeting ID must be 10–11 digits";
-          }
-
-          if (data.zoomPasscode && data.zoomPasscode.length > 100) {
-            newErrors.zoomPasscode =
-              "Zoom meeting password must be at most 100 characters";
-          }
-        } else if (data.videoPlayform === "google-meet") {
-          const meetLink = data.googleMeetLink.trim();
-
-          if (!meetLink) {
-            newErrors.googleMeetLink = "Google Meet link is required";
-          } else if (!meetLink.includes("meet.google.com")) {
-            newErrors.googleMeetLink =
-              "Google Meet link must contain 'meet.google.com'";
-          }
-        }
         break;
       case 2:
         if (data.educationEntries.length === 0)
@@ -2192,22 +2158,18 @@ export default function TeacherApplication() {
         video_agrees_to_publishing: data.youtubePublishConsent,
       };
 
-      // Add only the selected platform fields
-      if (platform === "zoom") {
-        payload.zoom_meeting_link = data.zoomMeetingLink;
-        payload.zoom_personal_meeting_id = data.zoomMeetingId;
-        if (data.zoomPasscode) {
-          payload.zoom_meeting_password = data.zoomPasscode;
-        }
-      } else if (platform === "google_meet") {
-        // Normalize Google Meet link so backend URL validator accepts it
-        if (data.googleMeetLink) {
-          const raw = data.googleMeetLink.trim();
-          const withProtocol = /^https?:\/\//i.test(raw)
-            ? raw
-            : `https://${raw}`;
-          payload.google_meeting_link = withProtocol;
-        }
+      // Add platform-specific fields (always include all keys to match backend contract)
+      payload.zoom_meeting_link = data.zoomMeetingLink || "";
+      payload.zoom_personal_meeting_id = data.zoomMeetingId || "";
+      payload.zoom_meeting_password = data.zoomPasscode || "";
+
+      // Normalize Google Meet link so backend URL validator accepts it
+      if (data.googleMeetLink) {
+        const raw = data.googleMeetLink.trim();
+        const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+        payload.google_meeting_link = withProtocol;
+      } else {
+        payload.google_meeting_link = "";
       }
 
       // Add files
@@ -2836,12 +2798,6 @@ export default function TeacherApplication() {
                               updateData("zoomMeetingLink", e.target.value)
                             }
                           />
-                          {errors.zoomMeetingLink && (
-                            <p className="flex items-center gap-1 text-red-500 text-sm mt-1">
-                              <FiInfo className="w-4 h-4" />
-                              {errors.zoomMeetingLink}
-                            </p>
-                          )}
                           <div className="grid grid-cols-2 gap-3">
                             <input
                               className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400"
@@ -2851,12 +2807,6 @@ export default function TeacherApplication() {
                                 updateData("zoomMeetingId", e.target.value)
                               }
                             />
-                            {errors.zoomMeetingId && (
-                              <p className="col-span-2 flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.zoomMeetingId}
-                              </p>
-                            )}
                             <input
                               className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400"
                               placeholder="Passcode"
@@ -2865,12 +2815,6 @@ export default function TeacherApplication() {
                                 updateData("zoomPasscode", e.target.value)
                               }
                             />
-                            {errors.zoomPasscode && (
-                              <p className="col-span-2 flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.zoomPasscode}
-                              </p>
-                            )}
                           </div>
                         </div>
                       )}
@@ -2896,12 +2840,6 @@ export default function TeacherApplication() {
                                 updateData("googleMeetLink", e.target.value)
                               }
                             />
-                            {errors.googleMeetLink && (
-                              <p className="flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.googleMeetLink}
-                              </p>
-                            )}
                           </div>
                         )}
                     </div>

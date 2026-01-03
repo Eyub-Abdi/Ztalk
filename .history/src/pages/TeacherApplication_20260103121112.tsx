@@ -1929,7 +1929,8 @@ export default function TeacherApplication() {
           }
 
           if (!zoomId) {
-            newErrors.zoomMeetingId = "Zoom personal meeting ID is required";
+            newErrors.zoomMeetingId =
+              "Zoom personal meeting ID is required";
           } else if (!/^\d{10,11}$/.test(zoomId)) {
             newErrors.zoomMeetingId =
               "Zoom personal meeting ID must be 10–11 digits";
@@ -2192,22 +2193,18 @@ export default function TeacherApplication() {
         video_agrees_to_publishing: data.youtubePublishConsent,
       };
 
-      // Add only the selected platform fields
-      if (platform === "zoom") {
-        payload.zoom_meeting_link = data.zoomMeetingLink;
-        payload.zoom_personal_meeting_id = data.zoomMeetingId;
-        if (data.zoomPasscode) {
-          payload.zoom_meeting_password = data.zoomPasscode;
-        }
-      } else if (platform === "google_meet") {
-        // Normalize Google Meet link so backend URL validator accepts it
-        if (data.googleMeetLink) {
-          const raw = data.googleMeetLink.trim();
-          const withProtocol = /^https?:\/\//i.test(raw)
-            ? raw
-            : `https://${raw}`;
-          payload.google_meeting_link = withProtocol;
-        }
+      // Add platform-specific fields (always include all keys to match backend contract)
+      payload.zoom_meeting_link = data.zoomMeetingLink || "";
+      payload.zoom_personal_meeting_id = data.zoomMeetingId || "";
+      payload.zoom_meeting_password = data.zoomPasscode || "";
+
+      // Normalize Google Meet link so backend URL validator accepts it
+      if (data.googleMeetLink) {
+        const raw = data.googleMeetLink.trim();
+        const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+        payload.google_meeting_link = withProtocol;
+      } else {
+        payload.google_meeting_link = "";
       }
 
       // Add files

@@ -1929,7 +1929,8 @@ export default function TeacherApplication() {
           }
 
           if (!zoomId) {
-            newErrors.zoomMeetingId = "Zoom personal meeting ID is required";
+            newErrors.zoomMeetingId =
+              "Zoom personal meeting ID is required";
           } else if (!/^\d{10,11}$/.test(zoomId)) {
             newErrors.zoomMeetingId =
               "Zoom personal meeting ID must be 10–11 digits";

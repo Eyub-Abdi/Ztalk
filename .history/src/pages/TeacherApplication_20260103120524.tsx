@@ -90,7 +90,7 @@ const sanitizeDataForStorage = (data: TeacherApplicationData) => ({
   ...data,
   profilePhoto: null,
   videoFile: null,
-  certifications: data.certifications.map((cert) => ({
+  certifications: data.certifications.map(cert => ({
     ...cert,
     attachment: null, // Remove File object from certificates
   })),
@@ -165,15 +165,12 @@ const useAllCountries = () => {
 
 // API function to fetch teaching materials
 const fetchTeachingMaterials = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/teachers/teaching-materials/`,
-    {
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-        Accept: "application/json",
-      },
-    }
-  );
+  const response = await axios.get(`${API_BASE_URL}/teachers/teaching-materials/`, {
+    headers: {
+      "ngrok-skip-browser-warning": "true",
+      Accept: "application/json",
+    },
+  });
   if (response.data?.success && response.data?.data?.materials) {
     return response.data.data.materials;
   }
@@ -192,15 +189,12 @@ const useTeachingMaterials = () => {
 
 // API function to fetch teaching interests
 const fetchTeachingInterests = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/teachers/teaching-interests/`,
-    {
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-        Accept: "application/json",
-      },
-    }
-  );
+  const response = await axios.get(`${API_BASE_URL}/teachers/teaching-interests/`, {
+    headers: {
+      "ngrok-skip-browser-warning": "true",
+      Accept: "application/json",
+    },
+  });
   if (response.data?.success && response.data?.data?.interests) {
     return response.data.data.interests;
   }
@@ -1674,23 +1668,18 @@ export default function TeacherApplication() {
       setActiveStep(savedDraft.step);
       const draftData = savedDraft.data as Partial<TeacherApplicationData>;
       // Remove null file fields to preserve uploaded files
-      const { profilePhoto, videoFile, certifications, ...restData } =
-        draftData;
+      const { profilePhoto, videoFile, certifications, ...restData } = draftData;
       setData((prev) => ({
         ...prev,
         ...restData,
         // Only update certifications if they exist, preserving attachments
-        ...(certifications &&
-          certifications.length > 0 && {
-            certifications: certifications.map((cert, index) => ({
-              ...cert,
-              // Preserve existing attachment if new cert doesn't have one
-              attachment:
-                cert.attachment ||
-                prev.certifications[index]?.attachment ||
-                null,
-            })),
-          }),
+        ...(certifications && certifications.length > 0 && {
+          certifications: certifications.map((cert, index) => ({
+            ...cert,
+            // Preserve existing attachment if new cert doesn't have one
+            attachment: cert.attachment || prev.certifications[index]?.attachment || null,
+          })),
+        }),
       }));
       setIsInitialized(true);
     } else if (raw) {
@@ -1702,24 +1691,19 @@ export default function TeacherApplication() {
         if (parsed) {
           if (typeof parsed.step === "number") setActiveStep(parsed.step);
           if (parsed.data) {
-            const { profilePhoto, videoFile, certifications, ...restData } =
-              parsed.data;
+            const { profilePhoto, videoFile, certifications, ...restData } = parsed.data;
             // Remove null file fields to preserve uploaded files
             setData((prev) => ({
               ...prev,
               ...restData,
               // Only update certifications if they exist, preserving attachments
-              ...(certifications &&
-                certifications.length > 0 && {
-                  certifications: certifications.map((cert, index) => ({
-                    ...cert,
-                    // Preserve existing attachment if new cert doesn't have one
-                    attachment:
-                      cert.attachment ||
-                      prev.certifications[index]?.attachment ||
-                      null,
-                  })),
-                }),
+              ...(certifications && certifications.length > 0 && {
+                certifications: certifications.map((cert, index) => ({
+                  ...cert,
+                  // Preserve existing attachment if new cert doesn't have one
+                  attachment: cert.attachment || prev.certifications[index]?.attachment || null,
+                })),
+              }),
             }));
           }
         }
@@ -1915,40 +1899,6 @@ export default function TeacherApplication() {
           newErrors.profilePhoto = "Profile photo is required";
         if (!data.photoAgreement)
           newErrors.photoAgreement = "You must agree to photo requirements";
-
-        // Video platform specific validation
-        if (data.videoPlayform === "zoom") {
-          const zoomLink = data.zoomMeetingLink.trim();
-          const zoomId = data.zoomMeetingId.trim();
-
-          if (!zoomLink) {
-            newErrors.zoomMeetingLink = "Zoom meeting link is required";
-          } else if (!zoomLink.includes("zoom.us")) {
-            newErrors.zoomMeetingLink =
-              "Zoom meeting link must contain 'zoom.us'";
-          }
-
-          if (!zoomId) {
-            newErrors.zoomMeetingId = "Zoom personal meeting ID is required";
-          } else if (!/^\d{10,11}$/.test(zoomId)) {
-            newErrors.zoomMeetingId =
-              "Zoom personal meeting ID must be 10–11 digits";
-          }
-
-          if (data.zoomPasscode && data.zoomPasscode.length > 100) {
-            newErrors.zoomPasscode =
-              "Zoom meeting password must be at most 100 characters";
-          }
-        } else if (data.videoPlayform === "google-meet") {
-          const meetLink = data.googleMeetLink.trim();
-
-          if (!meetLink) {
-            newErrors.googleMeetLink = "Google Meet link is required";
-          } else if (!meetLink.includes("meet.google.com")) {
-            newErrors.googleMeetLink =
-              "Google Meet link must contain 'meet.google.com'";
-          }
-        }
         break;
       case 2:
         if (data.educationEntries.length === 0)
@@ -2003,7 +1953,7 @@ export default function TeacherApplication() {
       reader.onload = () => {
         const result = reader.result as string;
         // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
-        const base64 = result.split(",")[1];
+        const base64 = result.split(',')[1];
         resolve(base64);
       };
       reader.onerror = (error) => reject(error);
@@ -2053,9 +2003,7 @@ export default function TeacherApplication() {
       );
 
       // Helper function to convert File to base64 object
-      const convertFileToBase64Object = async (
-        file: File | null | undefined
-      ) => {
+      const convertFileToBase64Object = async (file: File | null | undefined) => {
         if (!file || !(file instanceof File)) {
           return null;
         }
@@ -2070,16 +2018,14 @@ export default function TeacherApplication() {
       // Convert files to base64
       console.log("Profile photo:", data.profilePhoto);
       console.log("Video file:", data.videoFile);
+      
+      const profilePictureBase64 = data.profilePhoto instanceof File
+        ? await convertFileToBase64Object(data.profilePhoto)
+        : null;
 
-      const profilePictureBase64 =
-        data.profilePhoto instanceof File
-          ? await convertFileToBase64Object(data.profilePhoto)
-          : null;
-
-      const introductionVideoBase64 =
-        data.videoFile instanceof File
-          ? await convertFileToBase64Object(data.videoFile)
-          : null;
+      const introductionVideoBase64 = data.videoFile instanceof File
+        ? await convertFileToBase64Object(data.videoFile)
+        : null;
 
       console.log("Profile picture base64 object:", profilePictureBase64);
       console.log("Introduction video base64 object:", introductionVideoBase64);
@@ -2097,9 +2043,7 @@ export default function TeacherApplication() {
           };
 
           if (cert.attachment instanceof File) {
-            const attachmentBase64 = await convertFileToBase64Object(
-              cert.attachment
-            );
+            const attachmentBase64 = await convertFileToBase64Object(cert.attachment);
             console.log("Certificate attachment base64:", attachmentBase64);
             certData.attachment = attachmentBase64;
           }
@@ -2107,11 +2051,8 @@ export default function TeacherApplication() {
           return certData;
         })
       );
-
-      console.log(
-        "Certificates with attachments:",
-        certificatesWithAttachments
-      );
+      
+      console.log("Certificates with attachments:", certificatesWithAttachments);
 
       // Languages
       const otherLanguages =
@@ -2168,17 +2109,15 @@ export default function TeacherApplication() {
           end_year: parseInt(entry.toYear),
           description: entry.description,
         })),
-        teaching_experience_entries: data.teachingExperienceEntries.map(
-          (entry) => ({
-            institution: entry.company,
-            position: entry.position,
-            start_year: parseInt(entry.fromYear),
-            end_year: parseInt(entry.toYear),
-            country: livingInCountry?.code || data.country,
-            city: data.city,
-            description: entry.description,
-          })
-        ),
+        teaching_experience_entries: data.teachingExperienceEntries.map((entry) => ({
+          institution: entry.company,
+          position: entry.position,
+          start_year: parseInt(entry.fromYear),
+          end_year: parseInt(entry.toYear),
+          country: livingInCountry?.code || data.country,
+          city: data.city,
+          description: entry.description,
+        })),
         specialty_certificates: certificatesWithAttachments,
         about_me: data.introText,
         me_as_teacher: data.teacherBio,
@@ -2192,23 +2131,12 @@ export default function TeacherApplication() {
         video_agrees_to_publishing: data.youtubePublishConsent,
       };
 
-      // Add only the selected platform fields
-      if (platform === "zoom") {
-        payload.zoom_meeting_link = data.zoomMeetingLink;
-        payload.zoom_personal_meeting_id = data.zoomMeetingId;
-        if (data.zoomPasscode) {
-          payload.zoom_meeting_password = data.zoomPasscode;
-        }
-      } else if (platform === "google_meet") {
-        // Normalize Google Meet link so backend URL validator accepts it
-        if (data.googleMeetLink) {
-          const raw = data.googleMeetLink.trim();
-          const withProtocol = /^https?:\/\//i.test(raw)
-            ? raw
-            : `https://${raw}`;
-          payload.google_meeting_link = withProtocol;
-        }
-      }
+      // Add platform-specific fields (always include all keys to match backend contract)
+      payload.zoom_meeting_link = data.zoomMeetingLink || "";
+      payload.zoom_personal_meeting_id = data.zoomMeetingId || "";
+      payload.zoom_meeting_password = data.zoomPasscode || "";
+      // Note: backend expects "google_meeting_link" (not google_meet_link)
+      payload.google_meeting_link = data.googleMeetLink || "";
 
       // Add files
       if (profilePictureBase64) {
@@ -2836,12 +2764,6 @@ export default function TeacherApplication() {
                               updateData("zoomMeetingLink", e.target.value)
                             }
                           />
-                          {errors.zoomMeetingLink && (
-                            <p className="flex items-center gap-1 text-red-500 text-sm mt-1">
-                              <FiInfo className="w-4 h-4" />
-                              {errors.zoomMeetingLink}
-                            </p>
-                          )}
                           <div className="grid grid-cols-2 gap-3">
                             <input
                               className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400"
@@ -2851,12 +2773,6 @@ export default function TeacherApplication() {
                                 updateData("zoomMeetingId", e.target.value)
                               }
                             />
-                            {errors.zoomMeetingId && (
-                              <p className="col-span-2 flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.zoomMeetingId}
-                              </p>
-                            )}
                             <input
                               className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all placeholder:text-gray-400"
                               placeholder="Passcode"
@@ -2865,12 +2781,6 @@ export default function TeacherApplication() {
                                 updateData("zoomPasscode", e.target.value)
                               }
                             />
-                            {errors.zoomPasscode && (
-                              <p className="col-span-2 flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.zoomPasscode}
-                              </p>
-                            )}
                           </div>
                         </div>
                       )}
@@ -2896,12 +2806,6 @@ export default function TeacherApplication() {
                                 updateData("googleMeetLink", e.target.value)
                               }
                             />
-                            {errors.googleMeetLink && (
-                              <p className="flex items-center gap-1 text-red-500 text-sm mt-1">
-                                <FiInfo className="w-4 h-4" />
-                                {errors.googleMeetLink}
-                              </p>
-                            )}
                           </div>
                         )}
                     </div>
@@ -3935,15 +3839,12 @@ export default function TeacherApplication() {
                 {isLoadingTeachingMaterials ? (
                   <div className="col-span-3 flex items-center justify-center py-8">
                     <Spinner />
-                    <span className="ml-2 text-gray-500">
-                      Loading materials...
-                    </span>
+                    <span className="ml-2 text-gray-500">Loading materials...</span>
                   </div>
                 ) : teachingMaterialsError ? (
                   <div className="col-span-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600 rounded-xl p-4">
                     <p className="text-red-600 text-sm">
-                      Failed to load teaching materials. Please refresh the
-                      page.
+                      Failed to load teaching materials. Please refresh the page.
                     </p>
                   </div>
                 ) : teachingMaterials && teachingMaterials.length > 0 ? (
@@ -3981,9 +3882,7 @@ export default function TeacherApplication() {
                           } else {
                             updateData(
                               "specialties",
-                              data.specialties.filter(
-                                (s) => s !== material.value
-                              )
+                              data.specialties.filter((s) => s !== material.value)
                             );
                           }
                         }}
@@ -4022,22 +3921,18 @@ export default function TeacherApplication() {
                 Teaching Specialist
               </p>
               <p className="text-sm text-gray-500 mb-4">
-                Select the areas that best describe your specialization (up to
-                5)
+                Select the areas that best describe your specialization (up to 5)
               </p>
               <div className="flex flex-wrap gap-2">
                 {isLoadingTeachingInterests ? (
                   <div className="w-full flex items-center justify-center py-8">
                     <Spinner />
-                    <span className="ml-2 text-gray-500">
-                      Loading interests...
-                    </span>
+                    <span className="ml-2 text-gray-500">Loading interests...</span>
                   </div>
                 ) : teachingInterestsError ? (
                   <div className="w-full bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600 rounded-xl p-4">
                     <p className="text-red-600 text-sm">
-                      Failed to load teaching interests. Please refresh the
-                      page.
+                      Failed to load teaching interests. Please refresh the page.
                     </p>
                   </div>
                 ) : teachingInterests && teachingInterests.length > 0 ? (
@@ -4048,8 +3943,7 @@ export default function TeacherApplication() {
                         "relative flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all",
                         data.teachingStyles.includes(interest.value)
                           ? "border-brand-500 bg-brand-50 dark:bg-brand-900/30 cursor-pointer"
-                          : !data.teachingStyles.includes(interest.value) &&
-                            data.teachingStyles.length >= 5
+                          : !data.teachingStyles.includes(interest.value) && data.teachingStyles.length >= 5
                           ? "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/50 opacity-50 cursor-not-allowed"
                           : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800 cursor-pointer"
                       )}
@@ -4061,10 +3955,7 @@ export default function TeacherApplication() {
                         type="checkbox"
                         className="sr-only"
                         checked={data.teachingStyles.includes(interest.value)}
-                        disabled={
-                          !data.teachingStyles.includes(interest.value) &&
-                          data.teachingStyles.length >= 5
-                        }
+                        disabled={!data.teachingStyles.includes(interest.value) && data.teachingStyles.length >= 5}
                         onChange={(e) =>
                           e.target.checked
                             ? data.teachingStyles.length < 5
@@ -4075,9 +3966,7 @@ export default function TeacherApplication() {
                               : null
                             : updateData(
                                 "teachingStyles",
-                                data.teachingStyles.filter(
-                                  (s) => s !== interest.value
-                                )
+                                data.teachingStyles.filter((s) => s !== interest.value)
                               )
                         }
                       />
